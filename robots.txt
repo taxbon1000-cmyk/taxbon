@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# 크롤러 접근 허용
+User-agent: Googlebot
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
+# 사이트맵 위치
+Sitemap: https://www.taxbon.com/sitemap.xml
+
+# 크롤링 속도 제한 (선택사항)
+Crawl-delay: 1
