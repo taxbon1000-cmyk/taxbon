@@ -591,9 +591,14 @@
                         <p class="text-gray-600 text-sm leading-relaxed mb-6">
                             세무회계본의 핵심 전문 분야입니다. 복잡한 세법을 사전에 정밀 분석하여 절세 효과를 극대화하는 최적의 플랜을 제시합니다.
                         </p>
-                        <a href="#fee-property" onclick="switchFeeTab('property'); return true;" class="inline-flex items-center gap-2 text-blue-600 font-bold text-sm hover:text-blue-700 hover:gap-3 transition-all">
-                            비용 안내 보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        </a>
+                        <div class="flex items-center gap-4 flex-wrap">
+                            <a href="#fee-property" onclick="switchFeeTab('property'); return true;" class="inline-flex items-center gap-2 text-blue-600 font-bold text-sm hover:text-blue-700 hover:gap-3 transition-all">
+                                비용 안내 보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                            <a href="intake.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-navy-800 hover:bg-gold-500 text-white text-xs font-bold rounded-lg border border-gold-500 hover:border-gold-600 transition-all">
+                                📋 준비서류
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -1134,18 +1139,6 @@
             </div>
         </div>
     </section>
-
-    <!-- 플로팅 준비서류 버튼 -->
-    <a href="intake.html" id="intake-fab"
-        class="fixed z-50 flex flex-col items-center justify-center gap-1
-               bg-navy-800 hover:bg-gold-500 text-white rounded-xl shadow-2xl
-               transition-all duration-300 border-2 border-gold-500 hover:border-gold-600
-               font-bold"
-        style="bottom:7rem;right:2rem;width:64px;height:64px;box-shadow:0 8px 30px rgba(0,0,0,0.4);"
-        aria-label="준비서류 체크">
-        <span style="font-size:1.4rem;line-height:1;">📋</span>
-        <span style="font-size:.55rem;letter-spacing:-.01em;">준비서류</span>
-    </a>
 
     <!-- 플로팅 위로가기 버튼 -->
     <button id="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
