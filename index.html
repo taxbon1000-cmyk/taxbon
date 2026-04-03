@@ -16,14 +16,14 @@
     <meta name="revisit-after" content="7 days">
     <meta name="coverage" content="Korea">
     <meta name="distribution" content="global">
-    <link rel="canonical" href="https://www.taxbon.com/">
+    <link rel="canonical" href="https://taxbon.com/">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.taxbon.com/">
+    <meta property="og:url" content="https://taxbon.com/">
     <meta property="og:title" content="세무회계본 | 강남 수서 세무사 - 상속·증여·양도 전문">
     <meta property="og:description" content="강남 수서역 세무회계본. 14년 경력 천아름 대표세무사의 상속세, 증여세, 양도소득세 전문 컨설팅. 수서역 3번 출구 직결.">
-    <meta property="og:image" content="https://www.taxbon.com/images/og-image.png">
+    <meta property="og:image" content="https://taxbon.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="세무회계본 - 강남 수서 세무사무소">
@@ -32,10 +32,10 @@
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://www.taxbon.com/">
+    <meta name="twitter:url" content="https://taxbon.com/">
     <meta name="twitter:title" content="세무회계본 | 강남 수서 세무사">
     <meta name="twitter:description" content="상속·증여·양도 전문 세무사무소. 14년 경력 세무사. 수서역 3번 출구 직결.">
-    <meta name="twitter:image" content="https://www.taxbon.com/images/og-image.png">
+    <meta name="twitter:image" content="https://taxbon.com/images/og-image.png">
     <meta name="twitter:image:alt" content="세무회계본 - 강남 수서 세무사무소">
     
     <!-- Naver 소유권 확인 -->
@@ -53,14 +53,14 @@
     {
       "@context": "https://schema.org",
       "@type": "AccountingService",
-      "@id": "https://www.taxbon.com/#organization",
+      "@id": "https://taxbon.com/#organization",
       "name": "세무회계본",
       "alternateName": "Taxbon Tax & Accounting",
       "image": [
-        "https://www.taxbon.com/images/logo.png",
-        "https://www.taxbon.com/images/og-image.png"
+        "https://taxbon.com/images/logo.png",
+        "https://taxbon.com/images/og-image.png"
       ],
-      "logo": "https://www.taxbon.com/images/logo.png",
+      "logo": "https://taxbon.com/images/logo.png",
       "description": "강남 수서역 세무회계본. 14년 경력 천아름 대표세무사의 상속세, 증여세, 양도소득세 전문 컨설팅. 요식업 전문 세무사의 개인·법인 기장대리 서비스.",
       "address": {
         "@type": "PostalAddress",
@@ -78,7 +78,7 @@
       "telephone": "+82-2-597-5830",
       "faxNumber": "+82-2-877-5830",
       "email": "taxbon@taxbon.com",
-      "url": "https://www.taxbon.com",
+      "url": "https://taxbon.com",
       "sameAs": [
         "https://booking.naver.com/booking/6/bizes/1181095"
       ],
@@ -122,7 +122,7 @@
           "@type": "ListItem",
           "position": 1,
           "name": "홈",
-          "item": "https://www.taxbon.com/"
+          "item": "https://taxbon.com/"
         }
       ]
     }
@@ -180,30 +180,6 @@
             user-select: text;
         }
         
-        /* 아코디언 버튼 스타일: 흰 배경 + 검정 텍스트 + 시각적 효과 */
-        .rounded-xl > button, .rounded-2xl > button {
-            background: #ffffff !important;
-            color: #1f2937 !important;
-            border-bottom: 2px solid #e5e7eb !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .rounded-xl > button:hover, .rounded-2xl > button:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-            background: #f9fafb !important;
-        }
-        
-        .rounded-xl > button span, .rounded-2xl > button span,
-        .rounded-xl > button i, .rounded-2xl > button i {
-            color: #1f2937 !important;
-        }
-        
-        /* 카드 전체 경계 강화 */
-        .rounded-xl, .rounded-2xl {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-            border: 1px solid #f0f0f0 !important;
-        }
         
         /* 메인 히어로 슬라이드 */
         .hero-slide {
@@ -454,32 +430,6 @@
         </div>
     </section>
 
-    <script>
-    (function(){
-        function initExpertSlider(){
-            const track = document.querySelector('.expert-track');
-            const container = document.querySelector('.expert-slider');
-            const items = document.querySelectorAll('.expert-item');
-            const dots = document.querySelectorAll('.expert-dot');
-            if(!track || !container || items.length === 0) return;
-            let idx = 0;
-            function update(){
-                const w = container.clientWidth;
-                track.style.transform = `translateX(-${idx * w}px)`;
-                if(dots && dots.length) dots.forEach((d,i)=>{ d.classList.toggle('bg-gold-500', i===idx); d.classList.toggle('bg-gray-300', i!==idx); });
-            }
-            window.changeExpertSlide = function(dir){ idx = (idx + dir + items.length) % items.length; update(); }
-            window.goToExpert = function(i){ idx = (i + items.length) % items.length; update(); }
-            window.addEventListener('resize', update);
-            // 초기 위치 보정
-            setTimeout(update, 60);
-            // 이미지나 폰트 로드 이후 폭이 바뀔 수 있어 로드 시에도 재계산
-            window.addEventListener('load', update);
-        }
-        if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initExpertSlider);
-        else initExpertSlider();
-    })();
-    </script>
 
     <!-- 3. 전문가 소개 (1명씩 확실한 슬라이드) -->
     <section id="about" class="py-24 bg-white">
@@ -1162,7 +1112,7 @@
                         <div id="contact-card" class="bg-white/5 p-6 rounded-2xl border border-white/10 mt-6">
                             <h4 class="font-bold text-gold-500 mb-4 text-xl">📞 상담 문의</h4>
                             <p class="phone-number mb-2">02-597-5830</p>
-                            <p class="text-gray-400 mb-6">이메일: <a href="/cdn-cgi/l/email-protection#4b3f2a332924250b3f2a3329242565282426" class="hover:text-white transition"><span class="__cf_email__" data-cfemail="d3a7b2abb1bcbd93a7b2abb1bcbdfdb0bcbe">[email&#160;protected]</span></a></p>
+                            <p class="text-gray-400 mb-6" id="contact-email-line">이메일: 로딩중...</p>
                             <div class="contact-ctas">
                                 <a href="tel:02-597-5830" class="call-btn"><i data-lucide="phone" class="w-4 h-4"></i> 전화 걸기</a>
                                 <a href="https://booking.naver.com/booking/6/bizes/1181095" target="_blank" class="book-btn"><i data-lucide="calendar-check" class="w-4 h-4"></i> 네이버 예약</a>
@@ -1210,7 +1160,7 @@
                     <img src="images/logo.png" alt="세무회계본 로고" class="w-30 h-20" style="filter: brightness(0) saturate(100%) invert(77%) sepia(55%) saturate(456%) hue-rotate(359deg) brightness(92%) contrast(87%);">
                     <p class="font-bold text-white text-xl tracking-tight">세무회계본</p>
                 </div>
-                <p class="leading-relaxed">대표세무사: 천아름 | 사업자등록번호: [539-30-00465]<br>주소: 서울시 강남구 수서동 713 수서현대벤쳐빌 403호<br>Tel: 02-597-5830 | Fax: 02-877-5830 | Email: <a href="/cdn-cgi/l/email-protection#b1c5d0c9d3dedff1c5d0c9d3dedf9fd2dedc" class="hover:text-gray-300 transition"><span class="__cf_email__" data-cfemail="91e5f0e9f3feffd1e5f0e9f3feffbff2fefc">[email&#160;protected]</span></a></p>
+                <p class="leading-relaxed" id="footer-info">대표세무사: 천아름 | 사업자등록번호: [539-30-00465]<br>주소: 서울시 강남구 수서동 713 수서현대벤쳐빌 403호<br>Tel: 02-597-5830 | Fax: 02-877-5830 | Email: 로딩중...</p>
             </div>
             <div class="text-center md:text-right mt-4 md:mt-0">
                 <p class="text-gray-600">&copy; 2026 Taxbon Tax & Accounting. All rights reserved.</p>
@@ -1218,8 +1168,21 @@
         </div>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        // 무단 복제 방지
+    <script>
+        // ===== 이메일 주소 (Cloudflare 난독화 방지용 JS 구성) =====
+        (function(){
+            var e = ['tax','bon','@','tax','bon','.com'].join('');
+            var cel = document.getElementById('contact-email-line');
+            if(cel){
+                cel.innerHTML = '이메일: <a href="mailto:'+e+'" class="hover:text-white transition">'+e+'</a>';
+            }
+            var fel = document.getElementById('footer-info');
+            if(fel){
+                fel.innerHTML = '대표세무사: 천아름 | 사업자등록번호: [539-30-00465]<br>주소: 서울시 강남구 수서동 713 수서현대벤쳐빌 403호<br>Tel: 02-597-5830 | Fax: 02-877-5830 | Email: <a href="mailto:'+e+'" class="hover:text-gray-300 transition">'+e+'</a>';
+            }
+        })();
+
+        // ===== 무단 복제 방지 =====
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
@@ -1376,17 +1339,39 @@
             });
         });
 
-        // ===== 카카오맵 초기화 =====
-        new daum.roughmap.Lander({
-            "timestamp" : "1775149216577",
-            "key" : "k2bawb7txub",
-            "mapWidth" : "640",
-            "mapHeight" : "360"
-        }).render();
+        // ===== 카카오맵 초기화 (로딩 완료 확인 후 실행) =====
+        function initKakaoMap() {
+            if (typeof daum !== 'undefined' && daum.roughmap && daum.roughmap.Lander) {
+                new daum.roughmap.Lander({
+                    "timestamp" : "1775149216577",
+                    "key" : "k2bawb7txub",
+                    "mapWidth" : "640",
+                    "mapHeight" : "360"
+                }).render();
+            }
+        }
+        // roughmapLoader 비동기 대비: load 이벤트 + 지연 재시도
+        if (document.readyState === 'complete') {
+            initKakaoMap();
+        } else {
+            window.addEventListener('load', initKakaoMap);
+        }
+        setTimeout(function() {
+            var mc = document.getElementById('daumRoughmapContainer1775149216577');
+            if (mc && mc.children.length === 0) initKakaoMap();
+        }, 2000);
 
         // ===== 위로가기 버튼 =====
         const scrollToTopBtn = document.getElementById('scroll-to-top');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
                 scrollToTopBtn.classList.remove('opacity-0', 'invisible');
-                scrollToTopBtn.classList.a
+                scrollToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                scrollToTopBtn.classList.add('opacity-0', 'invisible');
+                scrollToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+    </script>
+</body>
+</html>
