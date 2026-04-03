@@ -156,10 +156,6 @@
     <!-- [폰트] Pretendard & Icons -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
-    
-    <!-- 카카오맵 -->
-    <script charset="UTF-8" class="daum_roughmap_loader_script"
-        src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
 
     <style>
         body { font-family: "Pretendard Variable", Pretendard, sans-serif; }
@@ -1121,10 +1117,18 @@
                     </div>
                 </div>
 
-                <!-- 오른쪽: 카카오맵 -->
+                <!-- 오른쪽: 구글 지도 -->
                 <div>
                     <div class="rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-[500px] lg:h-[600px]">
-                        <div id="daumRoughmapContainer1775149216577" class="root_daum_roughmap root_daum_roughmap_landing" style="width:100%;height:100%;"></div>
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.846302177664!2d127.10187159999998!3d37.48795320000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca11857ad232d%3A0xf40c1efeb6425164!2z7IS466y07ZqM6rOE67O4IOyynOyVhOumhCDshLjrrLTsgqw!5e0!3m2!1sko!2skr!4v1775213599926!5m2!1sko!2skr" 
+                            width="100%" height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="세무회계본 위치 - 수서현대벤쳐빌 403호">
+                        </iframe>
                     </div>
                 </div>
             </div>
@@ -1339,27 +1343,6 @@
             });
         });
 
-        // ===== 카카오맵 초기화 (로딩 완료 확인 후 실행) =====
-        function initKakaoMap() {
-            if (typeof daum !== 'undefined' && daum.roughmap && daum.roughmap.Lander) {
-                new daum.roughmap.Lander({
-                    "timestamp" : "1775149216577",
-                    "key" : "k2bawb7txub",
-                    "mapWidth" : "640",
-                    "mapHeight" : "360"
-                }).render();
-            }
-        }
-        // roughmapLoader 비동기 대비: load 이벤트 + 지연 재시도
-        if (document.readyState === 'complete') {
-            initKakaoMap();
-        } else {
-            window.addEventListener('load', initKakaoMap);
-        }
-        setTimeout(function() {
-            var mc = document.getElementById('daumRoughmapContainer1775149216577');
-            if (mc && mc.children.length === 0) initKakaoMap();
-        }, 2000);
 
         // ===== 위로가기 버튼 =====
         const scrollToTopBtn = document.getElementById('scroll-to-top');
