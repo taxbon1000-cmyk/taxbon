@@ -1468,16 +1468,31 @@
             showExpertSlide(index);
         }
 
+        // 전문가 슬라이더 자동 재생 (40초마다 랜덤 전환)
+        let expertAutoTimer = null;
+        function startExpertAuto() {
+            if (expertAutoTimer) { clearInterval(expertAutoTimer); expertAutoTimer = null; }
+            expertAutoTimer = setInterval(function() {
+                var next;
+                do { next = Math.floor(Math.random() * expertItems.length); }
+                while (next === expertCurrentIndex && expertItems.length > 1);
+                showExpertSlide(next);
+            }, 40000);
+        }
+
         // 전문가 슬라이더 버튼 이벤트
         const expertContainer = document.querySelector('.expert-slider');
         if (expertContainer) {
             const expertButtons = expertContainer.querySelectorAll('button:not(.expert-dot)');
             if (expertButtons.length >= 2) {
-                expertButtons[0].addEventListener('click', () => showExpertSlide(expertCurrentIndex - 1));
-                expertButtons[1].addEventListener('click', () => showExpertSlide(expertCurrentIndex + 1));
+                expertButtons[0].addEventListener('click', () => { showExpertSlide(expertCurrentIndex - 1); startExpertAuto(); });
+                expertButtons[1].addEventListener('click', () => { showExpertSlide(expertCurrentIndex + 1); startExpertAuto(); });
             }
         }
+
+        // 천아름 세무사(0번)부터 시작, 이후 랜덤 자동 전환
         showExpertSlide(0);
+        startExpertAuto();
 
         // ===== 사진 갤러리 슬라이더 =====
         let photoIndex = 0;
