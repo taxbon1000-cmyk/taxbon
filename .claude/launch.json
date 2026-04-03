@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Cloudflare Workers Dev",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["C:\\Users\\babyn\\OneDrive\\문서\\GitHub\\taxbon\\.claude\\serve.js"],
+      "port": 8787
+    }
+  ]
+}

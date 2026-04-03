@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>계산기 | 세무회계본</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: #c8c8c8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+}
+
+.back-bar {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  padding: .5rem .75rem;
+}
+.back-btn {
+  text-decoration: none;
+  color: #333;
+  font-size: .85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  background: rgba(255,255,255,.5);
+  padding: .35rem .75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,.15);
+}
+.back-btn:hover { background: rgba(255,255,255,.8); }
+
+.calc-wrap {
+  width: 100%;
+  max-width: 400px;
+  background: #d0d0d0;
+  border-radius: 12px;
+  border: 3px solid #888;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.4);
+  padding: .75rem;
+}
+
+/* ── 디스플레이 ── */
+.display-wrap {
+  background: #c8c8b8;
+  border: 3px solid #888;
+  border-radius: 6px;
+  box-shadow: inset 0 3px 8px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.5);
+  padding: .5rem .75rem;
+  margin-bottom: .75rem;
+  position: relative;
+}
+.display-sub {
+  font-size: .65rem;
+  color: #888;
+  text-align: right;
+  min-height: 1rem;
+  font-family: 'Courier New', monospace;
+  letter-spacing: .05em;
+}
+.display-main {
+  font-family: 'DS-Digital', 'Courier New', 'DSEG7 Classic', monospace;
+  font-size: 2.6rem;
+  font-weight: bold;
+  color: #1a1a0a;
+  text-align: right;
+  letter-spacing: .05em;
+  line-height: 1.1;
+  word-break: break-all;
+  text-shadow: 0 0 2px rgba(0,0,0,.2);
+}
+.display-mem {
+  font-size: .6rem;
+  color: #555;
+  position: absolute;
+  left: .6rem;
+  bottom: .5rem;
+  font-weight: bold;
+}
+
+/* ── 버튼 그리드 ── */
+.btn-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: .35rem;
+}
+
+/* 공통 버튼 */
+.btn {
+  border: none;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: filter .08s, transform .08s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.btn:active { transform: translateY(2px); filter: brightness(.88); }
+
+/* 숫자 버튼 */
+.btn-num {
+  background: linear-gradient(180deg, #5a5a5a 0%, #3a3a3a 40%, #2e2e2e 100%);
+  color: #fff;
+  box-shadow: 0 4px 0 #1a1a1a, 0 5px 6px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.18);
+  border: 1px solid #222;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+
+/* 연산자 버튼 */
+.btn-op {
+  background: linear-gradient(180deg, #b0a898 0%, #8c8378 40%, #7a7168 100%);
+  color: #fff;
+  box-shadow: 0 4px 0 #504840, 0 5px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.25);
+  border: 1px solid #5a5040;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+}
+
+/* 메모리 버튼 */
+.btn-mem {
+  background: linear-gradient(180deg, #6a8fcc 0%, #4a6faa 40%, #3a5f9a 100%);
+  color: #fff;
+  box-shadow: 0 4px 0 #253860, 0 5px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.25);
+  border: 1px solid #2a4070;
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+
+/* 클리어 버튼 */
+.btn-clr {
+  background: linear-gradient(180deg, #d05070 0%, #b03050 40%, #982040 100%);
+  color: #fff;
+  box-shadow: 0 4px 0 #5a1020, 0 5px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+  border: 1px solid #6a1828;
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+
+/* 넓은 버튼 (0, +) */
+.btn-wide-v {
+  grid-row: span 2;
+  aspect-ratio: unset;
+}
+.btn-wide-h {
+  grid-column: span 2;
+  aspect-ratio: unset;
+  padding: .55rem 0;
+}
+
+/* 작은 아이콘 행 */
+.btn-tool {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  color: #555;
+  font-size: .8rem;
+}
+.btn-tool:active { transform: none; filter: none; }
+
+/* GT 뱃지 */
+.gt-badge {
+  font-size: .7rem;
+  background: #555;
+  color: #fff;
+  padding: .1rem .3rem;
+  border-radius: 3px;
+}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a href="index.html" class="back-btn">← 홈으로</a>
+</div>
+
+<div class="calc-wrap">
+  <!-- 디스플레이 -->
+  <div class="display-wrap">
+    <div class="display-sub" id="disp-sub"></div>
+    <div class="display-main" id="disp-main">0.</div>
+    <div class="display-mem" id="disp-mem"></div>
+  </div>
+
+  <!-- 버튼 그리드 -->
+  <div class="btn-grid">
+
+    <!-- 행 1: 도구 / 특수 -->
+    <button class="btn btn-tool" onclick="void(0)">🔧</button>
+    <button class="btn btn-op" onclick="calcPercent()">%</button>
+    <button class="btn btn-op" onclick="calcSqrt()">√</button>
+    <button class="btn btn-op" onclick="calcGTRecall()">▶</button>
+    <button class="btn btn-op" onclick="showGT()"><span class="gt-badge">GT</span></button>
+
+    <!-- 행 2: 메모리 + 나누기 -->
+    <button class="btn btn-mem" onclick="memClear()">MC</button>
+    <button class="btn btn-mem" onclick="memRecall()">MR</button>
+    <button class="btn btn-mem" onclick="memMinus()">M−</button>
+    <button class="btn btn-mem" onclick="memPlus()">M+</button>
+    <button class="btn btn-op"  onclick="inputOp('÷')">÷</button>
+
+    <!-- 행 3: +/−  7 8 9 × -->
+    <button class="btn btn-op"  onclick="toggleSign()">+/−</button>
+    <button class="btn btn-num" onclick="inputNum('7')">7</button>
+    <button class="btn btn-num" onclick="inputNum('8')">8</button>
+    <button class="btn btn-num" onclick="inputNum('9')">9</button>
+    <button class="btn btn-op"  onclick="inputOp('×')">×</button>
+
+    <!-- 행 4: C  4 5 6  − -->
+    <button class="btn btn-clr" onclick="clearEntry()">C</button>
+    <button class="btn btn-num" onclick="inputNum('4')">4</button>
+    <button class="btn btn-num" onclick="inputNum('5')">5</button>
+    <button class="btn btn-num" onclick="inputNum('6')">6</button>
+    <button class="btn btn-op"  onclick="inputOp('−')">−</button>
+
+    <!-- 행 5: AC  1 2 3  + (tall) -->
+    <button class="btn btn-clr" onclick="allClear()">AC</button>
+    <button class="btn btn-num" onclick="inputNum('1')">1</button>
+    <button class="btn btn-num" onclick="inputNum('2')">2</button>
+    <button class="btn btn-num" onclick="inputNum('3')">3</button>
+    <button class="btn btn-op btn-wide-v" onclick="inputOp('+')">+</button>
+
+    <!-- 행 6: 0(wide)  00  .  = -->
+    <button class="btn btn-num btn-wide-h" onclick="inputNum('0')">0</button>
+    <button class="btn btn-num" onclick="inputNum('00')">00</button>
+    <button class="btn btn-op"  onclick="inputDot()">.</button>
+    <button class="btn btn-op"  onclick="calcEquals()">=</button>
+
+  </div>
+</div>
+
+<script>
+let current = '0';
+let prev = null;
+let operator = null;
+let waitNew = false;
+let memory = 0;
+let gtTotal = 0;
+let gtCount = 0;
+
+const dispMain = document.getElementById('disp-main');
+const dispSub  = document.getElementById('disp-sub');
+const dispMem  = document.getElementById('disp-mem');
+
+function fmt(n) {
+  if (isNaN(n) || !isFinite(n)) return 'Error';
+  const s = parseFloat(n.toPrecision(12)).toString();
+  const [int, dec] = s.split('.');
+  const intFmt = parseInt(int).toLocaleString('ko-KR');
+  return dec !== undefined ? intFmt + '.' + dec : intFmt + '.';
+}
+
+function updateDisplay() {
+  let val = current;
+  if (!val.endsWith('.') && !isNaN(val)) {
+    const [i, d] = val.split('.');
+    val = parseInt(i).toLocaleString('ko-KR') + (d !== undefined ? '.' + d : '.');
+  }
+  dispMain.textContent = val;
+  dispMem.textContent = memory !== 0 ? 'M' : '';
+}
+
+function inputNum(n) {
+  if (waitNew) { current = ''; waitNew = false; }
+  if (n === '0' && current === '0') return;
+  if (n === '00') {
+    if (current === '0') return;
+    current += '00';
+  } else {
+    current = current === '0' ? n : current + n;
+  }
+  if (current.replace('-','').replace('.','').length > 12) {
+    current = current.slice(0, -1); return;
+  }
+  updateDisplay();
+}
+
+function inputDot() {
+  if (waitNew) { current = '0'; waitNew = false; }
+  if (!current.includes('.')) current += '.';
+  updateDisplay();
+}
+
+function inputOp(op) {
+  if (prev !== null && !waitNew) {
+    calcEquals(true);
+  }
+  prev = parseFloat(current);
+  operator = op;
+  waitNew = true;
+  dispSub.textContent = fmt(prev) + ' ' + op;
+}
+
+function calcEquals(chain = false) {
+  if (prev === null || operator === null) return;
+  const cur = parseFloat(current);
+  let result;
+  switch (operator) {
+    case '+': result = prev + cur; break;
+    case '−': result = prev - cur; break;
+    case '×': result = prev * cur; break;
+    case '÷': result = cur === 0 ? NaN : prev / cur; break;
+    default:  result = cur;
+  }
+  if (!chain) {
+    gtTotal += result;
+    gtCount++;
+    dispSub.textContent = fmt(prev) + ' ' + operator + ' ' + fmt(cur) + ' =';
+    prev = null; operator = null;
+  }
+  current = isNaN(result) || !isFinite(result) ? 'Error' : String(parseFloat(result.toPrecision(12)));
+  waitNew = true;
+  updateDisplay();
+}
+
+function clearEntry() { current = '0'; updateDisplay(); }
+function allClear() {
+  current = '0'; prev = null; operator = null; waitNew = false;
+  dispSub.textContent = ''; updateDisplay();
+}
+
+function toggleSign() {
+  if (current === '0') return;
+  current = current.startsWith('-') ? current.slice(1) : '-' + current;
+  updateDisplay();
+}
+
+function calcPercent() {
+  const n = parseFloat(current);
+  current = String(prev !== null ? (prev * n / 100) : (n / 100));
+  updateDisplay();
+}
+
+function calcSqrt() {
+  const n = parseFloat(current);
+  current = String(Math.sqrt(n));
+  updateDisplay();
+}
+
+function memPlus()   { memory += parseFloat(current); dispMem.textContent = 'M'; }
+function memMinus()  { memory -= parseFloat(current); dispMem.textContent = memory !== 0 ? 'M' : ''; }
+function memRecall() { current = String(memory); waitNew = false; updateDisplay(); }
+function memClear()  { memory = 0; dispMem.textContent = ''; }
+
+function showGT() {
+  current = String(parseFloat(gtTotal.toPrecision(12)));
+  dispSub.textContent = 'GT (' + gtCount + '건 합계)';
+  waitNew = true; updateDisplay();
+}
+function calcGTRecall() { showGT(); }
+
+// 키보드 지원
+document.addEventListener('keydown', e => {
+  if (e.key >= '0' && e.key <= '9') inputNum(e.key);
+  else if (e.key === '.') inputDot();
+  else if (e.key === '+') inputOp('+');
+  else if (e.key === '-') inputOp('−');
+  else if (e.key === '*') inputOp('×');
+  else if (e.key === '/') { e.preventDefault(); inputOp('÷'); }
+  else if (e.key === 'Enter' || e.key === '=') calcEquals();
+  else if (e.key === 'Escape') allClear();
+  else if (e.key === 'Backspace') { current = current.length > 1 ? current.slice(0,-1) : '0'; updateDisplay(); }
+});
+</script>
+</body>
+</html>
