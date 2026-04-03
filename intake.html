@@ -286,10 +286,8 @@ footer a{color:#e8c97a;text-decoration:none;}
   border-radius:12px;border:2px solid #c9a84c;
   box-shadow:0 8px 30px rgba(0,0,0,0.4);
   text-decoration:none;
-  opacity:0;visibility:hidden;
-  transition:opacity .3s,visibility .3s,background .18s,transform .18s;
+  transition:background .18s,transform .18s;
 }
-.fab-home.visible{opacity:1;visibility:visible;}
 .fab-home:hover{background:#c9a84c;color:#1a1000;transform:translateY(-2px);}
 @media print{
   .topbar,.hero,.tax-tabs,.phone-cta,footer{display:none!important;}
@@ -751,13 +749,6 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey&&['c','u','s','a'].includes(e.key.toLowerCase()))||e.key==='F12') e.preventDefault();
 },{capture:true});
 </script>
-<a href="index.html" id="fab-home" class="fab-home">← 홈으로</a>
-<script>
-// 플로팅 홈으로 버튼 (요소 생성 후 실행)
-const fabHome = document.getElementById('fab-home');
-window.addEventListener('scroll', () => {
-  fabHome.classList.toggle('visible', window.scrollY > 300);
-});
-</script>
+<a href="index.html" class="fab-home">← 홈으로</a>
 </body>
 </html>
