@@ -1339,27 +1339,6 @@
             });
         });
 
-        // ===== 카카오맵 초기화 (로딩 완료 확인 후 실행) =====
-        function initKakaoMap() {
-            if (typeof daum !== 'undefined' && daum.roughmap && daum.roughmap.Lander) {
-                new daum.roughmap.Lander({
-                    "timestamp" : "1775149216577",
-                    "key" : "k2bawb7txub",
-                    "mapWidth" : "640",
-                    "mapHeight" : "360"
-                }).render();
-            }
-        }
-        // roughmapLoader 비동기 대비: load 이벤트 + 지연 재시도
-        if (document.readyState === 'complete') {
-            initKakaoMap();
-        } else {
-            window.addEventListener('load', initKakaoMap);
-        }
-        setTimeout(function() {
-            var mc = document.getElementById('daumRoughmapContainer1775149216577');
-            if (mc && mc.children.length === 0) initKakaoMap();
-        }, 2000);
 
         // ===== 위로가기 버튼 =====
         const scrollToTopBtn = document.getElementById('scroll-to-top');
