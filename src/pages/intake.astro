@@ -1,0 +1,762 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="상담 준비서류 | 세무회계본"
+  description="세무회계본 상담 준비서류 안내. 상속세·증여세·양도세·기장대리 상담 시 필요한 서류를 미리 확인하세요."
+  canonical="https://taxbon.com/intake"
+  currentPage="intake"
+  showHeader={false}
+  showFooter={false}
+>
+
+<style>
+
+/* ═══ RESET ═══ */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Pretendard Variable',Pretendard,sans-serif;
+  background:#f0ede7;color:#1c1c1c;
+  -webkit-user-select:none;user-select:none;min-height:100vh;}
+input{-webkit-user-select:text;user-select:text;}
+button{font-family:inherit;cursor:pointer;}
+
+/* ═══ TOPBAR ═══ */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:#0a1520;
+  height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;
+  box-shadow:0 2px 16px rgba(0,0,0,.5),0 1px 0 rgba(201,168,76,.2);
+  border-bottom:1px solid rgba(201,168,76,.15);
+}
+.tlogo{display:flex;align-items:center;gap:.55rem;text-decoration:none;}
+.tlogo .nm{font-size:1rem;font-weight:800;color:#fff;letter-spacing:-.02em;}
+.tlogo .sb{font-size:.56rem;color:#c9a84c;letter-spacing:.12em;opacity:.85;}
+.thome{
+  display:flex;align-items:center;gap:.4rem;
+  color:#0a1520;text-decoration:none;
+  font-size:.82rem;font-weight:800;
+  padding:.5rem 1.1rem;border-radius:7px;
+  background:linear-gradient(135deg,#c9a84c,#e8c97a);
+  box-shadow:0 2px 10px rgba(201,168,76,.4);
+  transition:filter .18s,transform .18s;
+}
+.thome:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.thome::before{content:'←';font-size:.9rem;}
+
+/* ═══ HERO ═══ */
+.hero{
+  background:linear-gradient(135deg,#0d1b2a 0%,#1b3d60 100%);
+  padding:2.2rem 1.5rem 2.8rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 60% 40%,rgba(201,168,76,.09) 0%,transparent 65%);}
+.htag{display:inline-block;background:rgba(201,168,76,.14);
+  border:1px solid rgba(201,168,76,.32);color:#e8c97a;
+  padding:.28rem .95rem;border-radius:99px;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;margin-bottom:.9rem;}
+.hero h1{font-size:clamp(1.35rem,3.5vw,2rem);font-weight:900;color:#fff;
+  line-height:1.3;letter-spacing:-.03em;margin-bottom:.55rem;}
+.hero h1 span{color:#e8c97a;}
+.hero p{color:rgba(255,255,255,.55);font-size:.82rem;line-height:1.7;}
+
+/* ═══ TAX TABS ═══ */
+.tax-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;
+  max-width:820px;margin:0 auto;padding:1.4rem 1.25rem 0;}
+.ttab{background:#fff;border:2px solid #e2d9c8;border-radius:12px;
+  padding:.9rem .7rem .8rem;text-align:center;
+  transition:all .22s;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.ttab .ti{font-size:1.55rem;display:block;margin-bottom:.22rem;}
+.ttab .tl{font-size:.88rem;font-weight:800;color:#1c1c1c;display:block;}
+.ttab .ts{font-size:.63rem;color:#888;margin-top:.1rem;display:block;}
+.ttab:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1);}
+.ttab.inh.on{background:#0d1b2a;border-color:#c9a84c;box-shadow:0 5px 20px rgba(13,27,42,.28);}
+.ttab.gif.on{background:#166534;border-color:#4ade80;box-shadow:0 5px 20px rgba(22,101,52,.28);}
+.ttab.cap.on{background:#1e4d8c;border-color:#60a5fa;box-shadow:0 5px 20px rgba(30,77,140,.28);}
+.ttab.inh.on .tl,.ttab.gif.on .tl,.ttab.cap.on .tl{color:#fff;}
+.ttab.inh.on .ts,.ttab.gif.on .ts,.ttab.cap.on .ts{color:rgba(255,255,255,.5);}
+
+/* ═══ MAIN ═══ */
+.main{max-width:820px;margin:0 auto 4rem;padding:0 1.25rem;}
+.pane{display:none;}
+.pane.on{display:block;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ NOTICES ═══ */
+.ansim{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;
+  padding:1rem 1.25rem;margin:1.25rem 0 .75rem;}
+.ansim h4{font-size:.86rem;font-weight:700;color:#1e4d8c;margin-bottom:.45rem;}
+.ansim li{font-size:.78rem;color:#1e40af;list-style:none;
+  padding-left:.85rem;position:relative;line-height:1.65;margin-bottom:.15rem;}
+.ansim li::before{content:'▸';position:absolute;left:0;}
+.deadline{border-radius:10px;padding:.8rem 1.05rem;
+  font-size:.8rem;line-height:1.6;margin-bottom:1.5rem;border-left:4px solid;}
+.dl-a{background:#fef9ec;border-color:#f59e0b;color:#78350f;}
+.dl-g{background:#f0fdf6;border-color:#4ade80;color:#14532d;}
+.dl-b{background:#eff6ff;border-color:#60a5fa;color:#1e3a5f;}
+
+/* ═══ WHEEL ═══ */
+.wheel-area{display:flex;flex-direction:column;align-items:center;padding:1rem 0 1.5rem;}
+.wheel-wrap{position:relative;}
+
+/* orb 버튼: 항상 진한 상태, 색상 효과 없음 */
+.orb-btn{
+  position:absolute;border-radius:50%;
+  border:3px solid rgba(255,255,255,.75);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;transform:translate(-50%,-50%);
+  box-shadow:0 5px 18px rgba(0,0,0,.35);
+  transition:transform .18s,box-shadow .18s;
+}
+.orb-btn:hover{transform:translate(-50%,-50%) scale(1.1);box-shadow:0 9px 26px rgba(0,0,0,.45);}
+.orb-btn:active{transform:translate(-50%,-50%) scale(.95);}
+.orb-btn .ob-icon,.orb-btn .ob-lbl{pointer-events:none;}
+.orb-btn .ob-lbl{font-weight:800;color:#fff;text-align:center;line-height:1.3;}
+
+/* 완료 배지 */
+.orb-check{
+  position:absolute;top:4px;right:4px;
+  width:22px;height:22px;border-radius:50%;
+  background:#22c55e;border:2.5px solid #fff;
+  display:none;align-items:center;justify-content:center;
+  font-size:.65rem;color:#fff;font-weight:900;pointer-events:none;
+}
+.orb-btn.has-check .orb-check{display:flex;}
+
+/* 중앙 확인/전송 버튼 */
+.center-btn{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  border:3px solid rgba(201,168,76,.5);
+  background:linear-gradient(145deg,#fff,#f7f2e6);
+  box-shadow:0 6px 28px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.9);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;z-index:10;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.center-btn:hover{border-color:#c9a84c;box-shadow:0 12px 36px rgba(0,0,0,.2);
+  transform:translate(-50%,-50%) scale(1.07);}
+.center-btn:active{transform:translate(-50%,-50%) scale(.95);}
+.center-btn .cb-icon,.center-btn .cb-lbl,.center-btn .cb-cnt{pointer-events:none;}
+.center-btn .cb-lbl{font-weight:900;color:#0d1b2a;letter-spacing:-.01em;}
+.center-btn .cb-cnt{color:#888;font-weight:500;}
+.wheel-hint{font-size:.76rem;color:#888;text-align:center;margin-top:.75rem;}
+
+/* ═══ PHONE CTA ═══ */
+.phone-cta{text-align:center;background:#fff;border:1px solid #e2d9c8;
+  border-radius:14px;padding:1.4rem 1rem;margin-top:1.1rem;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.ph-l{font-size:.72rem;color:#888;font-weight:600;letter-spacing:.05em;margin-bottom:.3rem;}
+.phone-cta a{font-size:1.75rem;font-weight:900;color:#0d1b2a;text-decoration:none;letter-spacing:-.02em;}
+.phone-cta a:hover{color:#1e4d8c;}
+.ph-s{font-size:.72rem;color:#888;margin-top:.3rem;}
+
+/* ═══ FOOTER ═══ */
+footer{background:#0d1b2a;text-align:center;padding:1.4rem 1rem;
+  font-size:.72rem;color:rgba(255,255,255,.32);line-height:1.8;margin-top:1.5rem;}
+footer a{color:#e8c97a;text-decoration:none;}
+
+/* ═══ OVERLAY 공통 ═══ */
+.ov,.sm,.snd{
+  position:fixed;inset:0;z-index:500;
+  display:none;align-items:center;justify-content:center;padding:1rem;
+}
+.ov.on,.sm.on,.snd.on{display:flex;animation:fadeIn .22s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.bd{position:absolute;inset:0;background:rgba(5,10,18,.76);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.panel{position:relative;z-index:10;background:#fff;border-radius:20px;
+  width:100%;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.45);
+  animation:slideUp .28s cubic-bezier(.34,1.56,.64,1);}
+@keyframes slideUp{from{transform:translateY(22px) scale(.93);opacity:0}to{transform:none;opacity:1}}
+
+/* 카테고리 패널 */
+.ov .panel{max-width:480px;max-height:86vh;}
+.ph{display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 1.35rem .9rem;border-bottom:1px solid #f0ece4;flex-shrink:0;}
+.ph-l{display:flex;align-items:center;gap:.55rem;}
+.ph-l h3{font-size:.95rem;font-weight:800;}
+.ph-l p{font-size:.7rem;color:#888;margin-top:.1rem;}
+.xbtn{width:30px;height:30px;border-radius:50%;background:#f5f3ee;border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.95rem;color:#666;transition:background .18s;}
+.xbtn:hover{background:#ede9df;}
+.prog{padding:.65rem 1.35rem .45rem;background:#faf8f3;
+  border-bottom:1px solid #f0ece4;flex-shrink:0;}
+.bar-bg{height:6px;background:#e8e0d0;border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;transition:width .45s ease;}
+.bar-txt{font-size:.69rem;color:#888;margin-top:.3rem;text-align:right;}
+.pbody{overflow-y:auto;padding:.5rem .9rem 1.1rem;flex:1;}
+.pbody::-webkit-scrollbar{width:4px;}
+.pbody::-webkit-scrollbar-thumb{background:#d1c9ba;border-radius:99px;}
+.osec{font-size:.64rem;font-weight:700;letter-spacing:.07em;color:#aaa;
+  text-transform:uppercase;padding:.6rem .4rem .2rem;
+  border-top:1px solid #f0ece4;margin-top:.2rem;}
+.osec:first-child{border-top:none;padding-top:.2rem;}
+.oitem{display:flex;align-items:flex-start;gap:.55rem;
+  padding:.48rem .45rem;border-radius:8px;
+  border:1.5px solid transparent;transition:background .13s,border-color .13s;}
+.oitem:hover{background:#faf8f3;}
+.oitem.ck{background:#f0fdf5;border-color:#86efac;}
+.oitem input[type=checkbox]{width:.95rem;height:.95rem;accent-color:#16a34a;
+  cursor:pointer;flex-shrink:0;margin-top:.13rem;}
+.oitem .it{font-size:.83rem;color:#1c1c1c;line-height:1.5;flex:1;}
+.oitem .nt{display:block;font-size:.69rem;color:#aaa;margin-top:.1rem;}
+.oitem.ck .it{text-decoration:line-through;color:#166534;opacity:.68;}
+.all-done-msg{margin:.85rem .4rem 0;padding:.65rem;border-radius:10px;
+  background:#f0fdf5;border:1px solid #86efac;
+  text-align:center;font-size:.78rem;font-weight:700;color:#166534;display:none;}
+
+/* 요약 패널 */
+.sm .panel{max-width:640px;max-height:90vh;}
+.sm-hd{display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 1.4rem .9rem;
+  background:linear-gradient(135deg,#0d1b2a,#1a3a5c);flex-shrink:0;}
+.sm-hd h3{font-size:.96rem;font-weight:800;color:#fff;}
+.sm-hd p{font-size:.7rem;color:rgba(255,255,255,.5);margin-top:.1rem;}
+.sm-hd-r{display:flex;align-items:center;gap:.5rem;}
+.send-btn{
+  background:linear-gradient(135deg,#c9a84c,#f0c84a);
+  border:2px solid rgba(255,255,255,.5);
+  color:#1a1000;padding:.45rem 1.1rem;border-radius:8px;
+  font-size:.82rem;font-weight:900;letter-spacing:.02em;
+  box-shadow:0 3px 14px rgba(201,168,76,.55);
+  transition:filter .18s,transform .18s,box-shadow .18s;
+}
+.send-btn:hover{filter:brightness(1.08);transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(201,168,76,.7);}
+.sm-body{overflow-y:auto;flex:1;}
+.sm-body::-webkit-scrollbar{width:4px;}
+.sm-body::-webkit-scrollbar-thumb{background:#d1c9ba;border-radius:99px;}
+
+/* 표 */
+.stbl{width:100%;border-collapse:collapse;font-size:.81rem;}
+.stbl thead th{background:#1a2e42;color:#fff;font-size:.7rem;font-weight:700;
+  padding:.5rem .75rem;text-align:left;letter-spacing:.03em;
+  position:sticky;top:0;z-index:2;}
+.stbl thead th:last-child{text-align:center;width:52px;}
+.stbl .tr-cat td{padding:.55rem .75rem;font-weight:800;font-size:.79rem;color:#fff;}
+.stbl .tr-sec td{padding:.26rem .75rem .26rem 1.4rem;
+  font-size:.68rem;font-weight:700;color:#999;letter-spacing:.06em;
+  text-transform:uppercase;background:#f8f6f1;border-bottom:1px solid #ede9df;}
+.stbl .tr-item td{padding:.5rem .75rem .5rem 1.3rem;
+  border-bottom:1px solid #f0ece4;vertical-align:top;background:#fff;}
+.stbl .tr-item:hover td{background:#faf8f3;}
+.stbl .tr-item.ck td{background:#f0fdf5;}
+.stbl .tr-item.ck .itxt{color:#166534;text-decoration:line-through;opacity:.7;}
+.itxt{line-height:1.5;color:#1c1c1c;}
+.inote{display:block;font-size:.67rem;color:#aaa;margin-top:.08rem;}
+.chk{text-align:center;font-size:1rem;vertical-align:middle;}
+
+/* 전송 패널 */
+.snd .panel{max-width:420px;}
+.snd-hd{display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 1.4rem 1rem;background:linear-gradient(135deg,#0d1b2a,#1a3a5c);flex-shrink:0;}
+.snd-hd h3{font-size:1rem;font-weight:800;color:#fff;}
+.snd-body{padding:1.5rem 1.4rem;}
+.snd-body p{font-size:.8rem;color:#555;margin-bottom:1.25rem;line-height:1.6;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem;}
+.fg label{display:block;font-size:.72rem;font-weight:700;color:#555;
+  letter-spacing:.04em;margin-bottom:.3rem;}
+.fg input{width:100%;padding:.68rem .9rem;background:#f8f5f0;
+  border:1.5px solid #e2d9c8;border-radius:8px;
+  color:#1c1c1c;font-size:.88rem;font-family:inherit;
+  outline:none;transition:border-color .2s,background .2s;}
+.fg input:focus{border-color:#c9a84c;background:#fff;}
+.fmsg{display:none;padding:.65rem .9rem;border-radius:8px;
+  font-size:.79rem;font-weight:600;margin-bottom:.8rem;}
+.ebtn{width:100%;padding:.95rem;
+  background:linear-gradient(135deg,#9a7d35,#c9a84c);
+  color:#1a1000;font-size:.95rem;font-weight:800;
+  border:none;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;gap:.45rem;
+  transition:filter .2s,transform .2s;}
+.ebtn:hover{filter:brightness(1.07);transform:translateY(-2px);}
+.ehint{font-size:.7rem;color:#aaa;text-align:center;margin-top:.65rem;line-height:1.6;}
+
+@media(max-width:540px){.frow{grid-template-columns:1fr;}.ttab .ts{display:none;}}
+
+/* 플로팅 홈으로 버튼 */
+.fab-home{
+  position:fixed;bottom:2rem;right:2rem;z-index:999;
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.75rem 1.1rem;
+  background:#0d1b2a;color:#fff;
+  font-size:.8rem;font-weight:800;
+  border-radius:12px;border:2px solid #c9a84c;
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  text-decoration:none;
+  transition:background .18s,transform .18s;
+}
+.fab-home:hover{background:#c9a84c;color:#1a1000;transform:translateY(-2px);}
+@media print{
+  .topbar,.hero,.tax-tabs,.phone-cta,footer{display:none!important;}
+  .pane{display:block!important;}.ov,.sm,.snd{display:none!important;}
+}
+
+</style>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a href="/" class="tlogo">
+    <div><div class="nm">세무회계본</div><div class="sb">TAXBON TAX &amp; ACCOUNTING</div></div>
+  </a>
+  <a href="/" class="thome">홈으로</a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="htag">📋 상담 준비 가이드</div>
+  <h1>상담 전 <span>준비서류</span> 체크리스트</h1>
+  <p>세금 유형 선택 → 카테고리 버튼 클릭 → 서류 체크 → 확인 및 전송</p>
+</div>
+
+<!-- TABS -->
+<div class="tax-tabs">
+  <button class="ttab inh on" onclick="switchTab('inh')">
+    <span class="ti">🏛️</span><span class="tl">상속세</span><span class="ts">사망 후 재산 이전</span>
+  </button>
+  <button class="ttab gif" onclick="switchTab('gif')">
+    <span class="ti">🎁</span><span class="tl">증여세</span><span class="ts">생전 재산 이전</span>
+  </button>
+  <button class="ttab cap" onclick="switchTab('cap')">
+    <span class="ti">🏠</span><span class="tl">양도세</span><span class="ts">부동산·주식 매도</span>
+  </button>
+</div>
+
+<main class="main">
+  <!-- 상속세 -->
+  <div class="pane on" id="pane-inh">
+    <div class="ansim">
+      <h4>🔍 안심상속 원스톱서비스 활용 권장</h4>
+      <ul>
+        <li>정부24(gov.kr) 온라인 신청 또는 가까운 주민센터 방문</li>
+        <li>금융·토지·건축물·자동차·국세·지방세·연금 등 한 번에 조회</li>
+        <li>신청자격: 사망일 속한 달의 말일부터 6개월 이내 / 제1·2순위 상속인</li>
+        <li>문의: 금융감독원 ☎1332 / 국세청 ☎126 / 국민연금 ☎1355</li>
+      </ul>
+    </div>
+    <div class="deadline dl-a"><strong>⚠️ 신고 기한 —</strong> 상속개시일(사망일)이 속하는 달의 말일부터 <strong>6개월 이내</strong> 신고·납부 (해외 거주자 9개월)</div>
+    <div class="wheel-area"><div class="wheel-wrap" id="wheel-inh"></div>
+      <p class="wheel-hint">카테고리 버튼을 눌러 서류를 체크하세요</p></div>
+  </div>
+
+  <!-- 증여세 -->
+  <div class="pane" id="pane-gif">
+    <div class="deadline dl-g" style="margin-top:1.25rem"><strong>⚠️ 신고 기한 —</strong> 증여받은 날이 속하는 달의 말일부터 <strong>3개월 이내</strong> 신고·납부</div>
+    <div class="wheel-area"><div class="wheel-wrap" id="wheel-gif"></div>
+      <p class="wheel-hint">카테고리 버튼을 눌러 서류를 체크하세요</p></div>
+  </div>
+
+  <!-- 양도세 -->
+  <div class="pane" id="pane-cap">
+    <div class="deadline dl-b" style="margin-top:1.25rem"><strong>⚠️ 신고 기한 —</strong> 양도일이 속하는 달의 말일부터 <strong>2개월 이내</strong> 예정신고·납부</div>
+    <div class="wheel-area"><div class="wheel-wrap" id="wheel-cap"></div>
+      <p class="wheel-hint">카테고리 버튼을 눌러 서류를 체크하세요</p></div>
+  </div>
+
+  <div class="phone-cta">
+    <div class="ph-l">전화 문의</div>
+    <a href="tel:02-597-5830">02-597-5830</a>
+    <div class="ph-s">평일 09:00 ~ 18:00 | 수서역 3번 출구 직결</div>
+  </div>
+</main>
+
+<footer>
+  세무회계본 · 대표세무사: 천아름 · 서울시 강남구 수서동 713 수서현대벤처빌 403호<br>
+  Tel: 02-597-5830 · <span id="femail"></span> · <a href="https://www.taxbon.com">taxbon.com</a><br>
+  <span style="font-size:.66rem;opacity:.45;">© 2026 Taxbon Tax &amp; Accounting.</span>
+</footer>
+
+<!-- 카테고리 오버레이 -->
+<div class="ov" id="ov">
+  <div class="bd" onclick="closeOv()"></div>
+  <div class="panel">
+    <div class="ph">
+      <div class="ph-l">
+        <span id="ov-ico" style="font-size:1.45rem"></span>
+        <div><h3 id="ov-ttl"></h3><p id="ov-sub"></p></div>
+      </div>
+      <button class="xbtn" onclick="closeOv()">✕</button>
+    </div>
+    <div class="prog">
+      <div class="bar-bg"><div class="bar-fill" id="ov-bar"></div></div>
+      <div class="bar-txt" id="ov-btxt"></div>
+    </div>
+    <div class="pbody" id="ov-body">
+      <div class="all-done-msg" id="ov-done">✅ 이 카테고리의 서류를 모두 준비하셨습니다!</div>
+    </div>
+  </div>
+</div>
+
+<!-- 요약 모달 -->
+<div class="sm" id="sm">
+  <div class="bd" onclick="closeSm()"></div>
+  <div class="panel">
+    <div class="sm-hd">
+      <div><h3 id="sm-ttl">📋 준비서류 전체보기</h3><p id="sm-sub"></p></div>
+      <div class="sm-hd-r">
+        <button class="send-btn" onclick="closeSm();openSnd()">✉️ 전송하기</button>
+        <button class="xbtn" style="background:rgba(255,255,255,.14);color:#fff;margin-left:.5rem" onclick="closeSm()">✕</button>
+      </div>
+    </div>
+    <div class="prog" style="background:#f8f5f0;">
+      <div class="bar-bg"><div class="bar-fill" id="sm-bar"></div></div>
+      <div class="bar-txt" id="sm-btxt" style="text-align:left"></div>
+    </div>
+    <div class="sm-body" id="sm-body"></div>
+  </div>
+</div>
+
+<!-- 전송 모달 -->
+<div class="snd" id="snd">
+  <div class="bd" onclick="closeSnd()"></div>
+  <div class="panel">
+    <div class="snd-hd">
+      <h3>✉️ 문의 전송</h3>
+      <button class="xbtn" style="background:rgba(255,255,255,.14);color:#fff" onclick="closeSnd()">✕</button>
+    </div>
+    <div class="snd-body">
+      <p>이름과 연락처를 입력하시면 체크하신 서류 현황과 함께 세무회계본으로 전달됩니다.</p>
+      <div class="frow">
+        <div class="fg"><label>성함 *</label><input type="text" id="fn" placeholder="홍길동"></div>
+        <div class="fg"><label>연락처 *</label><input type="tel" id="fp" placeholder="010-0000-0000"></div>
+      </div>
+      <div id="fmsg" class="fmsg"></div>
+      <button class="ebtn" id="ebtn" onclick="sendEmail()">✉️ 이메일 보내기</button>
+      <p class="ehint">전송 완료 시 세무회계본에 바로 접수됩니다<br>
+        또는 <strong style="color:#888">02-597-5830</strong> 직접 문의</p>
+    </div>
+  </div>
+</div>
+
+
+<a href="/" class="fab-home">← 홈으로</a>
+
+</BaseLayout>
+
+<script>
+
+/* ═══════════════════════════════════
+   DATA — 카테고리별 서류 목록
+   형식: '서류명||비고(옵션)'
+═══════════════════════════════════ */
+const CATS = {
+  inh:[
+    {icon:'📄',label:'기본\n서류',  color:'#1e3a5f',title:'기본 서류',      sub:'피상속인·상속인 신원 확인',
+     secs:[{items:['피상속인 제적등본||주민센터 또는 정부24','피상속인 주민등록 말소자등본','피상속인 가족관계증명서','상속인 주민등록등본','사망진단서 또는 시체검안서','유언장||있는 경우만','상속재산 분할협의서||분할협의 시']}]},
+    {icon:'🏘️',label:'부동산',     color:'#7c2d12',title:'부동산 (토지·건물)',sub:'토지·건물·분양권',
+     secs:[
+       {label:'토지',items:['등기부등본 (토지)||대법원 인터넷등기소','토지대장||정부24','매매계약서||피상속인 과거 매매내역']},
+       {label:'건물',items:['등기부등본 (건물)','건축물대장','임대차계약서||임대 중인 경우','주택공급계약서 / 분양권·입주권']}
+     ]},
+    {icon:'💰',label:'금융\n재산',  color:'#14532d',title:'금융재산',        sub:'예금·주식·채권·회원권',
+     secs:[{items:['예금·펀드 잔액증명서||상속개시일 현재','상속개시일 전 2년 이내 통장 입출금 전 거래내역||은행 서면본+엑셀 각각 (추정상속재산)','상속개시일 전 10년 이내 통장 입출금 전 거래내역||은행 서면본+엑셀 각각 (사전증여자산)','국·공채 잔액증명서||상속개시일 현재','상장주식 유가증권 잔고증명서||상속개시일 현재','골프·콘도 회원권 회원증 및 확인증']}]},
+    {icon:'📑',label:'보험\n·차량', color:'#4c1d95',title:'보험·차량·기타',  sub:'보험금·자동차·신탁·퇴직',
+     secs:[{items:['보험금 납입증명서||해약환급금 계산서·보험금지급내역서 포함','자동차등록증 및 등록 원부','신탁잔액증명서||신탁재산 있는 경우','퇴직소득 원천징수영수증']}]},
+    {icon:'📊',label:'비상장\n주식',color:'#1e3a5f',title:'비상장주식 (해당 시)',sub:'법인 관련 서류',
+     secs:[{items:['상속개시일 전 3년간 세무조정계산서·결산보고서·감사보고서','상속개시일 현재 재무제표 및 주식변동상황명세서','법인 자산·부채 관련 서류||부동산·예금·유가증권·퇴직급여추계액명세서 등']}]},
+    {icon:'📉',label:'채무\n·공과금',color:'#065f46',title:'채무·공과금·사전증여',sub:'공과금·장례비·대출·증여',
+     secs:[
+       {label:'공과금',  items:['소득세·부가세·재산세·종부세 등 제세공과금 영수증·납부서']},
+       {label:'장례비용',items:['장례비 영수증·카드매출전표·납골당계약서']},
+       {label:'채무',    items:['부채잔액증명서 (금융회사 대출)','대출거래내역서','임대차계약서·부가세신고서||임대 건물의 경우','신용카드 월별 이용대금명세서||상속개시일 이후 결제분','병원비 미지급액 (일자별 진료비 납입확인서)','차용증서||사채의 경우 이자 자금내역 필요']},
+       {label:'사전증여',items:['증여세 신고서 사본||상속인: 10년 이내 / 상속인 외: 5년 이내']}
+     ]}
+  ],
+  gif:[
+    {icon:'📄',label:'기본\n서류',  color:'#14532d',title:'기본 서류',       sub:'신원 확인',
+     secs:[{items:['증여자·수증자 가족관계증명서','수증자 주민등록등본','증여자 주민등록등본','과거 10년 이내 증여 내역||있는 경우']}]},
+    {icon:'🏠',label:'부동산\n증여',color:'#7c2d12',title:'부동산 증여',     sub:'토지·건물·분양권',
+     secs:[{items:['등기부등본 (증여 물건)||대법원 인터넷등기소','토지대장 또는 건축물대장','증여자 취득 당시 매매계약서||취득가액 확인','임대차계약서||임대 중인 경우','담보대출 잔액증명서||부담부증여 시']}]},
+    {icon:'💵',label:'현금\n·금융', color:'#1e3a5f',title:'현금·금융자산 증여',sub:'이체·통장·계약서',
+     secs:[{items:['이체 확인서 또는 통장 입금 내역','증여자 통장 출금 내역||자금출처 확인','수증자 통장 잔액 및 입금 내역','증여계약서||작성한 경우']}]},
+    {icon:'📊',label:'비상장\n주식',color:'#4c1d95',title:'비상장주식·기타', sub:'법인·회원권',
+     secs:[{items:['법인 최근 3개년 세무조정계산서·재무제표','주주명부 및 주식이동 관련 서류','골프·콘도 회원권 확인증||해당 시']}]},
+    {icon:'🔍',label:'자금\n출처',  color:'#065f46',title:'자금출처 (세무조사 대비)',sub:'소득·잔고·증여내역',
+     secs:[{items:['수증자 소득 관련 서류||근로·사업소득 원천징수영수증','수증자 금융자산 잔고증명서','기존 대출 잔액증명서','이전 증여세 신고서 사본||10년 이내']}]}
+  ],
+  cap:[
+    {icon:'📄',label:'기본\n서류',  color:'#1e3a5f',title:'기본 서류',       sub:'신원 확인',
+     secs:[{items:['양도자 주민등록등본','가족관계증명서||1세대 1주택 판단용','신분증 사본']}]},
+    {icon:'📝',label:'양도\n서류',  color:'#1e3a5f',title:'양도 관련 서류',  sub:'매매계약·등기·잔금',
+     secs:[{items:['양도(매매)계약서||양도 당시 실거래가 확인','등기부등본 (양도 물건)','잔금 수령 확인 서류||통장 입금 내역 등','실거래가 신고 확인서||있는 경우']}]},
+    {icon:'🏡',label:'취득\n서류',  color:'#14532d',title:'취득 관련 서류',  sub:'취득가액·분양·등기',
+     secs:[{items:['취득(매매)계약서||취득 당시 실거래가 — 매우 중요','분양계약서||분양 취득 시','취득세 영수증','법무사 비용 영수증 (등기비용)','중개수수료 영수증']}]},
+    {icon:'🧾',label:'필요\n경비',  color:'#7c2d12',title:'필요경비 증빙 (절세 핵심)',sub:'인테리어·교체·수수료',
+     secs:[{items:['인테리어·리모델링 공사 계약서 및 영수증||자본적지출 — 절세 효과 큼','발코니 확장·샷시 교체 영수증','보일러 교체 영수증','이사비용 영수증','양도 시 중개수수료 영수증','명도비용 지급 관련 서류||있는 경우']}]},
+    {icon:'🏘️',label:'주택\n현황',  color:'#065f46',title:'주택 현황 확인',  sub:'보유수·거주기간·임대',
+     secs:[{items:['보유 주택 수 확인 (전국 등기부등본)||다주택 여부에 따라 세율 차이 큼','실거주 기간 확인 (주민등록 이력)','임대사업자 등록 여부 확인','재건축·재개발 조합원 해당 여부']}]}
+  ]
+};
+
+/* ═══ 상태 ═══ */
+const S = {}; // S[key] = true/false
+const key = (k,ci,si,ii) => `${k}:${ci}:${si}:${ii}`;
+
+const totalAll = k => CATS[k].reduce((n,c)=>n+c.secs.reduce((m,s)=>m+s.items.length,0),0);
+const doneAll  = k => CATS[k].reduce((n,c,ci)=>n+c.secs.reduce((m,s,si)=>m+s.items.filter((_,ii)=>S[key(k,ci,si,ii)]).length,0),0);
+const totalCat = (k,ci) => CATS[k][ci].secs.reduce((n,s)=>n+s.items.length,0);
+const doneCat  = (k,ci) => CATS[k][ci].secs.reduce((n,s,si)=>n+s.items.filter((_,ii)=>S[key(k,ci,si,ii)]).length,0);
+
+/* ═══ 이메일 주소 ═══ */
+const _e = ['taxbon','taxbon.com'].join('@');
+(()=>{ const el=document.getElementById('femail'); if(!el) return;
+  const a=document.createElement('a'); a.href='mailto:'+_e; a.textContent=_e; a.style.color='inherit'; el.appendChild(a); })();
+
+/* ═══ Formspree ═══ */
+const FID = 'mjgpoedb';
+
+/* ═══ 탭 전환 ═══ */
+function switchTab(k){
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.querySelector('.ttab.'+k).classList.add('on');
+  document.getElementById('pane-'+k).classList.add('on');
+  buildWheel(k);
+  window.scrollTo({top:90,behavior:'smooth'});
+}
+
+/* ═══ 휠 구성 ═══ */
+function buildWheel(k){
+  const wrap = document.getElementById('wheel-'+k);
+  if(!wrap) return;
+  const SIZE = Math.min(window.innerWidth-40, 560);
+  const BTN  = Math.round(SIZE*.24);
+  const R    = SIZE*.37;
+  const CB   = Math.round(SIZE*.26);
+  wrap.style.cssText = `width:${SIZE}px;height:${SIZE}px;position:relative;`;
+  wrap.querySelectorAll('.orb-btn,.center-btn').forEach(b=>b.remove());
+
+  CATS[k].forEach((cat,i)=>{
+    const a = (2*Math.PI/CATS[k].length)*i - Math.PI/2;
+    const btn = document.createElement('button');
+    btn.className = 'orb-btn';
+    btn.style.cssText = `left:${SIZE/2+R*Math.cos(a)}px;top:${SIZE/2+R*Math.sin(a)}px;`
+      +`width:${BTN}px;height:${BTN}px;background:${cat.color};`;
+    btn.innerHTML =
+      `<span class="ob-icon" style="font-size:${Math.round(BTN*.33)}px">${cat.icon}</span>`
+      +`<span class="ob-lbl" style="font-size:${Math.round(BTN*.135)}px">${cat.label.replace('\n','<br>')}</span>`
+      +`<span class="orb-check">✓</span>`;
+    btn.addEventListener('click',()=>openOv(k,i));
+    refreshOrb(btn,k,i);
+    wrap.appendChild(btn);
+  });
+
+  // 중앙 버튼
+  const cb = document.createElement('button');
+  cb.className = 'center-btn';
+  cb.style.cssText = `width:${CB}px;height:${CB}px;`;
+  cb.onclick = ()=>openSm(k);
+  cb.innerHTML =
+    `<span class="cb-icon" style="font-size:${Math.round(CB*.3)}px">📋</span>`
+    +`<span class="cb-lbl" style="font-size:${Math.round(CB*.115)}px">확인 및 전송</span>`
+    +`<span class="cb-cnt" style="font-size:${Math.round(CB*.09)}px" id="cnt-${k}">전체 목록 보기</span>`;
+  wrap.appendChild(cb);
+  updateCnt(k);
+}
+
+function refreshOrb(btn,k,ci){
+  btn.classList.toggle('has-check', doneCat(k,ci)>0);
+}
+function refreshAllOrbs(k){
+  const wrap=document.getElementById('wheel-'+k); if(!wrap) return;
+  wrap.querySelectorAll('.orb-btn').forEach((btn,ci)=>refreshOrb(btn,k,ci));
+}
+function updateCnt(k){
+  const el=document.getElementById('cnt-'+k); if(!el) return;
+  const d=doneAll(k),t=totalAll(k);
+  el.textContent = d>0 ? `${d}/${t} 체크됨` : '전체 목록 보기';
+}
+
+/* ═══ 카테고리 오버레이 ═══ */
+let ovK='',ovCi=0;
+
+function openOv(k,ci){
+  ovK=k; ovCi=ci;
+  const cat=CATS[k][ci];
+  document.getElementById('ov-ico').textContent = cat.icon;
+  document.getElementById('ov-ttl').textContent = cat.title;
+  document.getElementById('ov-sub').textContent = cat.sub;
+
+  const body=document.getElementById('ov-body');
+  [...body.children].forEach(c=>{ if(c.id!=='ov-done') c.remove(); });
+
+  cat.secs.forEach((sec,si)=>{
+    if(sec.label){ const d=document.createElement('div'); d.className='osec'; d.textContent=sec.label; body.insertBefore(d,document.getElementById('ov-done')); }
+    sec.items.forEach((raw,ii)=>{
+      const k2=key(k,ci,si,ii), [txt,note='']= raw.split('||');
+      const lbl=document.createElement('label'); lbl.className='oitem'+(S[k2]?' ck':'');
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!S[k2];
+      cb.addEventListener('change',function(){
+        S[k2]=this.checked; lbl.classList.toggle('ck',this.checked);
+        refreshOvBar(k,ci); refreshAllOrbs(k); updateCnt(k);
+      });
+      const sp=document.createElement('span'); sp.className='it'; sp.textContent=txt.trim();
+      if(note){ const n=document.createElement('span'); n.className='nt'; n.textContent=note.trim(); sp.appendChild(n); }
+      lbl.appendChild(cb); lbl.appendChild(sp);
+      body.insertBefore(lbl,document.getElementById('ov-done'));
+    });
+  });
+
+  refreshOvBar(k,ci);
+  document.getElementById('ov').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function refreshOvBar(k,ci){
+  const tot=totalCat(k,ci),done=doneCat(k,ci),pct=tot?Math.round(done/tot*100):0;
+  const col={inh:'#c9a84c',gif:'#22c55e',cap:'#3b82f6'}[k];
+  document.getElementById('ov-bar').style.cssText=`width:${pct}%;background:${col}`;
+  document.getElementById('ov-btxt').textContent=`${done} / ${tot}종 완료 (${pct}%)`;
+  document.getElementById('ov-done').style.display=(done===tot&&tot>0)?'block':'none';
+}
+function closeOv(){ document.getElementById('ov').classList.remove('on'); document.body.style.overflow=''; }
+
+/* ═══ 요약 모달 ═══ */
+function openSm(k){
+  _smKey=k;
+  const names={inh:'상속세',gif:'증여세',cap:'양도소득세'};
+  document.getElementById('sm-ttl').textContent='📋 '+names[k]+' 준비서류 전체보기';
+  renderSm(k);
+  document.getElementById('sm').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeSm(){ document.getElementById('sm').classList.remove('on'); document.body.style.overflow=''; }
+
+function renderSm(k){
+  const col={inh:'#c9a84c',gif:'#22c55e',cap:'#3b82f6'}[k];
+  const tot=totalAll(k),done=doneAll(k),pct=tot?Math.round(done/tot*100):0;
+  document.getElementById('sm-bar').style.cssText=`width:${pct}%;background:${col}`;
+  document.getElementById('sm-btxt').textContent=`✅ 체크 ${done}종  ·  ⬜ 미체크 ${tot-done}종  ·  전체 ${tot}종`;
+  document.getElementById('sm-sub').textContent=`${done} / ${tot}종 체크 완료 (${pct}%)`;
+
+  const body=document.getElementById('sm-body'); body.innerHTML='';
+  const tbl=document.createElement('table'); tbl.className='stbl';
+  tbl.innerHTML='<thead><tr><th>구분</th><th>필요서류</th><th>체크</th></tr></thead>';
+  const tb=document.createElement('tbody');
+
+  CATS[k].forEach((cat,ci)=>{
+    const tr=document.createElement('tr'); tr.className='tr-cat';
+    tr.innerHTML=`<td colspan="3" style="background:${cat.color}">${cat.icon} ${cat.title}<span style="float:right;font-size:.7rem;opacity:.85">${doneCat(k,ci)}/${totalCat(k,ci)}</span></td>`;
+    tb.appendChild(tr);
+    cat.secs.forEach((sec,si)=>{
+      if(sec.label){ const sr=document.createElement('tr'); sr.className='tr-sec'; sr.innerHTML=`<td colspan="3">${sec.label}</td>`; tb.appendChild(sr); }
+      sec.items.forEach((raw,ii)=>{
+        const isDone=!!S[key(k,ci,si,ii)]; const [txt,note='']= raw.split('||');
+        const ir=document.createElement('tr'); ir.className='tr-item'+(isDone?' ck':'');
+        ir.innerHTML=`<td></td><td><span class="itxt">${txt.trim()}${note?`<span class="inote">${note.trim()}</span>`:''}</span></td><td class="chk">${isDone?'✅':'⬜'}</td>`;
+        tb.appendChild(ir);
+      });
+    });
+  });
+  tbl.appendChild(tb); body.appendChild(tbl);
+}
+
+/* ═══ 전송 모달 ═══ */
+let _smKey='inh';
+
+function openSnd(){ document.getElementById('snd').classList.add('on'); document.body.style.overflow='hidden'; }
+function closeSnd(){ document.getElementById('snd').classList.remove('on'); document.body.style.overflow=''; }
+
+/* ═══ 이메일 전송 (Formspree) ═══ */
+async function sendEmail(){
+  const name=document.getElementById('fn').value.trim();
+  const phone=document.getElementById('fp').value.trim();
+  if(!name){ showMsg('성함을 입력해 주세요.','err'); return; }
+  if(!phone){ showMsg('연락처를 입력해 주세요.','err'); return; }
+
+  const k=_smKey;
+  const names={inh:'상속세',gif:'증여세',cap:'양도소득세'};
+  const taxNm=names[k];
+  const NL='\n', SEP='─'.repeat(40);
+
+  /* 카테고리별 서류 현황 구성 */
+  const catLines=[];
+  CATS[k].forEach((cat,ci)=>{
+    const tot=totalCat(k,ci), done=doneCat(k,ci);
+    catLines.push('');
+    catLines.push(`【${cat.title}】 ${done}/${tot}종 체크`);
+    catLines.push(SEP);
+    cat.secs.forEach((sec,si)=>{
+      if(sec.label) catLines.push(`  ▸ ${sec.label}`);
+      sec.items.forEach((raw,ii)=>{
+        const isDone=!!S[key(k,ci,si,ii)];
+        const txt=raw.split('||')[0].trim();
+        catLines.push(`  ${isDone?'[✓]':'[  ]'} ${txt}`);
+      });
+    });
+  });
+
+  /* 체크 완료 요약 */
+  let tot=0,done=0; const checked=[];
+  CATS[k].forEach((cat,ci)=>cat.secs.forEach((sec,si)=>sec.items.forEach((raw,ii)=>{
+    tot++;
+    if(S[key(k,ci,si,ii)]){ done++; checked.push(`  ✓ ${raw.split('||')[0].trim()}`); }
+  })));
+
+  const bodyArr=[
+    '═'.repeat(40),'  세무회계본 상담 신청서','═'.repeat(40),
+    `성함    : ${name}`,`연락처  : ${phone}`,
+    `상담유형: ${taxNm}`,`준비현황: ${done}/${tot}종 체크 완료`,
+    '','═'.repeat(40),`  ○ ${taxNm} 준비서류 카테고리별 체크 현황`,'═'.repeat(40),
+    ...catLines,
+    '','═'.repeat(40),`  ▶ 체크 완료 서류 요약 (${done}종)`,'═'.repeat(40),
+    ...(checked.length?checked:['  (체크된 서류 없음)']),
+    '','※ 세무회계본 홈페이지 준비서류 페이지에서 발송'
+  ];
+
+  const btn=document.getElementById('ebtn');
+  btn.disabled=true; btn.textContent='전송 중...';
+
+  try{
+    const res=await fetch(`https://formspree.io/f/${FID}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        name, phone,
+        _subject:`[세무회계본 상담문의] ${taxNm} - ${name} 고객님`,
+        taxType:taxNm, checkStatus:`${done}/${tot}종`,
+        message:bodyArr.join(NL)
+      })
+    });
+    if(res.ok){
+      showMsg('✅ 문의가 접수되었습니다! 빠른 시일 내 연락드리겠습니다.','ok');
+      btn.textContent='✅ 전송 완료';
+      setTimeout(()=>{ closeSnd(); btn.textContent='✉️ 이메일 보내기'; btn.disabled=false; },3000);
+    } else throw new Error();
+  }catch{
+    showMsg('전송 실패. 02-597-5830으로 직접 문의해 주세요.','err');
+    btn.textContent='✉️ 이메일 보내기'; btn.disabled=false;
+  }
+}
+
+function showMsg(txt,type){
+  const el=document.getElementById('fmsg'); if(!el) return;
+  el.style.display='block';
+  el.style.cssText=type==='err'
+    ?'display:block;background:#fef2f2;border:1.5px solid #fca5a5;color:#b91c1c;padding:.65rem .9rem;border-radius:8px;font-size:.79rem;font-weight:600;margin-bottom:.8rem;'
+    :'display:block;background:#f0fdf4;border:1.5px solid #86efac;color:#166534;padding:.65rem .9rem;border-radius:8px;font-size:.79rem;font-weight:600;margin-bottom:.8rem;';
+  el.textContent=txt;
+  if(type==='ok') setTimeout(()=>{ el.style.display='none'; },6000);
+}
+
+/* ═══ ESC ═══ */
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeOv();closeSm();closeSnd(); } });
+
+/* ═══ 초기화 ═══ */
+window.addEventListener('load',()=>{ ['inh','gif','cap'].forEach(buildWheel); });
+let _rt;
+window.addEventListener('resize',()=>{ clearTimeout(_rt); _rt=setTimeout(()=>['inh','gif','cap'].forEach(buildWheel),150); });
+
+/* ═══ 복사 방지 ═══ */
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey&&['c','u','s','a'].includes(e.key.toLowerCase()))||e.key==='F12') e.preventDefault();
+},{capture:true});
+
+</script>

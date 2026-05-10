@@ -1,0 +1,2053 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="상속세 계산기 | 세무회계본"
+  description="상속세 예상 세액 간편 계산기. 강남 수서역 세무회계본 천아름 세무사."
+  canonical="https://taxbon.com/calculator"
+  currentPage="calculator"
+>
+
+  <!-- React 18 CDN (계산기 전용) -->
+  <script slot="head" crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+  <script slot="head" crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<style>
+
+</style>
+
+<!-- 히어로 -->
+<div class="w-full pt-20" style="background:linear-gradient(135deg,#0d1b2a 0%,#1b3d60 100%);">
+    <div style="background:radial-gradient(ellipse at 60% 40%,rgba(212,175,55,.1) 0%,transparent 65%);">
+        <div class="max-w-4xl mx-auto px-4 pt-10 pb-24 text-center">
+            <div class="inline-block border px-4 py-1.5 rounded-full text-xs font-bold mb-4 tracking-widest uppercase"
+                 style="border-color:rgba(212,175,55,.4);color:#d4af37;background:rgba(212,175,55,.1);">
+                재산세제 간편 계산기
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">
+                상속·증여·양도 <span style="color:#d4af37;">세액 계산</span>
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base">세금 유형 선택 ➔ 정보 입력 ➔ 예상 결과 확인</p>
+        </div>
+    </div>
+</div>
+
+<!-- React 마운트 -->
+<div id="calc-root"></div>
+
+<!-- 전화 문의 -->
+<div class="max-w-5xl mx-auto px-4 py-8 mb-8">
+    <div class="bg-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between shadow-sm border border-slate-200 gap-4">
+        <span class="text-slate-500 font-bold text-sm">전화 문의</span>
+        <div class="text-center">
+            <a href="tel:02-597-5830" class="block text-3xl md:text-4xl font-extrabold text-gray-900 mb-1 hover:text-blue-700 transition">02-597-5830</a>
+            <p class="text-slate-500 text-sm">평일 09:00 ~ 18:00 &nbsp;|&nbsp; 수서역 3번 출구 직결</p>
+        </div>
+        <a href="https://booking.naver.com/booking/6/bizes/1181095" target="_blank"
+           class="px-6 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition shadow text-sm whitespace-nowrap">
+            네이버 예약 →
+        </a>
+    </div>
+</div>
+
+<!-- 푸터 -->
+
+</BaseLayout>
+
+<!-- 기본 계산기 (index에서 이식) -->
+    <!-- 계산기 팝업 -->
+    <div id="calc-popup" onclick="event.stopPropagation()" style="
+        display:none;position:fixed;bottom:6.5rem;left:2rem;z-index:9999;
+        width:260px;max-width:calc(100vw - 4rem);
+        background:linear-gradient(160deg,#d6d3ce 0%,#bfbcb7 100%);
+        border-radius:14px;border:2px solid #888;
+        box-shadow:0 16px 48px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.5);
+        padding:10px;font-family:Arial,sans-serif;user-select:none;
+    ">
+        <!-- 디스플레이 -->
+        <div style="
+            background:#c8c8a8;border:3px solid #7a7a6a;border-radius:6px;
+            box-shadow:inset 0 4px 10px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.5);
+            padding:4px 8px 6px;margin-bottom:8px;position:relative;overflow:hidden;
+        ">
+            <div id="c-sub" style="font-size:10px;color:#5a5a3a;text-align:right;min-height:14px;font-family:'Courier New',monospace;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600;"></div>
+            <div id="c-main" style="
+                font-family:'Courier New',monospace;font-size:2rem;font-weight:900;
+                color:#0a0a00;text-align:right;letter-spacing:1px;line-height:1.15;
+                text-shadow:1px 1px 0 rgba(0,0,0,.2);
+                overflow:hidden;white-space:nowrap;width:100%;display:block;
+            ">0.</div>
+            <div id="c-mem" style="position:absolute;left:6px;bottom:5px;font-size:10px;font-weight:900;color:#333;"></div>
+        </div>
+        <!-- 버튼 그리드 -->
+        <div id="c-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px;"></div>
+    </div>
+
+    <!-- 계산기 플로팅 토글 버튼 -->
+    <button id="calc-fab" onclick="toggleCalc();event.stopPropagation()" style="
+        position:fixed;bottom:2rem;left:2rem;z-index:9999;
+        width:68px;height:68px;border-radius:16px;
+        background:#0d1b2a;border:2px solid #c9a84c;color:#fff;
+        box-shadow:0 8px 30px rgba(0,0,0,.4);cursor:pointer;
+        display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+        transition:background .2s;
+    " aria-label="계산기">
+        <span style="font-size:1.6rem;line-height:1;">🧮</span>
+        <span style="font-size:.62rem;font-weight:800;letter-spacing:-.01em;">계산기</span>
+    </button>
+
+    <script>
+    /* ──────────── 계산기 ──────────── */
+    (function(){
+        let cur='0', prev=null, op=null, waitNew=false, mem=0, gt=0, gtN=0;
+        let kMode=false, kVal=null, kOp=null; // K 상수계산
+        const dm=document.getElementById('c-main');
+        const ds=document.getElementById('c-sub');
+        const mm=document.getElementById('c-mem');
+
+        function fmt(n){
+            if(!isFinite(n)||isNaN(n))return'Error';
+            const s=parseFloat(n.toPrecision(12)).toString();
+            const[i,d]=s.split('.');
+            return parseInt(i).toLocaleString('ko-KR')+(d!==undefined?'.'+d:'.');
+        }
+
+        function upd(){
+            let v=cur;
+            if(v!=='Error'&&!v.endsWith('.')){
+                const[i,d]=v.split('.');
+                v=parseInt(i).toLocaleString('ko-KR')+(d!==undefined?'.'+d:'.');
+            }
+            // 글자수에 따라 폰트 자동 축소 (순수 숫자 기준)
+            const digits=v.replace(/[,.\-]/g,'').length;
+            dm.style.fontSize=digits>11?'.95rem':digits>9?'1.15rem':digits>7?'1.45rem':digits>5?'1.7rem':'1.9rem';
+            dm.textContent=v;
+            mm.textContent=(mem!==0?'M ':'')+( kMode?'K':'');
+        }
+
+        function num(n){
+            if(waitNew){cur='';waitNew=false;}
+            if(n==='0'&&cur==='0')return;
+            if(n==='00'){if(cur==='0')return;cur+='00';}
+            else cur=cur==='0'?n:cur+n;
+            if(cur.replace(/[.\-]/g,'').length>10)cur=cur.slice(0,-1);
+            upd();
+        }
+        function dot(){if(waitNew){cur='0';waitNew=false;}if(!cur.includes('.'))cur+='.';upd();}
+
+        function run(a,o,b){
+            switch(o){case'+':return a+b;case'−':return a-b;case'×':return a*b;case'÷':return b===0?NaN:a/b;}
+        }
+
+        function opBtn(o){
+            // 같은 연산자를 연속 두 번 → K 모드
+            if(waitNew && op===o && prev!==null){
+                kMode=true; kVal=prev; kOp=o;
+                ds.textContent='K  '+fmt(kVal)+' '+o;
+                upd(); return;
+            }
+            if(prev!==null&&!waitNew){
+                // 이전 연산 처리
+                const c=parseFloat(cur),r=run(prev,op,c);
+                cur=isNaN(r)||!isFinite(r)?'Error':String(parseFloat(r.toPrecision(12)));
+            }
+            kMode=false; kVal=null; kOp=null;
+            prev=parseFloat(cur); op=o; waitNew=true;
+            ds.textContent=fmt(prev)+' '+o;
+            upd();
+        }
+
+        function eq(){
+            let r;
+            if(kMode && kVal!==null){
+                // K 상수 반복 적용
+                const base=parseFloat(cur);
+                r=run(base,kOp,kVal);
+                ds.textContent='K  '+fmt(base)+' '+kOp+' '+fmt(kVal)+' =';
+                gt+=r; gtN++;
+            } else if(prev!==null&&op!==null){
+                const c=parseFloat(cur);
+                r=run(prev,op,c);
+                ds.textContent=fmt(prev)+' '+op+' '+fmt(c)+' =';
+                gt+=r; gtN++;
+                // 이후 = 반복 시 같은 연산 반복하도록 K 저장
+                kMode=true; kVal=c; kOp=op;
+                prev=null; op=null;
+            } else return;
+            cur=isNaN(r)||!isFinite(r)?'Error':String(parseFloat(r.toPrecision(12)));
+            waitNew=true; upd();
+        }
+
+        function ce(){cur='0';upd();}
+        function ac(){cur='0';prev=null;op=null;waitNew=false;kMode=false;kVal=null;kOp=null;ds.textContent='';upd();}
+        function sign(){if(cur==='0')return;cur=cur.startsWith('-')?cur.slice(1):'-'+cur;upd();}
+        function pct(){const n=parseFloat(cur);cur=String(prev!==null?prev*n/100:n/100);upd();}
+        function sqrt(){cur=String(Math.sqrt(parseFloat(cur)));upd();}
+        function mPlus(){mem+=parseFloat(cur);upd();}
+        function mMinus(){mem-=parseFloat(cur);upd();}
+        function mRec(){cur=String(mem);waitNew=false;upd();}
+        function mClr(){mem=0;upd();}
+        function showGT(){cur=String(parseFloat(gt.toPrecision(12)));ds.textContent='GT ('+gtN+'건 합계)';waitNew=true;upd();}
+
+        const BTNS=[
+            ['%','op',pct],['√','op',sqrt],['▶','op',showGT],['GT','op',showGT],
+            ['MC','mem',mClr],['MR','mem',mRec],['M−','mem',mMinus],['M+','mem',mPlus],['÷','op',()=>opBtn('÷')],
+            ['+/−','op',sign],['7','num',()=>num('7')],['8','num',()=>num('8')],['9','num',()=>num('9')],['×','op',()=>opBtn('×')],
+            ['C','clr',ce],['4','num',()=>num('4')],['5','num',()=>num('5')],['6','num',()=>num('6')],['−','op',()=>opBtn('−')],
+            ['AC','clr',ac],['1','num',()=>num('1')],['2','num',()=>num('2')],['3','num',()=>num('3')],['+','op-tall',()=>opBtn('+')],
+            ['0','num-wide',()=>num('0')],['00','num',()=>num('00')],['.','op',dot],['=','op',eq],
+        ];
+        const COLORS={
+            num:'background:linear-gradient(180deg,#5c5c5c 0%,#3d3d3d 45%,#303030 100%);color:#fff;box-shadow:0 3px 0 #181818,0 4px 5px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.18);border:1px solid #222;text-shadow:0 1px 2px rgba(0,0,0,.6);',
+            op:'background:linear-gradient(180deg,#b5ad9e 0%,#908778 45%,#7e7566 100%);color:#fff;box-shadow:0 3px 0 #524840,0 4px 5px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid #5a5040;text-shadow:0 1px 2px rgba(0,0,0,.5);',
+            'op-tall':'background:linear-gradient(180deg,#b5ad9e 0%,#908778 45%,#7e7566 100%);color:#fff;box-shadow:0 3px 0 #524840,0 4px 5px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid #5a5040;text-shadow:0 1px 2px rgba(0,0,0,.5);',
+            mem:'background:linear-gradient(180deg,#6e94d4 0%,#4e74b4 45%,#3e649e 100%);color:#fff;box-shadow:0 3px 0 #1e3464,0 4px 5px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid #2a4070;text-shadow:0 1px 2px rgba(0,0,0,.4);',
+            clr:'background:linear-gradient(180deg,#d05878 0%,#b03458 45%,#9a2448 100%);color:#fff;box-shadow:0 3px 0 #5a1020,0 4px 5px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.2);border:1px solid #6a1828;text-shadow:0 1px 2px rgba(0,0,0,.4);',
+            'num-wide':'background:linear-gradient(180deg,#5c5c5c 0%,#3d3d3d 45%,#303030 100%);color:#fff;box-shadow:0 3px 0 #181818,0 4px 5px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.18);border:1px solid #222;text-shadow:0 1px 2px rgba(0,0,0,.6);',
+        };
+
+        const grid=document.getElementById('c-grid');
+        const blank=document.createElement('div');
+        blank.style.cssText='background:transparent;';
+        grid.appendChild(blank);
+
+        BTNS.forEach(([label,type,fn])=>{
+            const b=document.createElement('button');
+            b.textContent=label;
+            const isTall=type==='op-tall', isWide=type==='num-wide';
+            b.style.cssText=`${COLORS[type]||COLORS.op}
+                border-radius:6px;font-size:.8rem;font-weight:800;cursor:pointer;
+                padding:0;display:flex;align-items:center;justify-content:center;
+                height:${isTall?'82px':'38px'};
+                ${isWide?'grid-column:span 2;':''}
+                ${isTall?'grid-row:span 2;':''}
+                -webkit-tap-highlight-color:transparent;`;
+            b.addEventListener('mousedown',()=>{b.style.transform='translateY(2px)';b.style.filter='brightness(.85)';});
+            b.addEventListener('mouseup',()=>{b.style.transform='';b.style.filter='';fn();});
+            b.addEventListener('mouseleave',()=>{b.style.transform='';b.style.filter='';});
+            b.addEventListener('touchstart',e=>{e.preventDefault();b.style.transform='translateY(2px)';b.style.filter='brightness(.85)';},{passive:false});
+            b.addEventListener('touchend',e=>{e.preventDefault();b.style.transform='';b.style.filter='';fn();});
+            grid.appendChild(b);
+        });
+
+        document.addEventListener('keydown',e=>{
+            if(document.getElementById('calc-popup').style.display==='none')return;
+            if(e.key>='0'&&e.key<='9')num(e.key);
+            else if(e.key==='.')dot();
+            else if(e.key==='+')opBtn('+');
+            else if(e.key==='-')opBtn('−');
+            else if(e.key==='*')opBtn('×');
+            else if(e.key==='/'){e.preventDefault();opBtn('÷');}
+            else if(e.key==='Enter'||e.key==='=')eq();
+            else if(e.key==='Escape')ac();
+            else if(e.key==='Backspace'){if(!waitNew)cur=cur.length>1?cur.slice(0,-1):'0';upd();}
+        });
+    })();
+
+    function toggleCalc(){
+        const p=document.getElementById('calc-popup');
+        const show=p.style.display==='none'||p.style.display==='';
+        p.style.display=show?'block':'none';
+        document.getElementById('calc-fab').style.background=show?'#c9a84c':'#0d1b2a';
+    }
+    // 외부 클릭 시 닫기 (stopPropagation으로 팝업/버튼 내부 클릭은 차단)
+    document.addEventListener('click',function(){
+        const p=document.getElementById('calc-popup');
+        if(p.style.display==='block'){
+            p.style.display='none';
+            document.getElementById('calc-fab').style.background='#0d1b2a';
+        }
+    });
+    </script>
+
+
+<!-- 플로팅 위로가기 -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+    class="fixed bottom-8 right-8 z-50 px-5 py-4 bg-navy-800 hover:bg-gold-500 text-white rounded-xl shadow-2xl transition-all duration-300 opacity-0 invisible flex items-center gap-2 border-2 border-gold-500 font-bold"
+    aria-label="맨 위로">
+    <span>↑</span><span>위로</span>
+</button>
+
+<script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    const st = document.getElementById('scroll-top');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) { st.classList.remove('opacity-0','invisible'); st.classList.add('opacity-100','visible'); }
+        else { st.classList.add('opacity-0','invisible'); st.classList.remove('opacity-100','visible'); }
+    });
+
+    (function(){
+        var e = ['tax','bon','@','tax','bon','.com'].join('');
+        var el = document.getElementById('footer-info');
+        if(el) el.innerHTML += ' | Email: <a href="mailto:'+e+'" style="color:#e8c97a">'+e+'</a>';
+    })();
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if((e.ctrlKey && ['c','u','s','a'].includes(e.key.toLowerCase())) || e.key === 'F12') e.preventDefault();
+    });
+</script>
+
+<!-- React 앱 (사전 컴파일 — Babel 불필요) -->
+<script>
+/* taxbon 세금 계산기 앱 */
+const {
+  useState
+} = React;
+
+/* ─── 유틸 ─── */
+const fmt = n => {
+  if (!n || n === 0) return '0원';
+  const jo = Math.floor(n / 1000000000000);
+  const uk = Math.floor(n % 1000000000000 / 100000000);
+  const man = Math.floor(n % 100000000 / 10000);
+  let r = '';
+  if (jo > 0) r += new Intl.NumberFormat('ko-KR').format(jo) + '조 ';
+  if (uk > 0) r += new Intl.NumberFormat('ko-KR').format(uk) + '억 ';
+  if (man > 0) r += new Intl.NumberFormat('ko-KR').format(man) + '만 ';
+  return r.trim() ? r.trim() + '원' : new Intl.NumberFormat('ko-KR').format(n) + '원';
+};
+const commaFmt = n => n === 0 ? '' : new Intl.NumberFormat('ko-KR').format(n);
+const sumArr = arr => arr.reduce((s, i) => s + i.value, 0);
+const initAssets = () => ({
+  realEstate: [],
+  financialAssets: [],
+  otherAssets: []
+});
+
+/* ─── 아이콘 (lucide base 라이브러리 활용) ─── */
+const _ic = {};
+const Icon = ({
+  name,
+  size = 20,
+  className = '',
+  sw = 2
+}) => {
+  const kebab = name.replace(/([A-Z])/g, c => '-' + c.toLowerCase()).replace(/^-/, '');
+  if (!_ic[kebab] && window.lucide) {
+    const tmp = document.createElement('span');
+    tmp.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+    tmp.innerHTML = '<i data-lucide="' + kebab + '"></i>';
+    document.body.appendChild(tmp);
+    window.lucide.createIcons({
+      elements: [tmp.querySelector('[data-lucide]')]
+    });
+    const svg = tmp.querySelector('svg');
+    if (svg) _ic[kebab] = svg.outerHTML;
+    document.body.removeChild(tmp);
+  }
+  const svgHtml = (_ic[kebab] || '').replace(/width="[^"]*"/, 'width="' + size + '"').replace(/height="[^"]*"/, 'height="' + size + '"').replace(/stroke-width="[^"]*"/, 'stroke-width="' + sw + '"');
+  return /*#__PURE__*/React.createElement("span", {
+    className: 'inline-flex items-center justify-center flex-shrink-0 ' + className,
+    style: {
+      width: size,
+      height: size
+    },
+    dangerouslySetInnerHTML: {
+      __html: svgHtml
+    }
+  });
+};
+
+/* ─── 필드 컨테이너 ─── */
+const FieldContainer = ({
+  label,
+  tooltip,
+  infoText,
+  children
+}) => {
+  const [open, setOpen] = useState(false);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "py-4 border-b border-slate-100 last:border-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col mb-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-[15px] font-bold text-slate-800"
+  }, label), infoText && /*#__PURE__*/React.createElement("button", {
+    onClick: () => setOpen(!open),
+    className: 'p-0.5 rounded-full focus:outline-none transition-colors ' + (open ? 'text-blue-500 bg-blue-50' : 'text-slate-400 hover:text-blue-500')
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "Info",
+    size: 18
+  }))), tooltip && /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-500 mt-0.5"
+  }, tooltip)), open && infoText && /*#__PURE__*/React.createElement("div", {
+    className: "mb-3 p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-800 leading-relaxed"
+  }, infoText.split('\n').map((line, i, a) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: i
+  }, line, i !== a.length - 1 && /*#__PURE__*/React.createElement("br", null)))), children);
+};
+
+/* ─── 금액 입력 ─── */
+const MoneyInput = ({
+  label,
+  value,
+  onChange,
+  placeholder,
+  tooltip,
+  infoText,
+  show10Uk
+}) => {
+  const add = n => onChange(value + n);
+  return /*#__PURE__*/React.createElement(FieldContainer, {
+    label: label,
+    tooltip: tooltip,
+    infoText: infoText
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative mb-2"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: commaFmt(value),
+    onChange: e => {
+      const v = e.target.value.replace(/[^0-9]/g, '');
+      onChange(v === '' ? 0 : Number(v));
+    },
+    placeholder: placeholder || '0',
+    className: "w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-right text-lg font-bold text-slate-800 pr-8"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"
+  }, "\uC6D0")), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-1.5 justify-end"
+  }, value > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-bold text-blue-600 mr-auto self-center pl-1"
+  }, fmt(value)), show10Uk && /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(1000000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+10\uC5B5"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(100000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+1\uC5B5"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(10000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+1000\uB9CC"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(1000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+100\uB9CC"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => onChange(0),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100"
+  }, "\uCD08\uAE30\uD654")));
+};
+const InlineMoneyInput = ({
+  value,
+  onChange
+}) => {
+  const add = n => onChange(value + n);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "relative mb-2"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: commaFmt(value),
+    onChange: e => {
+      const v = e.target.value.replace(/[^0-9]/g, '');
+      onChange(v === '' ? 0 : Number(v));
+    },
+    placeholder: "0",
+    className: "w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-right text-lg font-bold text-slate-800 pr-8"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"
+  }, "\uC6D0")), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-1.5 justify-end"
+  }, value > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-bold text-blue-600 mr-auto self-center pl-1"
+  }, fmt(value)), /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(1000000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+10\uC5B5"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(100000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+1\uC5B5"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(10000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+1000\uB9CC"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => add(1000000),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+  }, "+100\uB9CC"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => onChange(0),
+    className: "px-2.5 py-1.5 text-xs font-medium bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100"
+  }, "\uCD08\uAE30\uD654")));
+};
+
+/* ─── 카운터 ─── */
+const Counter = ({
+  label,
+  count,
+  onChange,
+  tooltip
+}) => /*#__PURE__*/React.createElement("div", {
+  className: "flex items-center justify-between py-2 border-b border-slate-50 last:border-0"
+}, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+  className: "text-sm font-bold text-slate-700"
+}, label), tooltip && /*#__PURE__*/React.createElement("span", {
+  className: "block text-[11px] text-slate-500"
+}, tooltip)), /*#__PURE__*/React.createElement("div", {
+  className: "flex items-center gap-3"
+}, /*#__PURE__*/React.createElement("button", {
+  onClick: () => onChange(Math.max(0, count - 1)),
+  className: "w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-600 hover:bg-slate-100"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "Minus",
+  size: 16
+})), /*#__PURE__*/React.createElement("span", {
+  className: "text-base font-bold w-12 text-center text-slate-800"
+}, count, "\uBA85"), /*#__PURE__*/React.createElement("button", {
+  onClick: () => onChange(count + 1),
+  className: "w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-600 hover:bg-slate-100"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "Plus",
+  size: 16
+}))));
+
+/* ─── 카테고리 카드 ─── */
+const CatCard = ({
+  step,
+  label,
+  iconName,
+  iconColor,
+  bg,
+  hasData,
+  onClick
+}) => /*#__PURE__*/React.createElement("button", {
+  onClick: onClick,
+  className: "relative flex flex-col items-center justify-center p-5 md:p-6 bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:-translate-y-1 hover:border-yellow-400 transition-all group w-full"
+}, /*#__PURE__*/React.createElement("span", {
+  className: "absolute top-3 left-3 w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center"
+}, step), hasData && /*#__PURE__*/React.createElement("span", {
+  className: "absolute top-3 right-3 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm z-10"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "Check",
+  size: 14,
+  className: "text-white"
+})), /*#__PURE__*/React.createElement("div", {
+  className: "w-14 h-14 md:w-16 md:h-16 rounded-full shadow-inner flex items-center justify-center mb-3 group-hover:scale-105 transition-transform",
+  style: {
+    backgroundColor: bg
+  }
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: iconName,
+  size: 28,
+  className: iconColor
+})), /*#__PURE__*/React.createElement("span", {
+  className: "font-bold text-sm md:text-base leading-tight text-center text-slate-800",
+  dangerouslySetInnerHTML: {
+    __html: label
+  }
+}));
+const Row = ({
+  label,
+  value,
+  color
+}) => /*#__PURE__*/React.createElement("div", {
+  className: 'flex justify-between items-start text-sm ' + (color || '')
+}, /*#__PURE__*/React.createElement("span", null, label), /*#__PURE__*/React.createElement("span", {
+  className: "font-medium text-right"
+}, value));
+
+/* ──────────────────────────────────────
+   메인 앱
+────────────────────────────────────── */
+function App() {
+  const [tab, setTab] = useState('상속세');
+  const [modal, setModal] = useState(null);
+  const [resetDlg, setResetDlg] = useState(false);
+  const [sendModal, setSendModal] = useState(false);
+  const [disabledToast, setDisabledToast] = useState(false);
+  const handleTabClick = key => {
+    if (key === '증여세' || key === '양도세') {
+      setDisabledToast(true);
+      setTimeout(() => setDisabledToast(false), 3000);
+      return;
+    }
+    setTab(key);
+  };
+  const [addRE, setAddRE] = useState(false);
+  const [addFin, setAddFin] = useState(false);
+  const [addOth, setAddOth] = useState(false);
+  const [addDebt, setAddDebt] = useState(false);
+  const [assets, setAssets] = useState(initAssets());
+  const [deds, setDeds] = useState([]);
+  const [gifts, setGifts] = useState({
+    heir: 0,
+    nonHeir: 0,
+    paidTax: 0
+  });
+  const [fam, setFam] = useState({
+    hasSpouse: true,
+    childrenCount: 2,
+    spouseInheritance: 0,
+    minorCount: 0,
+    minorYears: 0,
+    seniorCount: 0,
+    disabledCount: 0,
+    disabledYears: 0
+  });
+  const [gd, setGd] = useState({
+    relation: 'spouse',
+    isMinor: false,
+    asset: 0,
+    debt: 0,
+    priorGift: 0,
+    priorTax: 0
+  });
+  const [cg, setCg] = useState({
+    sell: 0,
+    buy: 0,
+    expense: 0,
+    holdingYears: 3,
+    basicDed: true
+  });
+  const updAsset = (cat, id, v) => setAssets(p => ({
+    ...p,
+    [cat]: p[cat].map(i => i.id === id ? {
+      ...i,
+      value: v
+    } : i)
+  }));
+  const updAssetEx = (cat, id, k, v) => setAssets(p => ({
+    ...p,
+    [cat]: p[cat].map(i => {
+      if (k === 'isCohabiting' && v === true) return i.id === id ? {
+        ...i,
+        [k]: v
+      } : {
+        ...i,
+        [k]: false
+      };
+      return i.id === id ? {
+        ...i,
+        [k]: v
+      } : i;
+    })
+  }));
+  const delAsset = (cat, id) => setAssets(p => ({
+    ...p,
+    [cat]: p[cat].filter(i => i.id !== id)
+  }));
+  const addAsset = (cat, type, extra = {}) => setAssets(p => ({
+    ...p,
+    [cat]: [...p[cat], {
+      id: Date.now().toString(),
+      type,
+      value: 0,
+      ...extra
+    }]
+  }));
+  const updDed = (id, v) => setDeds(p => p.map(i => i.id === id ? {
+    ...i,
+    value: v
+  } : i));
+  const addDed = type => setDeds(p => [...p, {
+    id: Date.now().toString(),
+    type,
+    value: 0
+  }]);
+  const delDed = id => setDeds(p => p.filter(i => i.id !== id));
+  const updFam = (k, v) => setFam(p => ({
+    ...p,
+    [k]: v
+  }));
+  const updGd = (k, v) => setGd(p => ({
+    ...p,
+    [k]: v
+  }));
+  const updCg = (k, v) => setCg(p => ({
+    ...p,
+    [k]: v
+  }));
+  const updGifts = (k, v) => setGifts(p => ({
+    ...p,
+    [k]: v
+  }));
+  const getDedSum = type => deds.filter(d => d.type === type).reduce((s, i) => s + i.value, 0);
+  const doReset = () => {
+    setAssets(initAssets());
+    setDeds([]);
+    setGifts({
+      heir: 0,
+      nonHeir: 0,
+      paidTax: 0
+    });
+    setFam({
+      hasSpouse: true,
+      childrenCount: 2,
+      spouseInheritance: 0,
+      minorCount: 0,
+      minorYears: 0,
+      seniorCount: 0,
+      disabledCount: 0,
+      disabledYears: 0
+    });
+    setGd({
+      relation: 'spouse',
+      isMinor: false,
+      asset: 0,
+      debt: 0,
+      priorGift: 0,
+      priorTax: 0
+    });
+    setCg({
+      sell: 0,
+      buy: 0,
+      expense: 0,
+      holdingYears: 3,
+      basicDed: true
+    });
+    setAddRE(false);
+    setAddFin(false);
+    setAddOth(false);
+    setAddDebt(false);
+    setModal(null);
+    setResetDlg(false);
+  };
+
+  /* ── 상속세 계산 ── */
+  const totalRE = sumArr(assets.realEstate);
+  const totalFin = sumArr(assets.financialAssets);
+  const totalOth = sumArr(assets.otherAssets);
+  const totalAssets = totalRE + totalFin + totalOth;
+  const debtGeneral = getDedSum('general'),
+    debtFin = getDedSum('financial');
+  const debtPublic = getDedSum('public');
+  const funeralRaw = getDedSum('funeral'),
+    charnelRaw = getDedSum('charnel');
+  const funeralApplied = funeralRaw > 0 ? Math.max(5000000, Math.min(10000000, funeralRaw)) : 0;
+  const charnelApplied = Math.min(5000000, charnelRaw);
+  const totalDebtCalc = debtGeneral + debtFin + debtPublic + funeralApplied + charnelApplied;
+  const netTaxable = Math.max(0, totalAssets - totalDebtCalc + gifts.heir + gifts.nonHeir);
+  const minorDed = fam.minorCount * fam.minorYears * 10000000;
+  const seniorDed = fam.seniorCount * 50000000;
+  const disabledDed = fam.disabledCount * fam.disabledYears * 10000000;
+  const otherPersonalDed = minorDed + seniorDed + disabledDed;
+  const childrenDed = fam.childrenCount * 50000000;
+  const baseApplied = Math.max(500000000, 200000000 + childrenDed + otherPersonalDed);
+  let spouseApplied = 0;
+  if (fam.hasSpouse) {
+    const ratio = fam.childrenCount > 0 ? 1.5 / (1.5 + fam.childrenCount) : 1;
+    const statutory = Math.max(0, (netTaxable - gifts.nonHeir) * ratio);
+    const actual = fam.spouseInheritance > 0 ? fam.spouseInheritance : 500000000;
+    const raw = Math.min(Math.max(500000000, actual), statutory, 3000000000);
+    spouseApplied = Math.max(500000000, raw);
+  }
+  // 금융재산공제: 예적금+보험금만 대상 (퇴직금 제외 - 상증법 §22)
+  const finForDed = assets.financialAssets.filter(i => i.type === 'deposit' || i.type === 'insurance').reduce((s, i) => s + i.value, 0);
+  const netFinForDed = finForDed - debtFin;
+  let finDedApplied = 0;
+  if (netFinForDed > 0) {
+    if (netFinForDed <= 20000000) finDedApplied = netFinForDed;else if (netFinForDed <= 100000000) finDedApplied = 20000000;else finDedApplied = Math.min(200000000, netFinForDed * 0.2);
+  }
+  const coHouse = assets.realEstate.find(r => r.type === 'house' && r.isCohabiting);
+  const coHouseDed = coHouse ? Math.min(600000000, coHouse.value * 0.8) : 0;
+  // 공제한도: 상증법 제24조 - 비상속인 사전증여만 차감
+  const dedLimit = Math.max(0, netTaxable - gifts.nonHeir);
+  const dedFinal = Math.min(dedLimit, baseApplied + spouseApplied + finDedApplied + coHouseDed);
+  const taxBase1 = Math.max(0, netTaxable - dedFinal);
+  const getRate = b => {
+    if (b <= 0) return [0, 0];
+    if (b <= 100000000) return [0.10, 0];
+    if (b <= 500000000) return [0.20, 10000000];
+    if (b <= 1000000000) return [0.30, 60000000];
+    if (b <= 3000000000) return [0.40, 160000000];
+    return [0.50, 460000000];
+  };
+  const [rate1, prog1] = getRate(taxBase1);
+  const calcTax1 = Math.max(0, taxBase1 * rate1 - prog1);
+  const giftCredit1 = Math.min(calcTax1, gifts.paidTax);
+  const filingCredit1 = Math.max(0, calcTax1 - giftCredit1) * 0.03;
+  const finalTax1 = Math.max(0, calcTax1 - giftCredit1 - filingCredit1);
+
+  /* ── 증여세 계산 ── */
+  const gdDedMap = {
+    spouse: 600000000,
+    ascendant: gd.isMinor ? 20000000 : 50000000,
+    descendant: 50000000,
+    relative: 10000000,
+    none: 0
+  };
+  const gdNetVal = Math.max(0, gd.asset + gd.priorGift - gd.debt);
+  const gdDed = Math.min(gdNetVal, gdDedMap[gd.relation] || 0);
+  const gdTaxBase = Math.max(0, gdNetVal - gdDed);
+  const [gRate, gProg] = getRate(gdTaxBase);
+  const gdCalc = Math.max(0, gdTaxBase * gRate - gProg);
+  const gdPrior = Math.min(gdCalc, gd.priorTax);
+  const gdFiling = Math.max(0, gdCalc - gdPrior) * 0.03;
+  const gdFinal = Math.max(0, gdCalc - gdPrior - gdFiling);
+
+  /* ── 양도세 계산 ── */
+  const cgProfit = Math.max(0, cg.sell - cg.buy - cg.expense);
+  const cgLtPct = cgProfit > 0 && cg.holdingYears >= 3 ? Math.min(cg.holdingYears * 2, 30) / 100 : 0;
+  const cgLtDed = cgProfit * cgLtPct;
+  const cgIncome = cgProfit - cgLtDed;
+  const cgBaseDed = cg.basicDed ? 2500000 : 0;
+  const cgTaxBase = Math.max(0, cgIncome - cgBaseDed);
+  const cgGetRate = b => {
+    if (b <= 0) return [0, 0];
+    if (b <= 14000000) return [0.06, 0];
+    if (b <= 50000000) return [0.15, 1260000];
+    if (b <= 88000000) return [0.24, 5760000];
+    if (b <= 150000000) return [0.35, 15440000];
+    if (b <= 300000000) return [0.38, 19940000];
+    if (b <= 500000000) return [0.40, 25940000];
+    if (b <= 1000000000) return [0.42, 35940000];
+    return [0.45, 65940000];
+  };
+  const [cgRate, cgProg] = cgGetRate(cgTaxBase);
+  const cgCalc = Math.max(0, cgTaxBase * cgRate - cgProg);
+  const cgLocal = cgCalc * 0.1;
+  const cgFinal = cgCalc + cgLocal;
+  const has = {
+    family: fam.spouseInheritance > 0 || fam.minorCount > 0 || fam.seniorCount > 0 || fam.disabledCount > 0,
+    re: sumArr(assets.realEstate) > 0 || assets.realEstate.some(r => r.isCohabiting),
+    fin: totalFin > 0,
+    oth: sumArr(assets.otherAssets) > 0,
+    gifts: gifts.heir > 0 || gifts.nonHeir > 0 || gifts.paidTax > 0,
+    debts: deds.length > 0,
+    gdRel: gd.relation !== 'spouse',
+    gdAsset: gd.asset > 0,
+    gdDebt: gd.debt > 0,
+    gdPrior: gd.priorGift > 0 || gd.priorTax > 0,
+    cgSell: cg.sell > 0,
+    cgBuy: cg.buy > 0,
+    cgExp: cg.expense > 0,
+    cgSet: cg.holdingYears !== 3 || !cg.basicDed
+  };
+
+  /* ── 채무 정보 맵 ── */
+  const dedInfo = {
+    general: {
+      label: '일반 채무',
+      desc: '개인 간 차입금, 임대보증금 등',
+      iconName: 'TrendingDown'
+    },
+    financial: {
+      label: '금융 채무',
+      desc: '은행 대출금, 신용카드 대금 등 (금융재산공제 차감)',
+      iconName: 'Landmark'
+    },
+    public: {
+      label: '공과금/세금',
+      desc: '사망일까지 미납 국세·지방세·건강보험료 등',
+      iconName: 'ClipboardList'
+    },
+    funeral: {
+      label: '장례비용',
+      desc: '장례식장 비용 등 (500만~1,000만원 자동 보정)',
+      iconName: 'Users'
+    },
+    charnel: {
+      label: '봉안시설/자연장지',
+      desc: '납골당, 수목장 등 (최대 500만원)',
+      iconName: 'Building2'
+    }
+  };
+
+  /* ── 모달 콘텐츠 ── */
+  const renderModal = () => {
+    switch (modal) {
+      case 'family':
+        return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(FieldContainer, {
+          label: "\uBC30\uC6B0\uC790 \uC0DD\uC874 \uC5EC\uBD80",
+          infoText: "배우자공제: 최소 5억 ~ 최대 30억\n실제 상속액 입력 시 더 정확합니다."
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "flex gap-3 mt-2"
+        }, [{
+          v: true,
+          l: '있음'
+        }, {
+          v: false,
+          l: '없음'
+        }].map(({
+          v,
+          l
+        }) => /*#__PURE__*/React.createElement("label", {
+          key: l,
+          className: 'flex-1 p-3 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-colors ' + (fam.hasSpouse === v ? 'border-blue-600 bg-blue-50 text-blue-700 font-bold' : 'border-slate-200 text-slate-600')
+        }, /*#__PURE__*/React.createElement("input", {
+          type: "radio",
+          className: "hidden",
+          checked: fam.hasSpouse === v,
+          onChange: () => updFam('hasSpouse', v)
+        }), l)))), fam.hasSpouse && /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uBC30\uC6B0\uC790 \uC2E4\uC81C \uC0C1\uC18D\uC561",
+          tooltip: "\uBBF8\uC785\uB825 \uC2DC \uCD5C\uC18C 5\uC5B5 \uBCF4\uC7A5",
+          value: fam.spouseInheritance,
+          onChange: v => updFam('spouseInheritance', v),
+          show10Uk: true,
+          infoText: "실제 배우자가 상속받는 금액을 입력합니다.\n미입력 시 최소 5억원이 보장됩니다."
+        }), /*#__PURE__*/React.createElement(FieldContainer, {
+          label: "\uC790\uB140 \uC218",
+          tooltip: "\uC778\uC801\uACF5\uC81C \uBC0F \uBC30\uC6B0\uC790 \uBC95\uC815\uC0C1\uC18D\uBD84 \uACC4\uC0B0\uC6A9",
+          infoText: "1인당 5,000만원 인적공제가 적용됩니다."
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "flex items-center gap-4 mt-3"
+        }, /*#__PURE__*/React.createElement("button", {
+          onClick: () => updFam('childrenCount', Math.max(0, fam.childrenCount - 1)),
+          className: "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl font-bold hover:bg-slate-200"
+        }, "-"), /*#__PURE__*/React.createElement("span", {
+          className: "text-xl font-bold w-8 text-center"
+        }, fam.childrenCount), /*#__PURE__*/React.createElement("button", {
+          onClick: () => updFam('childrenCount', fam.childrenCount + 1),
+          className: "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl font-bold hover:bg-slate-200"
+        }, "+"))), /*#__PURE__*/React.createElement(FieldContainer, {
+          label: "\uAE30\uD0C0 \uC778\uC801\uACF5\uC81C",
+          tooltip: "\uBBF8\uC131\uB144\uC790\xB7\uC5F0\uB85C\uC790\xB7\uC7A5\uC560\uC778",
+          infoText: "• 미성년자: 1,000만원 × 잔여연수\n• 연로자(65세↑): 1인당 5,000만원\n• 장애인: 1,000만원 × 기대여명"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-2 mt-2"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "pb-3 border-b border-slate-200"
+        }, /*#__PURE__*/React.createElement(Counter, {
+          label: "\uBBF8\uC131\uB144\uC790",
+          tooltip: "19\uC138 \uBBF8\uB9CC \uC0C1\uC18D\uC778",
+          count: fam.minorCount,
+          onChange: v => updFam('minorCount', v)
+        }), fam.minorCount > 0 && /*#__PURE__*/React.createElement("div", {
+          className: "flex items-center justify-between mt-2 bg-blue-50/50 p-2 rounded-lg"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "text-sm text-slate-600"
+        }, "19\uC138\uAE4C\uC9C0 \uD3C9\uADE0 \uC794\uC5EC \uC5F0\uC218"), /*#__PURE__*/React.createElement("div", {
+          className: "flex items-center gap-2"
+        }, /*#__PURE__*/React.createElement("input", {
+          type: "text",
+          className: "w-16 p-1.5 text-center border border-slate-300 rounded text-sm outline-none focus:border-blue-500",
+          value: fam.minorYears === 0 ? '' : fam.minorYears,
+          onChange: e => {
+            let v = e.target.value.replace(/[^0-9]/g, '');
+            if (v.length > 2) v = v.slice(0, 2);
+            updFam('minorYears', v === '' ? 0 : Number(v));
+          },
+          placeholder: "0"
+        }), /*#__PURE__*/React.createElement("span", {
+          className: "text-sm text-slate-500"
+        }, "\uB144")))), /*#__PURE__*/React.createElement(Counter, {
+          label: "\uC5F0\uB85C\uC790 (65\uC138\u2191)",
+          count: fam.seniorCount,
+          onChange: v => updFam('seniorCount', v)
+        }), /*#__PURE__*/React.createElement("div", {
+          className: "border-b border-slate-200 my-2"
+        }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Counter, {
+          label: "\uC7A5\uC560\uC778",
+          tooltip: "\uC138\uBC95\uC0C1 \uC7A5\uC560\uC778",
+          count: fam.disabledCount,
+          onChange: v => updFam('disabledCount', v)
+        }), fam.disabledCount > 0 && /*#__PURE__*/React.createElement("div", {
+          className: "flex items-center justify-between mt-2 bg-blue-50/50 p-2 rounded-lg"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "text-sm text-slate-600"
+        }, "\uD3C9\uADE0 \uAE30\uB300\uC5EC\uBA85 \uC5F0\uC218"), /*#__PURE__*/React.createElement("div", {
+          className: "flex items-center gap-2"
+        }, /*#__PURE__*/React.createElement("input", {
+          type: "text",
+          className: "w-16 p-1.5 text-center border border-slate-300 rounded text-sm outline-none focus:border-blue-500",
+          value: fam.disabledYears === 0 ? '' : fam.disabledYears,
+          onChange: e => {
+            let v = e.target.value.replace(/[^0-9]/g, '');
+            if (v.length > 2) v = v.slice(0, 2);
+            updFam('disabledYears', v === '' ? 0 : Number(v));
+          },
+          placeholder: "0"
+        }), /*#__PURE__*/React.createElement("span", {
+          className: "text-sm text-slate-500"
+        }, "\uB144")))), otherPersonalDed > 0 && /*#__PURE__*/React.createElement("div", {
+          className: "mt-4 pt-3 border-t-2 border-slate-200 flex justify-between items-center"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "text-sm font-bold text-slate-700"
+        }, "\uCD94\uAC00 \uC778\uC801\uACF5\uC81C \uC18C\uACC4"), /*#__PURE__*/React.createElement("span", {
+          className: "text-base font-bold text-blue-600"
+        }, fmt(otherPersonalDed))))));
+      case 'realEstate':
+        {
+          const showSel = assets.realEstate.length === 0 || addRE;
+          return /*#__PURE__*/React.createElement(FieldContainer, {
+            label: "\uBD80\uB3D9\uC0B0 \uC885\uB958\uBCC4 \uAC00\uC561 \uC785\uB825",
+            infoText: "주택·아파트: 시세(매매사례가) 기준\n토지·상가: 공시가격 또는 감정평가액"
+          }, assets.realEstate.map(item => {
+            const lbl = item.type === 'house' ? '주택/아파트' : item.type === 'building' ? '상가/건물' : '토지';
+            return /*#__PURE__*/React.createElement("div", {
+              key: item.id,
+              className: "mb-6 pb-6 border-b border-slate-200 last:mb-0 last:pb-0 last:border-0"
+            }, /*#__PURE__*/React.createElement("div", {
+              className: "flex justify-between items-center mb-3"
+            }, /*#__PURE__*/React.createElement("span", {
+              className: "font-bold text-slate-700 text-[15px]"
+            }, lbl), /*#__PURE__*/React.createElement("button", {
+              onClick: () => delAsset('realEstate', item.id),
+              className: "text-[13px] text-rose-500 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1"
+            }, /*#__PURE__*/React.createElement(Icon, {
+              name: "X",
+              size: 14
+            }), " \uC0AD\uC81C")), /*#__PURE__*/React.createElement(InlineMoneyInput, {
+              value: item.value,
+              onChange: v => updAsset('realEstate', item.id, v)
+            }), item.type === 'house' && /*#__PURE__*/React.createElement("div", {
+              className: "mt-3 p-3.5 bg-blue-50/50 border border-blue-100 rounded-xl"
+            }, /*#__PURE__*/React.createElement("label", {
+              className: "flex items-start gap-2.5 cursor-pointer"
+            }, /*#__PURE__*/React.createElement("input", {
+              type: "checkbox",
+              checked: item.isCohabiting || false,
+              onChange: e => updAssetEx('realEstate', item.id, 'isCohabiting', e.target.checked),
+              className: "mt-0.5 w-4 h-4 text-blue-600 rounded border-slate-300 cursor-pointer"
+            }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+              className: "text-[14px] font-bold text-slate-800 block"
+            }, "\uB3D9\uAC70\uC8FC\uD0DD \uC0C1\uC18D\uACF5\uC81C \uB300\uC0C1"), /*#__PURE__*/React.createElement("span", {
+              className: "text-xs text-slate-500 mt-0.5 block"
+            }, "\uACE0\uC778\uACFC 10\uB144 \uC774\uC0C1 \uB3D9\uAC70\uD55C \uBB34\uC8FC\uD0DD \uC790\uB140 \uB4F1\uC774 \uC0C1\uC18D\uBC1B\uB294 \uACBD\uC6B0, \uC8FC\uD0DD\uAC00\uACA9\uC758 80%(\uCD5C\uB300 6\uC5B5\uC6D0) \uCD94\uAC00 \uACF5\uC81C")))));
+          }), showSel ? /*#__PURE__*/React.createElement("div", {
+            className: "mt-2 p-5 bg-slate-50 rounded-2xl border border-slate-200"
+          }, /*#__PURE__*/React.createElement("p", {
+            className: "text-[15px] font-bold text-slate-800 mb-3 text-center"
+          }, "\uCD94\uAC00\uD560 \uBD80\uB3D9\uC0B0 \uC885\uB958 \uC120\uD0DD"), /*#__PURE__*/React.createElement("div", {
+            className: "grid grid-cols-3 gap-3"
+          }, [{
+            t: 'house',
+            l: '주택/아파트',
+            i: 'Home'
+          }, {
+            t: 'building',
+            l: '상가/건물',
+            i: 'Building2'
+          }, {
+            t: 'land',
+            l: '토지',
+            i: 'Landmark'
+          }].map(({
+            t,
+            l,
+            i
+          }) => /*#__PURE__*/React.createElement("button", {
+            key: t,
+            onClick: () => {
+              addAsset('realEstate', t, {
+                isCohabiting: false
+              });
+              setAddRE(false);
+            },
+            className: "py-4 bg-white border border-slate-200 hover:border-blue-500 hover:bg-blue-50 rounded-xl font-bold text-sm shadow-sm transition-all flex flex-col items-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: i,
+            size: 24,
+            className: "text-slate-400"
+          }), l))), assets.realEstate.length > 0 && /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddRE(false),
+            className: "w-full mt-4 py-2 text-sm text-slate-500 font-bold"
+          }, "\uB2EB\uAE30")) : /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddRE(true),
+            className: "mt-4 w-full py-4 border-2 border-dashed border-slate-300 text-slate-500 rounded-xl hover:bg-slate-50 hover:border-blue-400 hover:text-blue-600 transition-colors font-bold flex items-center justify-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: "Plus",
+            size: 20
+          }), " \uBD80\uB3D9\uC0B0 \uD56D\uBAA9 \uCD94\uAC00"));
+        }
+      case 'financial':
+        {
+          const showSel = assets.financialAssets.length === 0 || addFin;
+          const finTypes = {
+            deposit: {
+              label: '예적금 / 주식 등',
+              desc: '예적금·주식·펀드 등 → 금융재산공제 대상',
+              icon: 'PiggyBank'
+            },
+            insurance: {
+              label: '사망 보험금',
+              desc: '사망으로 유족이 수령하는 보험금 → 금융재산공제 대상',
+              icon: 'Shield'
+            },
+            severance: {
+              label: '퇴직금 / 위로금',
+              desc: '직장에서 지급하는 퇴직금·공로금 → 금융재산공제 대상 아님(§22)',
+              icon: 'Briefcase'
+            }
+          };
+          return /*#__PURE__*/React.createElement(FieldContainer, {
+            label: "\uAE08\uC735\xB7\uBCF4\uD5D8 \uC7AC\uC0B0 \uC885\uB958\uBCC4 \uC785\uB825",
+            infoText: "예적금·보험금은 금융재산공제(최대 2억) 대상입니다.\n퇴직금은 금융재산공제 대상이 아닙니다. (상증법 §22)"
+          }, assets.financialAssets.map(item => {
+            const info = finTypes[item.type] || finTypes.deposit;
+            return /*#__PURE__*/React.createElement("div", {
+              key: item.id,
+              className: "mb-6 pb-6 border-b border-slate-200 last:mb-0 last:pb-0 last:border-0"
+            }, /*#__PURE__*/React.createElement("div", {
+              className: "flex justify-between items-center mb-1"
+            }, /*#__PURE__*/React.createElement("span", {
+              className: "font-bold text-slate-700 text-[15px]"
+            }, info.label), /*#__PURE__*/React.createElement("button", {
+              onClick: () => delAsset('financialAssets', item.id),
+              className: "text-[13px] text-rose-500 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1"
+            }, /*#__PURE__*/React.createElement(Icon, {
+              name: "X",
+              size: 14
+            }), " \uC0AD\uC81C")), /*#__PURE__*/React.createElement("p", {
+              className: "text-[12px] text-slate-500 mb-3"
+            }, info.desc), /*#__PURE__*/React.createElement(InlineMoneyInput, {
+              value: item.value,
+              onChange: v => updAsset('financialAssets', item.id, v)
+            }));
+          }), showSel ? /*#__PURE__*/React.createElement("div", {
+            className: "mt-2 p-5 bg-slate-50 rounded-2xl border border-slate-200"
+          }, /*#__PURE__*/React.createElement("p", {
+            className: "text-[15px] font-bold text-slate-800 mb-3 text-center"
+          }, "\uCD94\uAC00\uD560 \uAE08\uC735 \uC7AC\uC0B0 \uC885\uB958 \uC120\uD0DD"), /*#__PURE__*/React.createElement("div", {
+            className: "grid grid-cols-3 gap-3"
+          }, Object.entries(finTypes).map(([t, {
+            label,
+            icon
+          }]) => /*#__PURE__*/React.createElement("button", {
+            key: t,
+            onClick: () => {
+              addAsset('financialAssets', t);
+              setAddFin(false);
+            },
+            className: "py-4 bg-white border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 rounded-xl font-bold text-sm shadow-sm transition-all flex flex-col items-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: icon,
+            size: 24,
+            className: "text-slate-400"
+          }), label.split('/')[0]))), assets.financialAssets.length > 0 && /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddFin(false),
+            className: "w-full mt-4 py-2 text-sm text-slate-500 font-bold"
+          }, "\uB2EB\uAE30")) : /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddFin(true),
+            className: "mt-4 w-full py-4 border-2 border-dashed border-slate-300 text-slate-500 rounded-xl hover:bg-slate-50 hover:border-emerald-400 hover:text-emerald-600 transition-colors font-bold flex items-center justify-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: "Plus",
+            size: 20
+          }), " \uAE08\uC735 \uC7AC\uC0B0 \uCD94\uAC00"));
+        }
+      case 'other':
+        {
+          const showSel = assets.otherAssets.length === 0 || addOth;
+          return /*#__PURE__*/React.createElement(FieldContainer, {
+            label: "\uAE30\uD0C0 \uBC0F \uCD94\uC815 \uC7AC\uC0B0 \uC785\uB825",
+            infoText: "• 일반: 자동차, 골프·콘도 회원권, 미술품 등\n• 추정재산: 사망 전 현금 인출·부동산 처분 후 용처 미소명 금액"
+          }, assets.otherAssets.map(item => {
+            const lbl = item.type === 'general' ? '일반 기타재산' : '추정재산 (사용처 불분명)';
+            const desc = item.type === 'general' ? '자동차, 회원권, 미술품, 저작권 등' : '사망 전 현금 인출·부동산 처분 후 용처 미소명 금액';
+            return /*#__PURE__*/React.createElement("div", {
+              key: item.id,
+              className: "mb-6 pb-6 border-b border-slate-200 last:mb-0 last:pb-0 last:border-0"
+            }, /*#__PURE__*/React.createElement("div", {
+              className: "flex justify-between items-center mb-1"
+            }, /*#__PURE__*/React.createElement("span", {
+              className: "font-bold text-slate-700 text-[15px]"
+            }, lbl), /*#__PURE__*/React.createElement("button", {
+              onClick: () => delAsset('otherAssets', item.id),
+              className: "text-[13px] text-rose-500 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1"
+            }, /*#__PURE__*/React.createElement(Icon, {
+              name: "X",
+              size: 14
+            }), " \uC0AD\uC81C")), /*#__PURE__*/React.createElement("p", {
+              className: "text-[12px] text-slate-500 mb-3"
+            }, desc), /*#__PURE__*/React.createElement(InlineMoneyInput, {
+              value: item.value,
+              onChange: v => updAsset('otherAssets', item.id, v)
+            }));
+          }), showSel ? /*#__PURE__*/React.createElement("div", {
+            className: "mt-2 p-5 bg-slate-50 rounded-2xl border border-slate-200"
+          }, /*#__PURE__*/React.createElement("p", {
+            className: "text-[15px] font-bold text-slate-800 mb-3 text-center"
+          }, "\uCD94\uAC00\uD560 \uAE30\uD0C0 \uC7AC\uC0B0 \uC885\uB958 \uC120\uD0DD"), /*#__PURE__*/React.createElement("div", {
+            className: "grid grid-cols-2 gap-3"
+          }, /*#__PURE__*/React.createElement("button", {
+            onClick: () => {
+              addAsset('otherAssets', 'general');
+              setAddOth(false);
+            },
+            className: "py-4 bg-white border border-slate-200 hover:border-purple-500 hover:bg-purple-50 rounded-xl font-bold text-sm shadow-sm transition-all flex flex-col items-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: "Car",
+            size: 24,
+            className: "text-slate-400"
+          }), "\uC77C\uBC18 \uAE30\uD0C0\uC7AC\uC0B0"), /*#__PURE__*/React.createElement("button", {
+            onClick: () => {
+              addAsset('otherAssets', 'deemed');
+              setAddOth(false);
+            },
+            className: "py-4 bg-white border border-slate-200 hover:border-rose-500 hover:bg-rose-50 rounded-xl font-bold text-sm shadow-sm transition-all flex flex-col items-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: "HelpCircle",
+            size: 24,
+            className: "text-slate-400"
+          }), "\uCD94\uC815\uC7AC\uC0B0")), assets.otherAssets.length > 0 && /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddOth(false),
+            className: "w-full mt-4 py-2 text-sm text-slate-500 font-bold"
+          }, "\uB2EB\uAE30")) : /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddOth(true),
+            className: "mt-4 w-full py-4 border-2 border-dashed border-slate-300 text-slate-500 rounded-xl hover:bg-slate-50 hover:border-purple-400 hover:text-purple-600 transition-colors font-bold flex items-center justify-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: "Plus",
+            size: 20
+          }), " \uAE30\uD0C0 \uC7AC\uC0B0 \uCD94\uAC00"));
+        }
+      case 'debts':
+        {
+          const showSel = deds.length === 0 || addDebt;
+          return /*#__PURE__*/React.createElement(FieldContainer, {
+            label: "\uCC44\uBB34 \uBC0F \uC7A5\uB840\uBE44\uC6A9 \uC885\uB958\uBCC4 \uC785\uB825",
+            infoText: "금융 채무는 금융재산공제 계산 시 별도 차감되므로 반드시 구분하여 입력하세요."
+          }, deds.map(item => {
+            const info = dedInfo[item.type] || dedInfo.general;
+            return /*#__PURE__*/React.createElement("div", {
+              key: item.id,
+              className: "mb-6 pb-6 border-b border-slate-200 last:mb-0 last:pb-0 last:border-0"
+            }, /*#__PURE__*/React.createElement("div", {
+              className: "flex justify-between items-center mb-1"
+            }, /*#__PURE__*/React.createElement("span", {
+              className: "font-bold text-slate-700 text-[15px]"
+            }, info.label), /*#__PURE__*/React.createElement("button", {
+              onClick: () => delDed(item.id),
+              className: "text-[13px] text-rose-500 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1"
+            }, /*#__PURE__*/React.createElement(Icon, {
+              name: "X",
+              size: 14
+            }), " \uC0AD\uC81C")), /*#__PURE__*/React.createElement("p", {
+              className: "text-[12px] text-slate-500 mb-3"
+            }, info.desc), /*#__PURE__*/React.createElement(InlineMoneyInput, {
+              value: item.value,
+              onChange: v => updDed(item.id, v)
+            }));
+          }), showSel ? /*#__PURE__*/React.createElement("div", {
+            className: "mt-2 p-5 bg-slate-50 rounded-2xl border border-slate-200"
+          }, /*#__PURE__*/React.createElement("p", {
+            className: "text-[15px] font-bold text-slate-800 mb-3 text-center"
+          }, "\uCD94\uAC00\uD560 \uD56D\uBAA9 \uC120\uD0DD"), /*#__PURE__*/React.createElement("div", {
+            className: "grid grid-cols-2 sm:grid-cols-3 gap-3"
+          }, Object.entries(dedInfo).map(([t, {
+            label,
+            iconName
+          }]) => /*#__PURE__*/React.createElement("button", {
+            key: t,
+            onClick: () => {
+              addDed(t);
+              setAddDebt(false);
+            },
+            className: "py-4 bg-white border border-slate-200 hover:border-teal-500 hover:bg-teal-50 rounded-xl font-bold text-[13px] shadow-sm transition-all flex flex-col items-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: iconName,
+            size: 24,
+            className: "text-slate-400"
+          }), label))), deds.length > 0 && /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddDebt(false),
+            className: "w-full mt-4 py-2 text-sm text-slate-500 font-bold"
+          }, "\uB2EB\uAE30")) : /*#__PURE__*/React.createElement("button", {
+            onClick: () => setAddDebt(true),
+            className: "mt-4 w-full py-4 border-2 border-dashed border-slate-300 text-slate-500 rounded-xl hover:bg-slate-50 hover:border-teal-400 hover:text-teal-600 transition-colors font-bold flex items-center justify-center gap-2"
+          }, /*#__PURE__*/React.createElement(Icon, {
+            name: "Plus",
+            size: 20
+          }), " \uCC44\uBB34\xB7\uC7A5\uB840\uBE44\uC6A9 \uCD94\uAC00"));
+        }
+      case 'gifts':
+        return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uC0C1\uC18D\uC778 \uB300\uC0C1 \uC0AC\uC804\uC99D\uC5EC (10\uB144\uB0B4)",
+          value: gifts.heir,
+          onChange: v => updGifts('heir', v),
+          infoText: "배우자·자녀 등 상속인에게 10년 이내 증여한 금액입니다.\n상속세 과세가액에 합산됩니다."
+        }), /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uBE44\uC0C1\uC18D\uC778 \uB300\uC0C1 \uC0AC\uC804\uC99D\uC5EC (5\uB144\uB0B4)",
+          tooltip: "\uC190\uC790\xB7\uBA70\uB290\uB9AC\xB7\uC0AC\uC704 \uB4F1",
+          value: gifts.nonHeir,
+          onChange: v => updGifts('nonHeir', v),
+          infoText: "손자·며느리 등에게 5년 이내 증여한 금액입니다.\n상속공제 한도에서도 차감됩니다. (상증법 §24)"
+        }), /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uAE30\uB0A9\uBD80 \uC99D\uC5EC\uC138\uC561",
+          tooltip: "\uC0AC\uC804\uC99D\uC5EC \uC2DC \uC774\uBBF8 \uB0A9\uBD80\uD55C \uC138\uAE08",
+          value: gifts.paidTax,
+          onChange: v => updGifts('paidTax', v),
+          infoText: "사전증여 당시 납부한 증여세액입니다. 이중과세 방지를 위해 공제됩니다."
+        }));
+      case 'result':
+        return /*#__PURE__*/React.createElement("div", {
+          className: "bg-slate-50 -mx-6 -mt-2 -mb-6 p-6 space-y-4"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-1.5"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "font-bold text-slate-800 mb-3 border-b pb-2"
+        }, "1. \uC0C1\uC18D\uC138 \uACFC\uC138\uAC00\uC561"), /*#__PURE__*/React.createElement(Row, {
+          label: "\uCD1D \uC0C1\uC18D\uC7AC\uC0B0",
+          value: fmt(totalAssets)
+        }), /*#__PURE__*/React.createElement(Row, {
+          label: "(-) \uCC44\uBB34\xB7\uC7A5\uB840\uBE44",
+          value: '-' + fmt(totalDebtCalc),
+          color: "text-rose-600"
+        }), /*#__PURE__*/React.createElement(Row, {
+          label: "(+) \uC0AC\uC804\uC99D\uC5EC \uAC00\uC0B0",
+          value: '+' + fmt(gifts.heir + gifts.nonHeir),
+          color: "text-blue-600"
+        }), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between font-bold text-base mt-2 pt-2 border-t"
+        }, /*#__PURE__*/React.createElement("span", null, "\uACFC\uC138\uAC00\uC561"), /*#__PURE__*/React.createElement("span", null, fmt(netTaxable)))), /*#__PURE__*/React.createElement("div", {
+          className: "bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-1.5"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "font-bold text-slate-800 mb-3 border-b pb-2"
+        }, "2. \uC0C1\uC18D\uACF5\uC81C"), /*#__PURE__*/React.createElement(Row, {
+          label: '기본/인적공제 (' + fmt(baseApplied) + ')',
+          value: fmt(baseApplied)
+        }), fam.hasSpouse && /*#__PURE__*/React.createElement(Row, {
+          label: "\uBC30\uC6B0\uC790\uACF5\uC81C",
+          value: fmt(spouseApplied)
+        }), finDedApplied > 0 && /*#__PURE__*/React.createElement(Row, {
+          label: "\uAE08\uC735\uC7AC\uC0B0\uACF5\uC81C",
+          value: fmt(finDedApplied)
+        }), coHouseDed > 0 && /*#__PURE__*/React.createElement(Row, {
+          label: "\uB3D9\uAC70\uC8FC\uD0DD\uACF5\uC81C",
+          value: fmt(coHouseDed)
+        }), /*#__PURE__*/React.createElement(Row, {
+          label: "\uACF5\uC81C \uD55C\uB3C4",
+          value: fmt(dedLimit),
+          color: "text-slate-500"
+        }), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between font-bold text-base mt-2 pt-2 border-t text-rose-600"
+        }, /*#__PURE__*/React.createElement("span", null, "\uCD5C\uC885 \uACF5\uC81C \uC801\uC6A9\uC561"), /*#__PURE__*/React.createElement("span", null, "-", fmt(dedFinal)))), /*#__PURE__*/React.createElement("div", {
+          className: "bg-slate-800 text-white rounded-2xl p-6 shadow-md"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "font-bold mb-4 border-b border-slate-700 pb-2 text-lg"
+        }, "3. \uCD5C\uC885 \uACB0\uACFC"), /*#__PURE__*/React.createElement("div", {
+          className: "space-y-2 text-sm text-slate-300"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between font-bold text-base text-white"
+        }, /*#__PURE__*/React.createElement("span", null, "\uACFC\uC138\uD45C\uC900"), /*#__PURE__*/React.createElement("span", null, fmt(taxBase1))), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC801\uC6A9\uC138\uC728"), /*#__PURE__*/React.createElement("span", null, taxBase1 > 0 ? Math.round(rate1 * 100) + '% (누진공제 ' + fmt(prog1) + ')' : '0%')), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between mt-2 pt-2 border-t border-slate-700"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC0B0\uCD9C\uC138\uC561"), /*#__PURE__*/React.createElement("span", null, fmt(calcTax1))), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between text-emerald-400"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC2E0\uACE0\xB7\uAE30\uB0A9\uBD80 \uC138\uC561\uACF5\uC81C"), /*#__PURE__*/React.createElement("span", null, "-", fmt(filingCredit1 + giftCredit1)))), /*#__PURE__*/React.createElement("div", {
+          className: "mt-6 pt-5 border-t border-slate-700 text-center"
+        }, /*#__PURE__*/React.createElement("p", {
+          className: "text-slate-400 font-medium mb-2"
+        }, "\uCD5C\uC885 \uB0A9\uBD80 \uC608\uC0C1\uC138\uC561"), /*#__PURE__*/React.createElement("div", {
+          className: "text-4xl font-extrabold",
+          style: {
+            backgroundImage: 'linear-gradient(90deg,#93c5fd,#6ee7b7)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }
+        }, fmt(finalTax1)), taxBase1 === 0 && /*#__PURE__*/React.createElement("div", {
+          className: "mt-4 bg-emerald-500/20 text-emerald-300 px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"
+        }, /*#__PURE__*/React.createElement(Icon, {
+          name: "CheckCircle2",
+          size: 16,
+          className: "text-emerald-300"
+        }), " \uACF5\uC81C\uC561 \uBC94\uC704 \uC774\uB0B4 \u2014 \uB0A9\uBD80\uC138\uC561 \uC5C6\uC74C"))), /*#__PURE__*/React.createElement("div", {
+          className: "bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 leading-relaxed"
+        }, /*#__PURE__*/React.createElement("strong", null, "\u26A0\uFE0F \uACC4\uC0B0 \uD55C\uACC4 \uC548\uB0B4"), /*#__PURE__*/React.createElement("br", null), "\uBCF8 \uACC4\uC0B0\uAE30\uB294 \uC138\uB300\uC0DD\uB7B5\uD560\uC99D(30%), \uAC00\uC5C5\uC0C1\uC18D\uACF5\uC81C \uB4F1 \uD2B9\uC218\uACF5\uC81C\uB97C \uBC18\uC601\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC815\uD655\uD55C \uC138\uC561\uC740 \uBC18\uB4DC\uC2DC \uC804\uBB38\uAC00\uC640 \uC0C1\uB2F4\uD558\uC138\uC694."), /*#__PURE__*/React.createElement("button", {
+          onClick: () => {
+            setModal(null);
+            setSendModal(true);
+          },
+          className: "w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-center gap-2 shadow-lg",
+          style: {
+            background: 'linear-gradient(135deg,#0d5234,#1a7a50)'
+          }
+        }, "\u2709\uFE0F \uACC4\uC0B0 \uACB0\uACFC\uB97C \uC138\uBB34\uD68C\uACC4\uBCF8\uC5D0 \uC804\uC1A1\uD558\uAE30"));
+      case 'gift_relation':
+        return /*#__PURE__*/React.createElement(FieldContainer, {
+          label: "\uC99D\uC5EC\uC790\uC640\uC758 \uAD00\uACC4",
+          infoText: "• 배우자: 6억 공제\n• 직계존속(부모·조부모): 5천만 (미성년 2천만)\n• 직계비속(자녀·손자녀): 5천만\n• 기타친족: 1천만"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "grid grid-cols-2 gap-2 mt-2"
+        }, [{
+          id: 'spouse',
+          l: '배우자',
+          s: '6억 공제'
+        }, {
+          id: 'ascendant',
+          l: '직계존속',
+          s: '부모·조부모'
+        }, {
+          id: 'descendant',
+          l: '직계비속',
+          s: '자녀·손자녀'
+        }, {
+          id: 'relative',
+          l: '기타친족',
+          s: '6촌·4촌 이내'
+        }, {
+          id: 'none',
+          l: '친족 외',
+          s: '타인 (공제없음)'
+        }].map(o => /*#__PURE__*/React.createElement("label", {
+          key: o.id,
+          className: 'flex flex-col p-3 rounded-xl border-2 cursor-pointer transition-colors ' + (gd.relation === o.id ? 'border-yellow-400 bg-amber-50' : 'border-slate-200 hover:bg-slate-50')
+        }, /*#__PURE__*/React.createElement("input", {
+          type: "radio",
+          className: "hidden",
+          checked: gd.relation === o.id,
+          onChange: () => updGd('relation', o.id)
+        }), /*#__PURE__*/React.createElement("span", {
+          className: 'font-bold text-sm ' + (gd.relation === o.id ? 'text-amber-800' : 'text-slate-700')
+        }, o.l), /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-slate-500 mt-1"
+        }, o.s)))), gd.relation === 'ascendant' && /*#__PURE__*/React.createElement("div", {
+          className: "mt-3 p-3 bg-blue-50/50 border border-blue-100 rounded-xl"
+        }, /*#__PURE__*/React.createElement("label", {
+          className: "flex items-center gap-2.5 cursor-pointer"
+        }, /*#__PURE__*/React.createElement("input", {
+          type: "checkbox",
+          checked: gd.isMinor,
+          onChange: e => updGd('isMinor', e.target.checked),
+          className: "w-4 h-4 text-blue-600 rounded border-slate-300 cursor-pointer"
+        }), /*#__PURE__*/React.createElement("span", {
+          className: "text-[14px] font-bold text-slate-800"
+        }, "\uC218\uC99D\uC790\uAC00 \uBBF8\uC131\uB144\uC790 (\uACF5\uC81C 2\uCC9C\uB9CC\uC6D0 \uC801\uC6A9)"))));
+      case 'gift_asset':
+        return /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uC99D\uC5EC\uC7AC\uC0B0 \uAC00\uC561",
+          value: gd.asset,
+          onChange: v => updGd('asset', v),
+          show10Uk: true,
+          infoText: "현금, 부동산, 주식 등 증여받는 재산의 총 가액입니다."
+        });
+      case 'gift_debt':
+        return /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uCC44\uBB34 \uBD80\uB2F4\uC561 (\uBD80\uB2F4\uBD80\uC99D\uC5EC)",
+          value: gd.debt,
+          onChange: v => updGd('debt', v),
+          infoText: "담보대출·전세보증금을 수증자가 인수하는 금액입니다.\n채무 부담분은 증여세에서 제외되나, 양도소득세가 과세될 수 있습니다."
+        });
+      case 'gift_prior':
+        return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uB3D9\uC77C\uC778 \uC0AC\uC804\uC99D\uC5EC\uC561 (10\uB144 \uC774\uB0B4)",
+          value: gd.priorGift,
+          onChange: v => updGd('priorGift', v),
+          infoText: "같은 증여자로부터 10년 이내에 이미 증여받은 금액의 합계입니다."
+        }), /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uAE30\uB0A9\uBD80 \uC99D\uC5EC\uC138\uC561",
+          value: gd.priorTax,
+          onChange: v => updGd('priorTax', v),
+          infoText: "위 사전증여 시 이미 납부한 증여세액입니다."
+        }));
+      case 'gift_result':
+        return /*#__PURE__*/React.createElement("div", {
+          className: "bg-slate-50 -mx-6 -mt-2 -mb-6 p-6 space-y-4"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-1.5 text-sm"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "font-bold text-slate-800 mb-3 border-b pb-2"
+        }, "\uC99D\uC5EC\uC138 \uACFC\uC138\uD45C\uC900"), /*#__PURE__*/React.createElement(Row, {
+          label: "\uC99D\uC5EC\uC7AC\uC0B0\uAC00\uC561",
+          value: fmt(gd.asset)
+        }), gd.priorGift > 0 && /*#__PURE__*/React.createElement(Row, {
+          label: "(+) \uC0AC\uC804\uC99D\uC5EC \uD569\uC0B0",
+          value: '+' + fmt(gd.priorGift),
+          color: "text-blue-600"
+        }), gd.debt > 0 && /*#__PURE__*/React.createElement(Row, {
+          label: "(-) \uCC44\uBB34 \uBD80\uB2F4\uC561",
+          value: '-' + fmt(gd.debt),
+          color: "text-rose-600"
+        }), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between font-bold text-base mt-2 pt-2 border-t"
+        }, /*#__PURE__*/React.createElement("span", null, "\uACFC\uC138\uAC00\uC561"), /*#__PURE__*/React.createElement("span", null, fmt(gdNetVal))), /*#__PURE__*/React.createElement(Row, {
+          label: "(-) \uC99D\uC5EC\uC7AC\uC0B0\uACF5\uC81C",
+          value: '-' + fmt(gdDed),
+          color: "text-rose-600"
+        })), /*#__PURE__*/React.createElement("div", {
+          className: "bg-slate-800 text-white rounded-2xl p-6 shadow-md"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "font-bold mb-4 border-b border-slate-700 pb-2 text-lg"
+        }, "\uCD5C\uC885 \uACB0\uACFC"), /*#__PURE__*/React.createElement("div", {
+          className: "space-y-2 text-sm text-slate-300"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between font-bold text-base text-white"
+        }, /*#__PURE__*/React.createElement("span", null, "\uACFC\uC138\uD45C\uC900"), /*#__PURE__*/React.createElement("span", null, fmt(gdTaxBase))), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC801\uC6A9\uC138\uC728"), /*#__PURE__*/React.createElement("span", null, gdTaxBase > 0 ? Math.round(gRate * 100) + '% (누진공제 ' + fmt(gProg) + ')' : '0%')), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between mt-2 pt-2 border-t border-slate-700"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC0B0\uCD9C\uC138\uC561"), /*#__PURE__*/React.createElement("span", null, fmt(gdCalc))), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between text-emerald-400"
+        }, /*#__PURE__*/React.createElement("span", null, "\uAE30\uB0A9\uBD80\xB7\uC2E0\uACE0\uC138\uC561\uACF5\uC81C"), /*#__PURE__*/React.createElement("span", null, "-", fmt(gdPrior + gdFiling)))), /*#__PURE__*/React.createElement("div", {
+          className: "mt-6 pt-5 border-t border-slate-700 text-center"
+        }, /*#__PURE__*/React.createElement("p", {
+          className: "text-slate-400 font-medium mb-2"
+        }, "\uCD5C\uC885 \uB0A9\uBD80 \uC608\uC0C1\uC138\uC561"), /*#__PURE__*/React.createElement("div", {
+          className: "text-4xl font-extrabold",
+          style: {
+            backgroundImage: 'linear-gradient(90deg,#fde68a,#f59e0b)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }
+        }, fmt(gdFinal)))));
+      case 'cg_sell':
+        return /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uC591\uB3C4\uAC00\uC561 (\uC2E4\uC9C0 \uD310\uB9E4 \uAE08\uC561)",
+          value: cg.sell,
+          onChange: v => updCg('sell', v),
+          show10Uk: true,
+          infoText: "부동산을 매도하고 실제로 받는 금액(잔금 기준)입니다."
+        });
+      case 'cg_buy':
+        return /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uCDE8\uB4DD\uAC00\uC561 (\uC2E4\uC9C0 \uB9E4\uC785 \uAE08\uC561)",
+          value: cg.buy,
+          onChange: v => updCg('buy', v),
+          show10Uk: true,
+          infoText: "과거 부동산을 취득할 때 실제로 지불한 금액입니다.\n상속·증여 취득 시에는 상속·증여 당시 평가액을 입력하세요."
+        });
+      case 'cg_expense':
+        return /*#__PURE__*/React.createElement(MoneyInput, {
+          label: "\uD544\uC694\uACBD\uBE44",
+          value: cg.expense,
+          onChange: v => updCg('expense', v),
+          infoText: "취득세, 법무사 비용, 중개수수료, 발코니 확장·샷시 교체 등 자본적 지출 합계입니다."
+        });
+      case 'cg_settings':
+        return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(FieldContainer, {
+          label: "\uBCF4\uC720 \uAE30\uAC04",
+          infoText: "취득일~양도일(잔금일)까지의 연수입니다.\n3년 이상 보유 시 1년에 2%씩 장기보유특별공제 (최대 30%, 일반공제율 기준).\n※ 1세대1주택 장기보유공제(최대 80%)는 별도 상담이 필요합니다."
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "flex items-center gap-4 mt-3 mb-4"
+        }, /*#__PURE__*/React.createElement("button", {
+          onClick: () => updCg('holdingYears', Math.max(0, cg.holdingYears - 1)),
+          className: "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl font-bold hover:bg-slate-200"
+        }, "-"), /*#__PURE__*/React.createElement("div", {
+          className: "flex items-baseline gap-1 w-20 justify-center"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "text-2xl font-bold text-slate-800"
+        }, cg.holdingYears), /*#__PURE__*/React.createElement("span", {
+          className: "text-sm font-medium text-slate-500"
+        }, "\uB144")), /*#__PURE__*/React.createElement("button", {
+          onClick: () => updCg('holdingYears', cg.holdingYears + 1),
+          className: "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl font-bold hover:bg-slate-200"
+        }, "+")), cg.holdingYears >= 3 && /*#__PURE__*/React.createElement("div", {
+          className: "text-sm text-blue-700 bg-blue-50 p-3 rounded-lg mb-2 font-medium"
+        }, "\u2713 \uC7A5\uAE30\uBCF4\uC720\uD2B9\uBCC4\uACF5\uC81C\uC728: ", /*#__PURE__*/React.createElement("strong", {
+          className: "text-lg"
+        }, Math.min(cg.holdingYears * 2, 30), "%"), " (\uC77C\uBC18\uACF5\uC81C\uC728)")), /*#__PURE__*/React.createElement(FieldContainer, {
+          label: "\uC591\uB3C4\uC18C\uB4DD \uAE30\uBCF8\uACF5\uC81C",
+          infoText: "연간 1회 250만원 공제합니다."
+        }, /*#__PURE__*/React.createElement("label", {
+          className: "flex items-center gap-3 cursor-pointer p-3 bg-slate-50 rounded-xl border border-slate-200 mt-2"
+        }, /*#__PURE__*/React.createElement("input", {
+          type: "checkbox",
+          checked: cg.basicDed,
+          onChange: e => updCg('basicDed', e.target.checked),
+          className: "w-5 h-5 text-blue-600 rounded cursor-pointer"
+        }), /*#__PURE__*/React.createElement("span", {
+          className: "font-bold text-slate-800"
+        }, "\uAE30\uBCF8\uACF5\uC81C 250\uB9CC\uC6D0 \uC801\uC6A9"))));
+      case 'cg_result':
+        return /*#__PURE__*/React.createElement("div", {
+          className: "bg-slate-50 -mx-6 -mt-2 -mb-6 p-6 space-y-4"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-1.5 text-sm"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "font-bold text-slate-800 mb-3 border-b pb-2"
+        }, "\uC591\uB3C4\uC18C\uB4DD \uACFC\uC138\uD45C\uC900 \uACC4\uC0B0"), /*#__PURE__*/React.createElement(Row, {
+          label: "\uC591\uB3C4\uAC00\uC561",
+          value: fmt(cg.sell)
+        }), /*#__PURE__*/React.createElement(Row, {
+          label: "(-) \uCDE8\uB4DD\uAC00\uC561",
+          value: '-' + fmt(cg.buy),
+          color: "text-rose-600"
+        }), /*#__PURE__*/React.createElement(Row, {
+          label: "(-) \uD544\uC694\uACBD\uBE44",
+          value: '-' + fmt(cg.expense),
+          color: "text-rose-600"
+        }), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between font-bold text-base mt-2 pt-2 border-t"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC591\uB3C4\uCC28\uC775"), /*#__PURE__*/React.createElement("span", null, fmt(cgProfit))), /*#__PURE__*/React.createElement(Row, {
+          label: '(-) 장기보유특별공제 (' + Math.round(cgLtPct * 100) + '%)',
+          value: '-' + fmt(cgLtDed),
+          color: "text-rose-600"
+        }), cg.basicDed && /*#__PURE__*/React.createElement(Row, {
+          label: "(-) \uAE30\uBCF8\uACF5\uC81C",
+          value: "-250\uB9CC\uC6D0",
+          color: "text-rose-600"
+        })), /*#__PURE__*/React.createElement("div", {
+          className: "bg-slate-800 text-white rounded-2xl p-6 shadow-md"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "font-bold mb-4 border-b border-slate-700 pb-2 text-lg"
+        }, "\uCD5C\uC885 \uACB0\uACFC"), /*#__PURE__*/React.createElement("div", {
+          className: "space-y-2 text-sm text-slate-300"
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between font-bold text-base text-white"
+        }, /*#__PURE__*/React.createElement("span", null, "\uACFC\uC138\uD45C\uC900"), /*#__PURE__*/React.createElement("span", null, fmt(cgTaxBase))), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC801\uC6A9\uC138\uC728 (\uAE30\uBCF8\uC138\uC728)"), /*#__PURE__*/React.createElement("span", null, cgTaxBase > 0 ? Math.round(cgRate * 100) + '%' : '0%')), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between mt-2 pt-2 border-t border-slate-700"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC591\uB3C4\uC138 \uC0B0\uCD9C\uC138\uC561"), /*#__PURE__*/React.createElement("span", null, fmt(cgCalc))), /*#__PURE__*/React.createElement("div", {
+          className: "flex justify-between text-slate-400"
+        }, /*#__PURE__*/React.createElement("span", null, "\uC9C0\uBC29\uC18C\uB4DD\uC138 (10%)"), /*#__PURE__*/React.createElement("span", null, "+", fmt(cgLocal)))), /*#__PURE__*/React.createElement("div", {
+          className: "mt-6 pt-5 border-t border-slate-700 text-center"
+        }, /*#__PURE__*/React.createElement("p", {
+          className: "text-slate-400 font-medium mb-2"
+        }, "\uCD5C\uC885 \uB0A9\uBD80 \uC608\uC0C1\uC138\uC561 (\uC591\uB3C4\uC138+\uC9C0\uBC29\uC138)"), /*#__PURE__*/React.createElement("div", {
+          className: "text-4xl font-extrabold",
+          style: {
+            backgroundImage: 'linear-gradient(90deg,#fca5a5,#ef4444)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }
+        }, fmt(cgFinal)))), /*#__PURE__*/React.createElement("div", {
+          className: "bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 leading-relaxed"
+        }, /*#__PURE__*/React.createElement("strong", null, "\u26A0\uFE0F \uC8FC\uC758"), " \uAE30\uBCF8\uC138\uC728 \uAE30\uC900\uC785\uB2C8\uB2E4. ", /*#__PURE__*/React.createElement("strong", null, "1\uC138\uB3001\uC8FC\uD0DD \uBE44\uACFC\uC138"), ", ", /*#__PURE__*/React.createElement("strong", null, "\uB2E4\uC8FC\uD0DD \uC911\uACFC"), ", ", /*#__PURE__*/React.createElement("strong", null, "\uB2E8\uAE30\uB9E4\uB9E4 \uC911\uACFC(40%~70%)"), " \uB4F1\uC740 \uBC18\uC601\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."));
+      default:
+        return null;
+    }
+  };
+  const modalTitle = {
+    family: '기본 정보 입력',
+    realEstate: '부동산 가액 입력',
+    financial: '금융/보험재산 입력',
+    other: '기타/추정 재산 입력',
+    gifts: '사전증여 내역 입력',
+    debts: '채무·장례비 입력',
+    result: '상속세 계산 결과',
+    gift_relation: '증여자 관계',
+    gift_asset: '증여재산 입력',
+    gift_debt: '채무 부담액',
+    gift_prior: '사전증여 내역',
+    gift_result: '증여세 계산 결과',
+    cg_sell: '양도가액 입력',
+    cg_buy: '취득가액 입력',
+    cg_expense: '필요경비 입력',
+    cg_settings: '보유기간·공제 설정',
+    cg_result: '양도세 계산 결과'
+  };
+  const isResult = modal && modal.includes('result');
+  const deadlines = {
+    '상속세': '사망일이 속하는 달의 말일부터 6개월 이내',
+    '증여세': '증여일이 속하는 달의 말일부터 3개월 이내',
+    '양도세': '양도일(잔금일)이 속하는 달의 말일부터 2개월 이내'
+  };
+  const CalcBtn = ({
+    onClick,
+    label,
+    sub
+  }) => /*#__PURE__*/React.createElement("button", {
+    onClick: onClick,
+    className: "w-full max-w-sm py-5 px-6 rounded-2xl shadow-xl text-white flex flex-col items-center justify-center transition-all hover:scale-105",
+    style: {
+      background: 'linear-gradient(135deg,#1B2538,#2C3A56)',
+      border: '1px solid rgba(212,175,55,.5)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3 mb-1.5"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ClipboardList",
+    size: 32,
+    style: {
+      color: '#d4af37'
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-xl"
+  }, label)), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm text-slate-300 opacity-80"
+  }, sub));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "pb-16"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-5xl mx-auto px-4 -mt-16 relative z-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-3 gap-3 md:gap-6"
+  }, [{
+    key: '상속세',
+    icon: 'Landmark',
+    sub: '사망 후 재산 이전',
+    ac: 'text-blue-300',
+    disabled: false
+  }, {
+    key: '증여세',
+    icon: 'Gift',
+    sub: '생전 재산 이전',
+    ac: 'text-yellow-400',
+    disabled: true
+  }, {
+    key: '양도세',
+    icon: 'Home',
+    sub: '부동산·주식 매도',
+    ac: 'text-rose-300',
+    disabled: true
+  }].map(({
+    key,
+    icon,
+    sub,
+    ac,
+    disabled
+  }) => /*#__PURE__*/React.createElement("button", {
+    key: key,
+    onClick: () => handleTabClick(key),
+    className: 'relative flex flex-col items-center justify-center p-4 md:p-6 rounded-2xl shadow-md transition-all border-2 ' + (tab === key ? 'text-white border-transparent' : disabled ? 'bg-slate-100 text-slate-400 border-transparent cursor-not-allowed' : 'bg-white text-slate-700 border-transparent hover:border-slate-200'),
+    style: tab === key ? {
+      background: '#1B2538'
+    } : {}
+  }, disabled && /*#__PURE__*/React.createElement("span", {
+    className: "absolute top-2 right-2 bg-slate-400 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+  }, "\uC900\uBE44\uC911"), /*#__PURE__*/React.createElement(Icon, {
+    name: icon,
+    size: 32,
+    className: 'mb-2 ' + (tab === key ? ac : disabled ? 'text-slate-300' : 'text-slate-400')
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-lg md:text-xl mb-1"
+  }, key), /*#__PURE__*/React.createElement("span", {
+    className: 'text-xs md:text-sm ' + (tab === key ? 'text-slate-300' : disabled ? 'text-slate-300' : 'text-slate-400')
+  }, sub))))), /*#__PURE__*/React.createElement("div", {
+    className: "max-w-5xl mx-auto px-4 mt-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white border border-slate-200 rounded-2xl p-5 mb-5 shadow-sm"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "flex items-center gap-2 text-slate-700 font-bold mb-3"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "AlertTriangle",
+    size: 20,
+    className: "text-amber-500"
+  }), " \uACC4\uC0B0\uAE30 \uC0AC\uC6A9 \uC720\uC758\uC0AC\uD56D"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-1 text-slate-600 text-sm leading-relaxed"
+  }, /*#__PURE__*/React.createElement("li", {
+    className: "flex items-start gap-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 mt-0.5"
+  }, "\u25B6"), " \uC138\uBC95\uC0C1 \uC77C\uBC18\uC801 \uAE30\uC900\uC744 \uC801\uC6A9\uD55C \uBAA8\uC758 \uACC4\uC0B0\uAE30\uB85C, \uBC95\uC801 \uD6A8\uB825\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."), tab === '양도세' && /*#__PURE__*/React.createElement("li", {
+    className: "flex items-start gap-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-rose-500 mt-0.5"
+  }, "\u25B6"), " ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-rose-600"
+  }, "\uC8FC\uC758:"), " 1\uC138\uB3001\uC8FC\uD0DD \uBE44\uACFC\uC138, \uB2E4\uC8FC\uD0DD \uC911\uACFC, \uB2E8\uAE30\uB9E4\uB9E4 \uC911\uACFC \uB4F1\uC740 \uBC18\uC601\uB418\uC9C0 \uC54A\uC740 ", /*#__PURE__*/React.createElement("b", null, "\uAE30\uBCF8\uC138\uC728 \uAE30\uC900"), "\uC785\uB2C8\uB2E4."), tab === '상속세' && /*#__PURE__*/React.createElement("li", {
+    className: "flex items-start gap-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 mt-0.5"
+  }, "\u25B6"), " \uC138\uB300\uC0DD\uB7B5\uD560\uC99D(30%), \uAC00\uC5C5/\uC601\uB18D\uC0C1\uC18D\uACF5\uC81C \uB4F1 \uD2B9\uC218\uACF5\uC81C\uB294 \uBC18\uC601\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."), /*#__PURE__*/React.createElement("li", {
+    className: "flex items-start gap-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 mt-0.5"
+  }, "\u25B6"), " \uC815\uD655\uD55C \uC138\uC561 \uC0B0\uCD9C\uC740 \uBC18\uB4DC\uC2DC \uC138\uBB34 \uC804\uBB38\uAC00\uC640 \uC0C1\uB2F4\uD558\uC138\uC694."))), /*#__PURE__*/React.createElement("div", {
+    className: "rounded-2xl p-4 mb-6 border",
+    style: {
+      background: '#FFF8E6',
+      borderColor: '#FDE09B'
+    }
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "flex items-center gap-2 font-medium text-sm",
+    style: {
+      color: '#9A6200'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "AlertTriangle",
+    size: 20,
+    className: "flex-shrink-0"
+  }), /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("strong", null, "\uC2E0\uACE0 \uAE30\uD55C"), " \u2014 ", deadlines[tab]))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-end mb-4"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setResetDlg(true),
+    className: "flex items-center gap-1.5 px-4 py-2 text-slate-600 bg-white border border-slate-300 hover:bg-slate-100 rounded-lg text-sm font-bold shadow-sm"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "RefreshCw",
+    size: 16
+  }), " \uC804\uCCB4 \uCD08\uAE30\uD654")), tab === '상속세' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 mb-8"
+  }, /*#__PURE__*/React.createElement(CatCard, {
+    step: "1",
+    label: "\uAE30\uBCF8 \uC815\uBCF4<br/><span class='text-[11px] font-normal text-slate-500'>\uAC00\uC871 \uBC0F \uC778\uC801\uACF5\uC81C</span>",
+    iconName: "Users",
+    iconColor: "text-blue-200",
+    bg: "#2C3A56",
+    hasData: has.family,
+    onClick: () => setModal('family')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "2",
+    label: "\uBD80\uB3D9\uC0B0 \uAC00\uC561<br/><span class='text-[11px] font-normal text-slate-500'>\uC8FC\uD0DD, \uC0C1\uAC00, \uD1A0\uC9C0</span>",
+    iconName: "Building2",
+    iconColor: "text-orange-200",
+    bg: "#80361C",
+    hasData: has.re,
+    onClick: () => setModal('realEstate')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "3",
+    label: "\uAE08\uC735\xB7\uBCF4\uD5D8 \uC7AC\uC0B0<br/><span class='text-[11px] font-normal text-slate-500'>\uC608\uAE08, \uC8FC\uC2DD, \uD1F4\uC9C1\uAE08</span>",
+    iconName: "Coins",
+    iconColor: "text-emerald-200",
+    bg: "#0D5234",
+    hasData: has.fin,
+    onClick: () => setModal('financial')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "4",
+    label: "\uAE30\uD0C0\xB7\uCD94\uC815 \uC7AC\uC0B0<br/><span class='text-[11px] font-normal text-slate-500'>\uC790\uB3D9\uCC28, \uD68C\uC6D0\uAD8C \uB4F1</span>",
+    iconName: "Car",
+    iconColor: "text-purple-200",
+    bg: "#47148C",
+    hasData: has.oth,
+    onClick: () => setModal('other')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "5",
+    label: "\uCC44\uBB34\xB7\uC7A5\uB840\uBE44<br/><span class='text-[11px] font-normal text-slate-500'>\uB300\uCD9C, \uC7A5\uB840, \uACF5\uACFC\uAE08</span>",
+    iconName: "TrendingDown",
+    iconColor: "text-teal-200",
+    bg: "#0F6B5C",
+    hasData: has.debts,
+    onClick: () => setModal('debts')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "6",
+    label: "\uC0AC\uC804\uC99D\uC5EC \uB0B4\uC5ED<br/><span class='text-[11px] font-normal text-slate-500'>10\uB144/5\uB144 \uB0B4 \uC99D\uC5EC</span>",
+    iconName: "Gift",
+    iconColor: "text-yellow-300",
+    bg: "#1A365D",
+    hasData: has.gifts,
+    onClick: () => setModal('gifts')
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-center mb-12"
+  }, /*#__PURE__*/React.createElement(CalcBtn, {
+    onClick: () => setModal('result'),
+    label: "\uC608\uC0C1 \uC0C1\uC18D\uC138 \uACC4\uC0B0\uD558\uAE30",
+    sub: "\uC21C\uC11C\uB300\uB85C \uC785\uB825 \uD6C4 \uACB0\uACFC\uB97C \uD655\uC778\uD558\uC138\uC694"
+  }))), tab === '증여세' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-4 md:gap-5 mb-8"
+  }, /*#__PURE__*/React.createElement(CatCard, {
+    step: "1",
+    label: "\uC99D\uC5EC\uC790 \uAD00\uACC4<br/><span class='text-[11px] font-normal text-slate-500'>\uAC00\uC871 \uACF5\uC81C\uC561 \uACB0\uC815</span>",
+    iconName: "Users",
+    iconColor: "text-blue-200",
+    bg: "#2C3A56",
+    hasData: has.gdRel,
+    onClick: () => setModal('gift_relation')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "2",
+    label: "\uC99D\uC5EC\uC7AC\uC0B0 \uAC00\uC561<br/><span class='text-[11px] font-normal text-slate-500'>\uD604\uAE08, \uBD80\uB3D9\uC0B0, \uC8FC\uC2DD</span>",
+    iconName: "Gift",
+    iconColor: "text-amber-200",
+    bg: "#B45309",
+    hasData: has.gdAsset,
+    onClick: () => setModal('gift_asset')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "3",
+    label: "\uCC44\uBB34 \uBD80\uB2F4\uC561<br/><span class='text-[11px] font-normal text-slate-500'>\uBD80\uB2F4\uBD80\uC99D\uC5EC \uC2DC \uC785\uB825</span>",
+    iconName: "TrendingDown",
+    iconColor: "text-teal-200",
+    bg: "#0F6B5C",
+    hasData: has.gdDebt,
+    onClick: () => setModal('gift_debt')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "4",
+    label: "\uC0AC\uC804\uC99D\uC5EC \uD569\uC0B0<br/><span class='text-[11px] font-normal text-slate-500'>10\uB144 \uB0B4 \uC99D\uC5EC\uBD84</span>",
+    iconName: "ClipboardList",
+    iconColor: "text-purple-200",
+    bg: "#47148C",
+    hasData: has.gdPrior,
+    onClick: () => setModal('gift_prior')
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-center mb-12"
+  }, /*#__PURE__*/React.createElement(CalcBtn, {
+    onClick: () => setModal('gift_result'),
+    label: "\uC608\uC0C1 \uC99D\uC5EC\uC138 \uACC4\uC0B0\uD558\uAE30",
+    sub: "\uC21C\uC11C\uB300\uB85C \uC785\uB825 \uD6C4 \uACB0\uACFC\uB97C \uD655\uC778\uD558\uC138\uC694"
+  }))), tab === '양도세' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-4 md:gap-5 mb-8"
+  }, /*#__PURE__*/React.createElement(CatCard, {
+    step: "1",
+    label: "\uC591\uB3C4\uAC00\uC561<br/><span class='text-[11px] font-normal text-slate-500'>\uC2E4\uC9C0 \uD310\uB9E4 \uAC00\uACA9</span>",
+    iconName: "Banknote",
+    iconColor: "text-blue-200",
+    bg: "#1D4ED8",
+    hasData: has.cgSell,
+    onClick: () => setModal('cg_sell')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "2",
+    label: "\uCDE8\uB4DD\uAC00\uC561<br/><span class='text-[11px] font-normal text-slate-500'>\uACFC\uAC70 \uB9E4\uC785 \uAC00\uACA9</span>",
+    iconName: "Building2",
+    iconColor: "text-orange-200",
+    bg: "#80361C",
+    hasData: has.cgBuy,
+    onClick: () => setModal('cg_buy')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "3",
+    label: "\uD544\uC694\uACBD\uBE44<br/><span class='text-[11px] font-normal text-slate-500'>\uC911\uAC1C\uBE44, \uCDE8\uB4DD\uC138 \uB4F1</span>",
+    iconName: "Wallet",
+    iconColor: "text-teal-200",
+    bg: "#0F6B5C",
+    hasData: has.cgExp,
+    onClick: () => setModal('cg_expense')
+  }), /*#__PURE__*/React.createElement(CatCard, {
+    step: "4",
+    label: "\uAE30\uBCF8 \uC124\uC815<br/><span class='text-[11px] font-normal text-slate-500'>\uBCF4\uC720\uAE30\uAC04, \uAE30\uBCF8\uACF5\uC81C</span>",
+    iconName: "CalendarDays",
+    iconColor: "text-purple-200",
+    bg: "#47148C",
+    hasData: has.cgSet,
+    onClick: () => setModal('cg_settings')
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-center mb-12"
+  }, /*#__PURE__*/React.createElement(CalcBtn, {
+    onClick: () => setModal('cg_result'),
+    label: "\uC608\uC0C1 \uC591\uB3C4\uC138 \uACC4\uC0B0\uD558\uAE30",
+    sub: "\uAE30\uBCF8\uC138\uC728 \uAE30\uC900 \uCC38\uACE0\uC6A9 \uACB0\uACFC"
+  })))), disabledToast && /*#__PURE__*/React.createElement("div", {
+    className: "fixed top-24 left-1/2 -translate-x-1/2 z-[200] bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl text-sm font-bold flex items-center gap-2 border border-slate-600"
+  }, "\uD83D\uDEA7 \uD604\uC7AC \uC0C1\uC18D\uC138 \uACC4\uC0B0\uAE30\uB9CC \uC6B4\uC601 \uC911\uC785\uB2C8\uB2E4. \uC99D\uC5EC\uC138\xB7\uC591\uB3C4\uC138 \uACC4\uC0B0\uAE30\uB294 \uC900\uBE44 \uC911\uC785\uB2C8\uB2E4."), sendModal && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-[150] flex items-center justify-center p-4",
+    style: {
+      background: 'rgba(15,23,42,.7)',
+      backdropFilter: 'blur(6px)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-6 py-4 flex items-center justify-between border-b border-slate-200",
+    style: {
+      background: '#0d1b2a'
+    }
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-white font-bold text-lg"
+  }, "\u2709\uFE0F \uC0C1\uB2F4 \uBB38\uC758 \uC804\uC1A1"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSendModal(false),
+    className: "text-slate-400 hover:text-white p-1"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "X",
+    size: 20
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "p-6 space-y-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-slate-600 text-sm"
+  }, "\uC774\uB984\uACFC \uC5F0\uB77D\uCC98\uB97C \uC785\uB825\uD558\uC2DC\uBA74 \uACC4\uC0B0 \uACB0\uACFC\uC640 \uD568\uAED8 \uC138\uBB34\uD68C\uACC4\uBCF8\uC73C\uB85C \uC804\uB2EC\uB429\uB2C8\uB2E4."), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-sm font-bold text-slate-700 mb-1"
+  }, "\uC131\uD568 *"), /*#__PURE__*/React.createElement("input", {
+    id: "send-name",
+    type: "text",
+    placeholder: "\uD64D\uAE38\uB3D9",
+    className: "w-full px-4 py-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-slate-800"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-sm font-bold text-slate-700 mb-1"
+  }, "\uC5F0\uB77D\uCC98 *"), /*#__PURE__*/React.createElement("input", {
+    id: "send-phone",
+    type: "tel",
+    placeholder: "010-0000-0000",
+    className: "w-full px-4 py-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-slate-800"
+  })), /*#__PURE__*/React.createElement("div", {
+    id: "send-msg",
+    className: "hidden text-sm font-bold text-center py-2 rounded-xl"
+  }), /*#__PURE__*/React.createElement("button", {
+    id: "send-btn",
+    onClick: () => {
+      const name = document.getElementById('send-name').value.trim();
+      const phone = document.getElementById('send-phone').value.trim();
+      const msg = document.getElementById('send-msg');
+      const btn = document.getElementById('send-btn');
+      if (!name) {
+        msg.className = 'block text-sm font-bold text-center py-2 rounded-xl bg-rose-50 text-rose-600';
+        msg.textContent = '성함을 입력해 주세요.';
+        return;
+      }
+      if (!phone) {
+        msg.className = 'block text-sm font-bold text-center py-2 rounded-xl bg-rose-50 text-rose-600';
+        msg.textContent = '연락처를 입력해 주세요.';
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = '전송 중...';
+      const body = ['═'.repeat(38), '  세무회계본 상속세 계산 문의', '═'.repeat(38), '성함    : ' + name, '연락처  : ' + phone, '', '[ 계산 입력 현황 ]', '총 상속재산  : ' + fmt(totalAssets), '채무·장례비  : ' + fmt(totalDebtCalc), '사전증여 가산: ' + fmt(gifts.heir + gifts.nonHeir), '과세가액     : ' + fmt(netTaxable), '최종 공제액  : ' + fmt(dedFinal), '과세표준     : ' + fmt(taxBase1), '적용세율     : ' + (taxBase1 > 0 ? Math.round(rate1 * 100) + '%' : '0%'), '산출세액     : ' + fmt(calcTax1), '예상 납부세액: ' + fmt(finalTax1), '', '※ 세무회계본 홈페이지 상속세 계산기에서 발송'].join('\n');
+      fetch('https://formspree.io/f/mjgpoedb', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          phone,
+          _subject: '[세무회계본] 상속세 계산 문의 - ' + name + ' 고객님',
+          message: body
+        })
+      }).then(r => {
+        if (r.ok) {
+          msg.className = 'block text-sm font-bold text-center py-2 rounded-xl bg-emerald-50 text-emerald-700';
+          msg.textContent = '✅ 접수 완료! 빠른 시일 내 연락드리겠습니다.';
+          btn.textContent = '✅ 전송 완료';
+          setTimeout(() => setSendModal(false), 3000);
+        } else throw new Error();
+      }).catch(() => {
+        msg.className = 'block text-sm font-bold text-center py-2 rounded-xl bg-rose-50 text-rose-600';
+        msg.textContent = '전송 실패. 02-597-5830으로 직접 문의해 주세요.';
+        btn.textContent = '✉️ 이메일 보내기';
+        btn.disabled = false;
+      });
+    },
+    className: "w-full py-3.5 font-bold text-white rounded-xl text-base",
+    style: {
+      background: 'linear-gradient(135deg,#0d5234,#1a7a50)'
+    }
+  }, "\u2709\uFE0F \uC774\uBA54\uC77C \uBCF4\uB0B4\uAE30"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400 text-center"
+  }, "\uC804\uC1A1 \uC644\uB8CC \uC2DC \uC138\uBB34\uD68C\uACC4\uBCF8\uC5D0 \uBC14\uB85C \uC811\uC218\uB429\uB2C8\uB2E4", /*#__PURE__*/React.createElement("br", null), "\uB610\uB294 ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-slate-600"
+  }, "02-597-5830"), " \uC9C1\uC811 \uBB38\uC758")))), resetDlg && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-[100] flex items-center justify-center p-4",
+    style: {
+      background: 'rgba(15,23,42,.6)',
+      backdropFilter: 'blur(6px)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-lg font-bold text-slate-800 mb-2 flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "RefreshCw",
+    size: 20,
+    className: "text-rose-500"
+  }), " \uC804\uCCB4 \uCD08\uAE30\uD654"), /*#__PURE__*/React.createElement("p", {
+    className: "text-slate-600 mb-6 text-sm"
+  }, "\uC785\uB825\uD558\uC2E0 \uBAA8\uB4E0 \uAE08\uC561\uACFC \uC124\uC815\uC774 \uCD08\uAE30\uD654\uB429\uB2C8\uB2E4.", /*#__PURE__*/React.createElement("br", null), "\uACC4\uC18D\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-3"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setResetDlg(false),
+    className: "flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl"
+  }, "\uCDE8\uC18C"), /*#__PURE__*/React.createElement("button", {
+    onClick: doReset,
+    className: "flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl"
+  }, "\uCD08\uAE30\uD654")))), modal && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 flex items-center justify-center p-4",
+    style: {
+      background: 'rgba(15,23,42,.6)',
+      backdropFilter: 'blur(6px)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-[24px] w-full max-w-lg shadow-2xl overflow-hidden flex flex-col",
+    style: {
+      maxHeight: '90vh'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-50 px-6 py-4 flex items-center justify-between border-b border-slate-200 flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-lg font-bold text-slate-800 flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "ClipboardList",
+    size: 20,
+    className: "text-blue-600"
+  }), modalTitle[modal] || ''), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setModal(null),
+    className: "p-2 bg-slate-200/50 hover:bg-slate-200 rounded-full text-slate-600 transition-colors"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "X",
+    size: 20
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "p-6 overflow-y-auto flex-1"
+  }, renderModal()), !isResult ? /*#__PURE__*/React.createElement("div", {
+    className: "p-4 border-t border-slate-100 bg-slate-50 flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setModal(null),
+    className: "w-full py-3.5 font-bold rounded-xl text-lg text-white",
+    style: {
+      background: '#2563eb'
+    }
+  }, "\uC785\uB825 \uC644\uB8CC")) : /*#__PURE__*/React.createElement("div", {
+    className: "p-4 flex-shrink-0",
+    style: {
+      background: '#111827',
+      borderTop: '1px solid #334155'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setModal(null),
+    className: "w-full py-3.5 bg-white text-slate-900 hover:bg-slate-100 font-bold rounded-xl text-lg"
+  }, "\uB2EB\uAE30")))));
+}
+const root = ReactDOM.createRoot(document.getElementById('calc-root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+---
+// Footer.astro — 세 페이지 공통 푸터
+---
+
+<footer class="bg-black text-gray-500 py-12 text-sm border-t border-gray-900">
+  <div class="max-w-7xl mx-auto px-4 text-center md:text-left flex flex-col md:flex-row justify-between items-center md:items-end gap-4">
+    <div>
+      <div class="flex items-center gap-4 mb-3 justify-center md:justify-start">
+        <img
+          src="/images/logo.png"
+          alt="세무회계본 로고"
+          class="w-30 h-20"
+          style="filter:brightness(0) saturate(100%) invert(77%) sepia(55%) saturate(456%) hue-rotate(359deg) brightness(92%) contrast(87%);"
+        />
+        <p class="font-bold text-white text-xl tracking-tight">세무회계본</p>
+      </div>
+      <p class="leading-relaxed" id="footer-info">
+        대표세무사: 천아름 | 사업자등록번호: [539-30-00465]<br />
+        주소: 서울시 강남구 수서동 713 수서현대벤쳐빌 403호<br />
+        Tel: 02-597-5830 | Fax: 02-877-5830 | Email: 로딩중...
+      </p>
+    </div>
+    <div class="text-center md:text-right mt-4 md:mt-0">
+      <p class="text-gray-600">&copy; 2026 Taxbon Tax &amp; Accounting. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 이메일 난독화 (Cloudflare 봇 차단 우회)
+  (function () {
+    const e = ['tax', 'bon', '@', 'tax', 'bon', '.com'].join('');
+    const el = document.getElementById('footer-info');
+    if (el) {
+      el.innerHTML =
+        '대표세무사: 천아름 | 사업자등록번호: [539-30-00465]<br>' +
+        '주소: 서울시 강남구 수서동 713 수서현대벤쳐빌 403호<br>' +
+        'Tel: 02-597-5830 | Fax: 02-877-5830 | Email: ' +
+        '<a href="mailto:' + e + '" class="hover:text-gray-300 transition">' + e + '</a>';
+    }
+  })();
+</script>

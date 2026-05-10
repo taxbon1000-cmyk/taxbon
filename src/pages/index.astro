@@ -1,0 +1,1031 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="세무회계본 | 강남 수서 세무사 - 상속·증여·양도 전문"
+  description="강남 수서역 세무회계본. 14년 경력 천아름 대표세무사의 상속세, 증여세, 양도소득세 전문 컨설팅. 수서역 3번 출구 직결."
+  canonical="https://taxbon.com/"
+  currentPage="home"
+>
+
+<!-- 2. 메인 히어로 슬라이드 (자동/수동) -->
+    <section id="home" class="relative h-[650px] bg-gray-900 overflow-hidden pt-20">
+        <!-- 슬라이드 1: 천아름 대표 -->
+        <div class="hero-slide active">
+            <div class="absolute inset-0">
+                <img src="/images/사무실전경.jpg" alt="세무회계본 전경" class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/70 to-transparent"></div>
+            </div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+                <div class="max-w-2xl text-white pt-10">
+                    <div class="inline-block border border-gold-500 text-gold-500 px-3 py-1 rounded-full text-sm font-bold mb-6 tracking-wide">
+                        천아름 세무사
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                        상속·증여·양도,<br>
+                        <span class="text-gold-500">가치를 지키는 솔루션</span>
+                    </h1>
+                    <p class="text-lg text-gray-300 mb-10 leading-relaxed font-light">
+                        14년차 조세 전문가가 고객님의 소중한 자산을 지켜드립니다.<br>
+                        복잡한 재산세제, 세무회계본이 가장 확실한 해답입니다.
+                    </p>
+                    <div class="flex gap-4 flex-wrap">
+                        <a href="#contact" class="bg-gold-500 text-white px-8 py-4 rounded-lg font-bold hover:bg-gold-600 transition shadow-lg inline-flex items-center">
+                            상담 예약하기 <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i>
+                        </a>
+                        <a href="/intake" class="border-2 border-gold-400 text-gold-400 px-8 py-4 rounded-lg font-bold hover:bg-gold-500 hover:text-white hover:border-gold-500 transition shadow-lg inline-flex items-center gap-2">
+                            📋 준비서류 확인
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 2: 권창호 자문 -->
+        <div class="hero-slide">
+            <div class="absolute inset-0">
+                <img src="/images/20251211_163103.jpg" alt="비즈니스 미팅" class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/70 to-transparent"></div>
+            </div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+                <div class="max-w-2xl text-white pt-10">
+                    <div class="inline-block border border-green-400 text-green-400 px-3 py-1 rounded-full text-sm font-bold mb-6 tracking-wide">
+                        권창호 세무사
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                        개인사업자 및 요식업 특화<br>
+                        <span class="text-green-400">맞춤형 절세 전략</span>
+                    </h2>
+                    <p class="text-lg text-gray-300 mb-10 leading-relaxed font-light">
+                        세무사와 공인중개사 자격을 모두 갖춘 15년 경력 전문가.<br>
+                        사장님의 사업 성공을 위한 든든한 파트너가 되겠습니다.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#contact" class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold hover:bg-green-700 transition shadow-lg inline-flex items-center">
+                            기장 문의하기 <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 변환 버튼 -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+            <button onclick="manualSwitchHero(0)" class="hero-dot w-3 h-3 rounded-full bg-gold-500 transition-all duration-300 ring-2 ring-transparent focus:ring-white"></button>
+            <button onclick="manualSwitchHero(1)" class="hero-dot w-3 h-3 rounded-full bg-gray-600 transition-all duration-300 ring-2 ring-transparent focus:ring-white"></button>
+        </div>
+    </section>
+
+
+    <!-- 3. 전문가 소개 (1명씩 확실한 슬라이드) -->
+    <section id="about" class="py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-gold-500 font-bold tracking-wider uppercase text-sm">Specialist</span>
+                <h2 class="text-3xl font-bold text-navy-800 mt-2">전문가 소개</h2>
+            </div>
+
+            <!-- 슬라이더 컨테이너: 트랙 방식으로 한 명씩 표시 -->
+            <div class="relative bg-white rounded-3xl shadow-xl border border-gray-100 min-h-[480px] overflow-hidden expert-slider">
+                <!-- 이전/다음 버튼 -->
+                <button class="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/40 backdrop-blur-sm shadow-md hover:bg-white/60 transition-all border border-white/30">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button class="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/40 backdrop-blur-sm shadow-md hover:bg-white/60 transition-all border border-white/30">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+
+                <div class="expert-track h-full">
+                    <!-- 전문가 1: 천아름 대표세무사 -->
+                    <div class="expert-item expert-slide-fade h-full">
+                        <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[280px] md:min-h-0 md:h-auto flex items-center justify-center p-4">
+                            <img src="/images/car.jpg" alt="천아름 대표세무사" class="w-full max-w-[200px] h-auto object-cover object-top rounded-xl shadow-lg">
+                            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
+                                <span class="bg-navy-800/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#마을세무사</span>
+                                <span class="bg-gold-500/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#대표</span>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-2">천아름 <span class="text-lg text-gray-500 font-normal">세무사</span></h3>
+                            <p class="text-gold-500 font-bold mb-6">상속·증여·양도 / 재산세제 전문</p>
+                            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                <h4 class="font-bold text-navy-800 mb-4 flex items-center text-base"><i data-lucide="award" class="w-5 h-5 mr-2 text-gold-500"></i>주요 경력 및 이력</h4>
+                                <ul class="space-y-2 text-sm text-gray-700 leading-relaxed text-left">
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gold-500 rounded-full mr-2"></span>2011년 제48회 세무사 자격 취득</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gold-500 rounded-full mr-2"></span>국립창원대학교 세무학과 졸업</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gold-500 rounded-full mr-2"></span>前 세무법인 하나/동광 근무</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gold-500 rounded-full mr-2"></span>前 세무법인 에이블 파트너</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gold-500 rounded-full mr-2"></span>現 세무법인 성진(광주) 법인세 자문 / 會 회계법인 한서(종로) 세무 자문</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-navy-800 rounded-full mr-2"></span><strong class="text-navy-800 font-extrabold">2017년~현재 세무회계본 대표세무사</strong></li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>서울지방세무사회 감리위원 (2021.05~2023.05)</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>서울시 마을세무사 (2022.01~현재) 표창장4572호</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 전문가 2: 권창호 자문 세무사 -->
+                    <div class="expert-item expert-slide-fade h-full">
+                        <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[280px] md:min-h-0 md:h-auto flex items-center justify-center p-4">
+                                <img src="/images/bf88eca3cee1a.png" alt="권창호 자문 세무사" class="w-full max-w-[200px] h-auto object-cover object-center rounded-xl shadow-lg">
+                                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
+                                    <span class="bg-gray-700/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#공인중개사</span>
+                                    <span class="bg-green-600/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#세무사</span>
+                                </div>
+                            </div>
+                        <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-2">권창호 <span class="text-lg text-gray-500 font-normal">세무사</span></h3>
+                            <p class="text-green-600 font-bold mb-6">개인사업자 / 요식업 / 부동산 자문</p>
+                            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                <h4 class="font-bold text-navy-800 mb-4 flex items-center text-base"><i data-lucide="award" class="w-5 h-5 mr-2 text-green-600"></i>주요 경력 및 이력</h4>
+                                <ul class="space-y-2 text-sm text-gray-700 leading-relaxed text-left">
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-green-500 rounded-full mr-2"></span>2010년 제47회 세무사 합격</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-green-500 rounded-full mr-2"></span><strong class="text-green-700 font-extrabold">2022년 제32회 공인중개사 합격</strong></li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-green-500 rounded-full mr-2"></span>단국대학교 회계학과 졸업</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>용산세무서 신고도우미 / 국세청 고객만족센터 근무</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>前 세무법인 창조 / 디딤세무회계 근무</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>중랑구 영세납세자지원단 나눔세무사</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>중랑세무서 민생지원소통추진단 외부위원</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 전문가 3: 최지훈 감정평가사 -->
+                    <div class="expert-item expert-slide-fade h-full">
+                        <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[280px] md:min-h-0 md:h-auto flex items-center justify-center p-4">
+                                <img src="/images/KakaoTalk_20260205_143448097.jpg" alt="최지훈 감정평가사" class="w-full max-w-[200px] h-auto object-cover object-center rounded-xl shadow-lg">
+                                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
+                                    <span class="bg-amber-600/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#감정평가사</span>
+                                    <span class="bg-amber-800/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#이사</span>
+                                </div>
+                            </div>
+                        <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-2">최지훈 <span class="text-lg text-gray-500 font-normal">감정평가사</span></h3>
+                            <p class="text-amber-600 font-bold mb-6">부동산 감정평가 / 기준가격 자문</p>
+                            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                <h4 class="font-bold text-navy-800 mb-4 flex items-center text-base"><i data-lucide="award" class="w-5 h-5 mr-2 text-amber-600"></i>주요 경력 및 이력</h4>
+                                <ul class="space-y-2 text-sm text-gray-700 leading-relaxed text-left">
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-amber-500 rounded-full mr-2"></span>2016년 감정평가사 자격 취득</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-amber-500 rounded-full mr-2"></span>고려대학교 화학과 졸업</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>前 중앙감정평가법인 본사 근무</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>前 삼일감정평가법인 본사 근무</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-amber-500 rounded-full mr-2"></span><strong class="text-amber-700 font-extrabold">現 명문감정평가법인 본사 이사</strong></li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-amber-500 rounded-full mr-2"></span>2025~2026년 지방세연구원 기타물건 기준가격 용역자문</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 전문가 4: 김진범 공인회계사 -->
+                    <div class="expert-item expert-slide-fade h-full">
+                        <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[280px] md:min-h-0 md:h-auto flex items-center justify-center p-4">
+                                <img src="/images/kjb.png" alt="김진범 공인회계사" class="w-full max-w-[200px] h-auto object-cover object-center rounded-xl shadow-lg">
+                                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
+                                    <span class="bg-indigo-600/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#공인회계사</span>
+                                    <span class="bg-indigo-800/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">#Partner</span>
+                                </div>
+                            </div>
+                        <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-2">김진범 <span class="text-lg text-gray-500 font-normal">공인회계사</span></h3>
+                            <p class="text-indigo-600 font-bold mb-6">회계감사 / 가치평가 / M&A 자문</p>
+                            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                <h4 class="font-bold text-navy-800 mb-4 flex items-center text-base"><i data-lucide="award" class="w-5 h-5 mr-2 text-indigo-600"></i>주요 경력 및 이력</h4>
+                                <ul class="space-y-2 text-sm text-gray-700 leading-relaxed text-left">
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-indigo-500 rounded-full mr-2"></span>2007년 제42회 공인회계사 자격 취득</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-indigo-500 rounded-full mr-2"></span>단국대학교 경영학과 졸업</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>前 삼정회계법인 근무 / 前 광교회계법인 근무</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-indigo-500 rounded-full mr-2"></span><strong class="text-indigo-700 font-extrabold">現 한서회계법인 이사(Partner)</strong></li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>前 농림축산식품 연구개발사업 이의신청위원회 심의위원</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>前 19대 대통령선거 중앙선관위 공정재무감사 특별위원</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-gray-400 rounded-full mr-2"></span>前 양천구 지방보조금 심의위원</li>
+                                    <li class="flex items-start"><span class="w-1.5 h-1.5 mt-2 bg-indigo-500 rounded-full mr-2"></span><strong class="text-indigo-600">주요업무: 회계감사, 실사 및 가치평가, M&A 및 투자자문</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 페이징 도트 -->
+                <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
+                    <button onclick="goToExpert(0)" class="expert-dot w-3 h-3 rounded-full bg-gold-500 transition-all"></button>
+                    <button onclick="goToExpert(1)" class="expert-dot w-3 h-3 rounded-full bg-gray-300 transition-all"></button>
+                    <button onclick="goToExpert(2)" class="expert-dot w-3 h-3 rounded-full bg-gray-300 transition-all"></button>
+                    <button onclick="goToExpert(3)" class="expert-dot w-3 h-3 rounded-full bg-gray-300 transition-all"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 주요 서비스 (카드 형태 - 요청대로 유지) -->
+    <section id="services" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-gold-500 font-bold tracking-wider uppercase text-sm">Services</span>
+                <h2 class="text-3xl font-bold text-navy-800 mt-2 mb-4">세무회계본의 전문 서비스</h2>
+                <p class="text-gray-600">각 분야 최고의 전문가가 1:1 맞춤형 세무 관리를 제공합니다.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 서비스 1: 상속/증여/양도 (가장 먼저) -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:-translate-y-2 transition duration-300">
+                    <div class="h-56 overflow-hidden bg-navy-800 relative">
+                        <img src="/images/d174d0c0ace5d.png" alt="재산세제 상담" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-3 text-navy-800">상속·증여·양도</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                            세무회계본의 핵심 전문 분야입니다. 복잡한 세법을 사전에 정밀 분석하여 절세 효과를 극대화하는 최적의 플랜을 제시합니다.
+                        </p>
+                        <div class="flex items-center gap-4 flex-wrap">
+                            <a href="#fee-property" onclick="switchFeeTab('property'); return true;" class="inline-flex items-center gap-2 text-blue-600 font-bold text-sm hover:text-blue-700 hover:gap-3 transition-all">
+                                비용 안내 보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                            <a href="/intake" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-navy-800 hover:bg-gold-500 text-white text-xs font-bold rounded-lg border border-gold-500 hover:border-gold-600 transition-all">
+                                📋 준비서류
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 서비스 2: 기장대리 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:-translate-y-2 transition duration-300">
+                    <div class="h-56 overflow-hidden bg-gray-100">
+                        <img src="/images/f64276359a9a0.png" alt="세무 기장" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-3 text-navy-800">기장대리 / 신고대리</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                            법인 및 개인 사업자의 부가가치세, 소득세 신고를 대행합니다. 꼼꼼한 장부 작성으로 불필요한 가산세를 막고 경영의 흐름을 파악합니다.
+                        </p>
+                        <a href="#fee-property" onclick="switchFeeTab('business'); return true;" class="inline-flex items-center gap-2 text-slate-600 font-bold text-sm hover:text-slate-700 hover:gap-3 transition-all">
+                            보수표 보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 서비스 3: 컨설팅 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:-translate-y-2 transition duration-300">
+                    <div class="h-56 overflow-hidden bg-gray-100">
+                        <img src="/images/세무조정계산서.png" alt="컨설팅" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-3 text-navy-800">부동산/법인 컨설팅</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                            부동산 취득/보유/양도 단계별 절세 및 개인사업자 법인 전환, 벤처인증 등 기업 성장을 위한 세무 컨설팅을 제공합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. 요금 안내 (탭 + 아코디언) -->
+    <section id="fee-property" class="py-24 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="bg-navy-800 text-white px-4 py-1.5 text-xs rounded-full font-semibold">FEE GUIDE</span>
+                <h2 class="text-3xl font-bold text-gray-900 mt-4">요금 안내</h2>
+                <p class="text-gray-600 mt-3 text-sm">세무회계본의 투명한 요금 체계입니다</p>
+            </div>
+
+            <!-- 탭 버튼 -->
+            <div class="flex justify-center mb-8 gap-4">
+                <button onclick="switchFeeTab('property')" id="tab-property" class="fee-tab-button active px-8 py-3 rounded-lg font-bold text-lg transition-all">
+                    상속·증여·양도
+                </button>
+                <button onclick="switchFeeTab('business')" id="tab-business" class="fee-tab-button px-8 py-3 rounded-lg font-bold text-lg transition-all">
+                    개인·법인
+                </button>
+            </div>
+
+            <!-- 탭 컨텐츠 1: 상속증여양도 -->
+            <div id="content-property" class="fee-tab-content">
+                <div class="space-y-4">
+                    <!-- 아코디언 1: 상담비 -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                        <button class="accordion-header w-full px-6 py-5 flex justify-between items-center text-left hover:bg-blue-50 transition bg-gradient-to-r from-blue-600 to-blue-700" data-target="fee-prop-1">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">💬</span>
+                                <span class="text-lg font-bold text-white">1. 상담비 안내</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="accordion-badge text-xs font-bold bg-white/90 text-blue-700 px-3 py-1 rounded-full">열기</span>
+                                <svg class="accordion-icon w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="fee-prop-1" class="hidden border-t border-gray-100 p-6 bg-gray-50">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800 font-medium">
+                                ✓ 신고 및 컨설팅 의뢰 시 수수료에서 상담비 전액 차감
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left font-bold text-gray-700 border-b-2">구분</th>
+                                            <th class="px-4 py-3 text-left font-bold text-gray-700 border-b-2">내용</th>
+                                            <th class="px-4 py-3 text-right font-bold text-gray-700 border-b-2">비용</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100 bg-white">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">증여세 상담</td>
+                                            <td class="px-4 py-3 text-gray-600">가족간 매매, 증여, 부담부증여, 자금출처, 현금증여</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">20만원</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">양도세 상담</td>
+                                            <td class="px-4 py-3 text-gray-600">세법상담, 다주택자, 주택임대사업자, 재건축 & 재개발조합원, 토지</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">70만원</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">양도세 상담</td>
+                                            <td class="px-4 py-3 text-gray-600">양도계약서 첨부 시</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">10만원</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50 bg-green-50">
+                                            <td class="px-4 py-3 font-medium text-green-700">상속세 상담</td>
+                                            <td class="px-4 py-3 text-gray-600">사망진단서 첨부 시</td>
+                                            <td class="px-4 py-3 text-right font-bold text-green-700">무료</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-800 leading-relaxed">
+                                <strong class="block mb-1">[손해배상 책임의 제한]</strong>
+                                본 자문과 관련하여 (신고 또는 별도의 컨설팅을 의뢰하지 않은) 상담 단계에서 세무사의 과실로 인하여 의뢰인에게 손해가 발생할 경우, 세무사가 부담하는 손해배상 책임은 본 자문 용역의 대가로 수령한 수수료를 한도로 합니다.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 아코디언 2: 신고 및 컨설팅 -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                        <button class="accordion-header w-full px-6 py-5 flex justify-between items-center text-left hover:bg-purple-50 transition bg-gradient-to-r from-purple-600 to-purple-700" data-target="fee-prop-2">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">📋</span>
+                                <span class="text-lg font-bold text-white">2. 신고 및 컨설팅 비용</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="accordion-badge text-xs font-bold bg-white/90 text-purple-700 px-3 py-1 rounded-full">열기</span>
+                                <svg class="accordion-icon w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="fee-prop-2" class="hidden border-t border-gray-100 p-6 bg-gray-50">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm bg-white">
+                                    <tbody class="divide-y divide-gray-100">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">상속세 신고</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">0.2% ~ 0.3%</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">양도세 신고</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">0.1% 내외</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">세무조사 / 자금출처 조사</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">기본 500만원~</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">부동산 증여 / 가족간 매매 컨설팅</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">기본 500만원~</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">현금증여 신고</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">30만원</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">부담부증여 신고</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">150만원</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900 text-xs">자금조달계획서 작성<br><span class="text-gray-500 font-normal">+ 현금증여, 차용증 상담</span></td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">150만원(단독) / 200만원(공동) </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium text-gray-900">한국부동산원 소명자료 제출</td>
+                                            <td class="px-4 py-3 text-right font-bold text-gray-900">150만원(단독) / 200만원(공동)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 탭 컨텐츠 2: 개인법인 -->
+            <div id="content-business" class="fee-tab-content hidden">
+                <div class="space-y-4">
+                    <!-- 아코디언 3: 기장대행 -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                        <button class="accordion-header w-full px-6 py-5 flex justify-between items-center text-left hover:bg-slate-50 transition bg-gradient-to-r from-slate-700 to-slate-800" data-target="fee-biz-1">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🧮</span>
+                                <span class="text-lg font-bold text-white">1. 기장대행 보수표</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="accordion-badge text-xs font-bold bg-white/90 text-slate-700 px-3 py-1 rounded-full">열기</span>
+                                <svg class="accordion-icon w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="fee-biz-1" class="hidden border-t border-gray-100 p-6 bg-gray-50">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm border-collapse bg-white">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="px-4 py-3 text-center font-bold text-gray-700 border">수입금액</th>
+                                            <th class="px-4 py-3 text-center font-bold text-gray-700 border">개인(월)</th>
+                                            <th class="px-4 py-3 text-center font-bold text-gray-700 border">법인(월)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">1억원 미만</td>
+                                            <td class="px-4 py-3 border text-center">80,000</td>
+                                            <td class="px-4 py-3 border text-center">100,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">1억 ~ 3억</td>
+                                            <td class="px-4 py-3 border text-center">100,000</td>
+                                            <td class="px-4 py-3 border text-center">150,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">3억 ~ 5억</td>
+                                            <td class="px-4 py-3 border text-center">150,000</td>
+                                            <td class="px-4 py-3 border text-center">200,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">5억 ~ 10억</td>
+                                            <td class="px-4 py-3 border text-center">200,000</td>
+                                            <td class="px-4 py-3 border text-center">300,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">10억 ~ 20억</td>
+                                            <td class="px-4 py-3 border text-center">250,000</td>
+                                            <td class="px-4 py-3 border text-center">400,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">20억 ~ 30억</td>
+                                            <td class="px-4 py-3 border text-center">350,000</td>
+                                            <td class="px-4 py-3 border text-center">500,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">30억 ~ 40억</td>
+                                            <td class="px-4 py-3 border text-center">450,000</td>
+                                            <td class="px-4 py-3 border text-center">600,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">50억 ~ 70억</td>
+                                            <td class="px-4 py-3 border text-center">800,000</td>
+                                            <td class="px-4 py-3 border text-center">1,000,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-left">100억 ~ 200억</td>
+                                            <td class="px-4 py-3 border text-center">1,200,000</td>
+                                            <td class="px-4 py-3 border text-center">1,500,000</td>
+                                        </tr>
+                                        <tr class="bg-blue-50">
+                                            <td class="px-4 py-3 border text-left font-bold">500억원 이상</td>
+                                            <td colspan="2" class="px-4 py-3 border text-center font-bold">별도 계약</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="mt-3 text-xs text-gray-500">* 원가 계산 필요 시 20% 가산 / 소모품비 년 1회 별도</p>
+                        </div>
+                    </div>
+
+                    <!-- 아코디언 4: 세무조정 -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                        <button class="accordion-header w-full px-6 py-5 flex justify-between items-center text-left hover:bg-emerald-50 transition bg-gradient-to-r from-emerald-600 to-emerald-700" data-target="fee-biz-2">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">📊</span>
+                                <span class="text-lg font-bold text-white">2. 세무조정 보수표</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="accordion-badge text-xs font-bold bg-white/90 text-emerald-700 px-3 py-1 rounded-full">열기</span>
+                                <svg class="accordion-icon w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="fee-biz-2" class="hidden border-t border-gray-100 p-6 bg-gray-50">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm border-collapse bg-white">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="px-4 py-3 text-center font-bold text-gray-700 border">구분 (수입금액)</th>
+                                            <th class="px-4 py-3 text-center font-bold text-gray-700 border">보수 기준</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-center">1억원 미만</td>
+                                            <td class="px-4 py-3 border text-right pr-6 font-bold">350,000원</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-center">1억 ~ 3억</td>
+                                            <td class="px-4 py-3 border text-right pr-6">350,000 + (1억초과 × 0.15%)</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-center">3억 ~ 5억</td>
+                                            <td class="px-4 py-3 border text-right pr-6">650,000 + (3억초과 × 0.125%)</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-center">5억 ~ 10억</td>
+                                            <td class="px-4 py-3 border text-right pr-6">900,000 + (5억초과 × 0.1%)</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-center">10억 ~ 50억</td>
+                                            <td class="px-4 py-3 border text-right pr-6">1,400,000 + (10억초과 × 0.06%)</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-center">50억 ~ 100억</td>
+                                            <td class="px-4 py-3 border text-right pr-6 font-bold text-lg">3,800,000 + (50억초과 × 0.03%)</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 border text-center">100억 ~ 500억</td>
+                                            <td class="px-4 py-3 border text-right pr-6">5,300,000 + (100억초과 × 0.012%)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 아코디언 5: 기타 신고 -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                        <button class="accordion-header w-full px-6 py-5 flex justify-between items-center text-left hover:bg-amber-50 transition bg-gradient-to-r from-amber-600 to-amber-700" data-target="fee-biz-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">📑</span>
+                                <span class="text-lg font-bold text-white">3. 기타 신고대리 보수</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="accordion-badge text-xs font-bold bg-white/90 text-amber-700 px-3 py-1 rounded-full">열기</span>
+                                <svg class="accordion-icon w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="fee-biz-3" class="hidden border-t border-gray-100 p-6 bg-gray-50 space-y-4">
+                            <div class="border-b pb-3 bg-white p-4 rounded-lg">
+                                <p class="font-bold text-gray-900 mb-2">부가가치세 신고</p>
+                                <p class="text-gray-700">• 일반 & 간이 과세자: 10만원</p>
+                            </div>
+                            <div class="border-b pb-3 bg-white p-4 rounded-lg">
+                                <p class="font-bold text-gray-900 mb-2">종합소득세 신고</p>
+                                <p class="text-gray-700">• 단순경비율: 5만원 / 기준경비율: 10만원 <span class="text-xs text-gray-500">(타소득 건당 5만원 가산)</span></p>
+                                <p class="text-gray-700">• 간편장부: 세무조정 보수표의 50% <span class="text-xs text-gray-500">(최저 250,000원)</span></p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg">
+                                <p class="font-bold text-gray-900 mb-2">사업장현황 / 주식평가</p>
+                                <p class="text-gray-700">• 사업장현황신고: 세무조정 보수표의 30%</p>
+                                <p class="text-gray-700">• 주식평가서 작성: 상속증여세 보수표의 30%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 아코디언 6: 불복자문등록제증명 -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                        <button class="accordion-header w-full px-6 py-5 flex justify-between items-center text-left hover:bg-rose-50 transition bg-gradient-to-r from-rose-600 to-rose-700" data-target="fee-biz-4">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">⚖️</span>
+                                <span class="text-lg font-bold text-white">4. 불복·자문·등록·제증명</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="accordion-badge text-xs font-bold bg-white/90 text-rose-700 px-3 py-1 rounded-full">열기</span>
+                                <svg class="accordion-icon w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="fee-biz-4" class="hidden border-t border-gray-100 p-6 bg-gray-50 space-y-4">
+                            <div class="border-b pb-3 bg-white p-4 rounded-lg">
+                                <p class="font-bold text-gray-900 mb-2">불복(이의신청/심사/심판청구)</p>
+                                <p class="text-gray-700">• 상속·증여·양도세: 다툼금액의 3% 이상 협의</p>
+                                <p class="text-gray-700">• 종합소득세: 다툼금액의 5% 이상 협의</p>
+                                <p class="text-gray-700">• 법인세: 다툼금액의 5% 이상 협의</p>
+                            </div>
+                            <div class="border-b pb-3 bg-white p-4 rounded-lg">
+                                <p class="font-bold text-gray-900 mb-2">조세자문(계약서 작성 및 검토)</p>
+                                <p class="text-gray-700">• 100만원 이상 협의</p>
+                            </div>
+                            <div class="border-b pb-3 bg-white p-4 rounded-lg">
+                                <p class="font-bold text-gray-900 mb-2">사업자등록 및 폐업신고</p>
+                                <p class="text-gray-700">• 신규 사업자등록: 10만원</p>
+                                <p class="text-gray-700">• 폐업신고: 5만원</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg">
+                                <p class="font-bold text-gray-900 mb-2">제증명 발급(세무확인서 등)</p>
+                                <p class="text-gray-700">• 매출처별 세금계산서 합계표: 10만원</p>
+                                <p class="text-gray-700">• 휴·폐업 사실 증명: 3만원</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .fee-tab-button {
+            background: #e5e7eb;
+            color: #6b7280;
+            border: 2px solid transparent;
+        }
+        .fee-tab-button.active {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            border-color: #1e40af;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .fee-tab-button:hover {
+            transform: translateY(-2px);
+        }
+        .fee-tab-content {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <script>
+        function switchFeeTab(tab) {
+            // 모든 탭 버튼 비활성화
+            document.querySelectorAll('.fee-tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 모든 탭 컨텐츠 숨기기
+            document.querySelectorAll('.fee-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // 선택된 탭 활성화
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('content-' + tab).classList.remove('hidden');
+        }
+    </script>
+
+
+
+
+    <!-- 7. 오시는 길은 아래에 하나만 유지 -->
+
+
+    <!-- 6. 사무실 갤러리 -->
+    <section class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-gold-500 font-bold tracking-wider uppercase text-sm">Office Gallery</span>
+                <h2 class="text-3xl font-bold text-navy-800 mt-2 mb-4">사무실 전경</h2>
+                <p class="text-gray-600">쾌적하고 전문적인 환경에서 상담을 진행합니다</p>
+            </div>
+
+            <!-- 사진 갤러리 슬라이드 -->
+            <div class="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 photo-gallery mx-auto" style="max-width: 900px;">
+                <div class="gallery-track">
+                    <div class="gallery-slide">
+                        <img src="/images/건물낮사진.jpg" alt="수서현대벤쳐빌 전경">
+                        <div class="gallery-caption">수서현대벤쳐빌 전경</div>
+                    </div>
+                    <div class="gallery-slide">
+                        <img src="/images/20251211_163103.jpg" alt="세무회계본 입구">
+                        <div class="gallery-caption">세무회계본 입구 (403호)</div>
+                    </div>
+                    <div class="gallery-slide">
+                        <img src="/images/20251217_110342.jpg" alt="사무실 내부">
+                        <div class="gallery-caption">사무실 내부</div>
+                    </div>
+                    <div class="gallery-slide">
+                        <img src="/images/20251217_110549.jpg" alt="상담실">
+                        <div class="gallery-caption">상담실</div>
+                    </div>
+                    <div class="gallery-slide">
+                        <img src="/images/20260202_133413.jpg" alt="수서역 주변 전경">
+                        <div class="gallery-caption">수서역 주변 전경</div>
+                    </div>
+                </div>
+                <div class="gallery-dots">
+                    <button class="active" onclick="goToPhotoSlide(0)"></button>
+                    <button onclick="goToPhotoSlide(1)"></button>
+                    <button onclick="goToPhotoSlide(2)"></button>
+                    <button onclick="goToPhotoSlide(3)"></button>
+                    <button onclick="goToPhotoSlide(4)"></button>
+                </div>
+                <div class="gallery-nav">
+                    <button onclick="prevPhotoSlide()">❮</button>
+                    <button onclick="nextPhotoSlide()">❯</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. 오시는 길 -->
+    <section id="contact" class="py-24 bg-navy-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white">오시는 길</h2>
+                <p class="text-gray-300 mt-3">수서역 3번 출구 직결, 찾아오시기 편리합니다</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <!-- 왼쪽: 연락처 및 교통 정보 -->
+                <div>
+                    <div class="space-y-8 text-gray-300">
+                        <div class="flex items-start">
+                            <div class="bg-white/10 p-3 rounded-lg mr-4"><i data-lucide="map-pin" class="w-6 h-6 text-gold-500"></i></div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1 text-white">주소</h4>
+                                <p>서울시 강남구 수서동 713 (밤고개로1길 10)<br>수서현대벤쳐빌 403호</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-white/10 p-3 rounded-lg mr-4"><i data-lucide="train" class="w-6 h-6 text-gold-500"></i></div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1 text-white">지하철 / 주차</h4>
+                                <p><span class="font-bold text-orange-400">3호선</span>, <span class="font-bold text-yellow-400">수인분당선</span> 수서역 하차<br>3번 출구와 건물 지하가 바로 연결되어 있습니다.<br><span class="text-sm text-gray-400 mt-1 block">* 건물 내 주차장 1시간 무료 제공</span></p>
+                            </div>
+                        </div>
+                        <div id="contact-card" class="bg-white/5 p-6 rounded-2xl border border-white/10 mt-6">
+                            <h4 class="font-bold text-gold-500 mb-4 text-xl">📞 상담 문의</h4>
+                            <p class="phone-number mb-2">02-597-5830</p>
+                            <p class="text-gray-400 mb-6" id="contact-email-line">이메일: 로딩중...</p>
+                            <div class="contact-ctas">
+                                <a href="tel:02-597-5830" class="call-btn"><i data-lucide="phone" class="w-4 h-4"></i> 전화 걸기</a>
+                                <a href="https://booking.naver.com/booking/6/bizes/1181095" target="_blank" class="book-btn"><i data-lucide="calendar-check" class="w-4 h-4"></i> 네이버 예약</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 구글 지도 -->
+                <div>
+                    <div class="rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-[500px] lg:h-[600px]">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.846302177664!2d127.10187159999998!3d37.48795320000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca11857ad232d%3A0xf40c1efeb6425164!2z7IS466y07ZqM6rOE67O4IOyynOyVhOumhCDshLjrrLTsgqw!5e0!3m2!1sko!2skr!4v1775213599926!5m2!1sko!2skr" 
+                            width="100%" height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="세무회계본 위치 - 수서현대벤쳐빌 403호">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 상속세 계산기 플로팅 버튼 -->
+    <a href="/calculator" style="
+        position:fixed;bottom:2rem;left:2rem;z-index:9999;
+        width:68px;height:68px;border-radius:16px;
+        background:#0d1b2a;border:2px solid #c9a84c;color:#fff;
+        box-shadow:0 8px 30px rgba(0,0,0,.4);cursor:pointer;
+        display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+        text-decoration:none;transition:background .2s;
+    " aria-label="상속세 계산기"
+       onmouseover="this.style.background='#c9a84c'"
+       onmouseout="this.style.background='#0d1b2a'">
+        <span style="font-size:1.4rem;line-height:1;">📊</span>
+        <span style="font-size:.58rem;font-weight:800;letter-spacing:-.01em;text-align:center;line-height:1.2;">상속세<br>계산기</span>
+    </a>
+
+    <!-- 플로팅 위로가기 버튼 -->
+    <button id="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+        class="fixed bottom-8 right-8 z-50 px-5 py-4 bg-navy-800 hover:bg-gold-500 text-white rounded-xl shadow-2xl transition-all duration-300 opacity-0 invisible flex items-center justify-center gap-2 border-2 border-gold-500 hover:border-gold-600 font-bold text-lg"
+        style="box-shadow: 0 8px 30px rgba(0,0,0,0.4);"
+        aria-label="맨 위로 이동">
+        <span>↑</span>
+        <span>위로</span>
+    </button>
+
+<!-- 상속세 계산기 플로팅 버튼 -->
+    <a href="/calculator" style="
+        position:fixed;bottom:2rem;left:2rem;z-index:9999;
+        width:68px;height:68px;border-radius:16px;
+        background:#0d1b2a;border:2px solid #c9a84c;color:#fff;
+        box-shadow:0 8px 30px rgba(0,0,0,.4);cursor:pointer;
+        display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+        text-decoration:none;transition:background .2s;
+    " aria-label="상속세 계산기"
+       onmouseover="this.style.background='#c9a84c'"
+       onmouseout="this.style.background='#0d1b2a'">
+        <span style="font-size:1.4rem;line-height:1;">📊</span>
+        <span style="font-size:.58rem;font-weight:800;letter-spacing:-.01em;text-align:center;line-height:1.2;">상속세<br>계산기</span>
+    </a>
+<!-- 플로팅 위로가기 버튼 -->
+    <button id="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+        class="fixed bottom-8 right-8 z-50 px-5 py-4 bg-navy-800 hover:bg-gold-500 text-white rounded-xl shadow-2xl transition-all duration-300 opacity-0 invisible flex items-center justify-center gap-2 border-2 border-gold-500 hover:border-gold-600 font-bold text-lg"
+        style="box-shadow: 0 8px 30px rgba(0,0,0,0.4);"
+        aria-label="맨 위로 이동">
+        <span>↑</span>
+        <span>위로</span>
+    </button>
+
+
+</BaseLayout>
+
+<script>
+        // ===== 이메일 주소 (Cloudflare 난독화 방지용 JS 구성) =====
+        (function(){
+            var e = ['tax','bon','@','tax','bon','.com'].join('');
+            var cel = document.getElementById('contact-email-line');
+            if(cel){
+                cel.innerHTML = '이메일: <a href="mailto:'+e+'" class="hover:text-white transition">'+e+'</a>';
+            }
+            })();
+
+        
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' || e.key === 'a' || e.key === 'A')) || e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+
+        
+
+        
+
+        // ===== 메인 히어로 슬라이더 =====
+        let heroIndex = 0;
+        let heroInterval;
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        const heroDots = document.querySelectorAll('.hero-dot');
+
+        function switchHero(index) {
+            heroSlides.forEach(s => s.classList.remove('active'));
+            heroDots.forEach(d => {
+                d.classList.remove('bg-gold-500', 'bg-gray-600', 'ring-2', 'ring-white');
+                d.classList.add('bg-gray-500');
+            });
+
+            heroIndex = index;
+            if(heroIndex >= heroSlides.length) heroIndex = 0;
+            
+            heroSlides[heroIndex].classList.add('active');
+            heroDots[heroIndex].classList.remove('bg-gray-500');
+            heroDots[heroIndex].classList.add(heroIndex === 0 ? 'bg-gold-500' : 'bg-gray-600', 'ring-2', 'ring-white');
+        }
+
+        function manualSwitchHero(index) {
+            clearInterval(heroInterval);
+            switchHero(index);
+            startHeroAutoPlay();
+        }
+
+        function startHeroAutoPlay() {
+            heroInterval = setInterval(() => {
+                switchHero(heroIndex + 1);
+            }, 5000);
+        }
+        startHeroAutoPlay();
+
+        // ===== 전문가 슬라이더 =====
+        const expertItems = document.querySelectorAll('.expert-item');
+        const expertDots = document.querySelectorAll('.expert-dot');
+        let expertCurrentIndex = 0;
+
+        function showExpertSlide(index) {
+            if (index >= expertItems.length) index = 0;
+            if (index < 0) index = expertItems.length - 1;
+            
+            expertCurrentIndex = index;
+            
+            expertItems.forEach(item => item.style.display = 'none');
+            expertItems[expertCurrentIndex].style.display = 'flex';
+            
+            expertDots.forEach((dot, i) => {
+                dot.classList.remove('bg-gold-500');
+                dot.classList.add('bg-gray-300');
+                if (i === expertCurrentIndex) {
+                    dot.classList.remove('bg-gray-300');
+                    dot.classList.add('bg-gold-500');
+                }
+            });
+        }
+
+        function goToExpert(index) {
+            showExpertSlide(index);
+        }
+
+        // 전문가 슬라이더 자동 재생 (40초마다 랜덤 전환)
+        let expertAutoTimer = null;
+        function startExpertAuto() {
+            if (expertAutoTimer) { clearInterval(expertAutoTimer); expertAutoTimer = null; }
+            expertAutoTimer = setInterval(function() {
+                var next;
+                do { next = Math.floor(Math.random() * expertItems.length); }
+                while (next === expertCurrentIndex && expertItems.length > 1);
+                showExpertSlide(next);
+            }, 40000);
+        }
+
+        // 전문가 슬라이더 버튼 이벤트
+        const expertContainer = document.querySelector('.expert-slider');
+        if (expertContainer) {
+            const expertButtons = expertContainer.querySelectorAll('button:not(.expert-dot)');
+            if (expertButtons.length >= 2) {
+                expertButtons[0].addEventListener('click', () => { showExpertSlide(expertCurrentIndex - 1); startExpertAuto(); });
+                expertButtons[1].addEventListener('click', () => { showExpertSlide(expertCurrentIndex + 1); startExpertAuto(); });
+            }
+        }
+
+        // 천아름 세무사(0번)부터 시작, 이후 랜덤 자동 전환
+        showExpertSlide(0);
+        startExpertAuto();
+
+        // ===== 사진 갤러리 슬라이더 =====
+        let photoIndex = 0;
+        const photoTotal = 5;
+        const galleryTrack = document.querySelector('.gallery-track');
+        const galleryDots = document.querySelectorAll('.gallery-dots button');
+
+        function updateGallery() {
+            if (galleryTrack) {
+                galleryTrack.style.transform = 'translateX(-' + (photoIndex * 100) + '%)';
+            }
+            galleryDots.forEach((dot, i) => {
+                dot.style.background = i === photoIndex ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)';
+            });
+        }
+
+        function goToPhotoSlide(index) {
+            photoIndex = index;
+            if (photoIndex >= photoTotal) photoIndex = 0;
+            if (photoIndex < 0) photoIndex = photoTotal - 1;
+            updateGallery();
+        }
+
+        function nextPhotoSlide() {
+            goToPhotoSlide(photoIndex + 1);
+        }
+
+        function prevPhotoSlide() {
+            goToPhotoSlide(photoIndex - 1);
+        }
+
+        updateGallery();
+
+        // ===== 요금안내 아코디언 =====
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', function() {
+                const contentId = this.getAttribute('data-target');
+                const content = document.getElementById(contentId);
+                const icon = this.querySelector('.accordion-icon');
+                const badge = this.querySelector('.accordion-badge');
+                
+                if (!content) return;
+                
+                const isOpen = !content.classList.contains('hidden');
+                
+                if (isOpen) {
+                    content.classList.add('hidden');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                    if (badge) {
+                        badge.textContent = '열기';
+                        badge.className = 'accordion-badge text-xs font-bold text-gray-500 bg-gray-200 px-3 py-1 rounded-full';
+                    }
+                } else {
+                    content.classList.remove('hidden');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                    if (badge) {
+                        badge.textContent = '닫기';
+                        badge.className = 'accordion-badge text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full';
+                    }
+                }
+            });
+        });
+
+
+        // ===== 위로가기 버튼 =====
+        const scrollToTopBtn = document.getElementById('scroll-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollToTopBtn.classList.remove('opacity-0', 'invisible');
+                scrollToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                scrollToTopBtn.classList.add('opacity-0', 'invisible');
+                scrollToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+    </script>

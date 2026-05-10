@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── 폰트 ─── */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css');
+
+/* ─── 공통 기본 ─── */
+body {
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+}
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ─── 헤더 언더라인 애니메이션 ─── */
+nav a {
+  position: relative;
+  padding-bottom: 6px;
+}
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 3px; bottom: 0;
+  background: linear-gradient(90deg, #c5a059, rgba(255,255,255,0));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.28s ease;
+  border-radius: 999px;
+}
+nav a:hover::after {
+  transform: scaleX(1);
+}
+
+/* ─── 히어로 슬라이더 ─── */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 0;
+}
+.hero-slide.active {
+  opacity: 1;
+  z-index: 10;
+}
+
+/* ─── 전문가 슬라이더 ─── */
+.expert-slider { position: relative; overflow: hidden; }
+.expert-track  { display: flex; transition: transform 0.6s ease; will-change: transform; }
+.expert-item   { min-width: 100%; display: flex; flex-direction: column; flex: 0 0 100%; }
+@media (min-width: 768px) {
+  .expert-item { flex-direction: row; }
+}
+.expert-slide-fade { animation: fadeEffect 0.45s; }
+@keyframes fadeEffect { from { opacity: 0; } to { opacity: 1; } }
+
+/* ─── 갤러리 슬라이더 ─── */
+.photo-gallery  { position: relative; overflow: hidden; height: 400px; }
+.gallery-track  { display: flex; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); height: 100%; }
+.gallery-slide  { min-width: 100%; display: flex; position: relative; height: 100%; }
+.gallery-slide img { width: 100%; object-fit: cover; }
+.gallery-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.8));
+  color: white; padding: 1.5rem 1rem;
+  font-size: 0.875rem; font-weight: bold;
+}
+.gallery-nav { position: absolute; bottom: 1.5rem; right: 1.5rem; z-index: 20; display: flex; gap: 0.75rem; }
+.gallery-nav button {
+  width: 2.5rem; height: 2.5rem; border-radius: 9999px;
+  background: rgba(0,0,0,0.5); color: white;
+  border: 1px solid rgba(255,255,255,0.3); cursor: pointer;
+  font-weight: bold; transition: all 0.3s;
+}
+.gallery-nav button:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+.gallery-dots { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; gap: 0.5rem; }
+.gallery-dots button {
+  width: 0.75rem; height: 0.75rem; border-radius: 50%;
+  background: rgba(255,255,255,0.4); border: none; cursor: pointer; transition: all 0.3s;
+}
+
+/* ─── 스크롤 상단 버튼 ─── */
+#scroll-top { transition: all 0.3s; }
+
+/* ─── CTA 플로팅 애니메이션 ─── */
+@keyframes floatUp {
+  0%   { transform: translateY(6px); }
+  50%  { transform: translateY(0); }
+  100% { transform: translateY(6px); }
+}
+.float-cta { animation: floatUp 3.8s ease-in-out infinite; }
+
+/* ─── 섹션 텍스트 색상 ─── */
+#fee-property, #fee-business, #services { color: #1f2937; }
+#fee-property h2, #fee-business h2 { color: #0f172a; }
+#fee-property p,  #fee-business p  { color: #374151; }
