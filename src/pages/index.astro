@@ -153,7 +153,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                             <span class="bg-gold-500/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold">#대표</span>
                         </div>
                     </div>
-                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white relative">
+                        <button class="expert-close-btn absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors" aria-label="닫기">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
                         <h3 class="text-3xl font-bold text-gray-900 mb-2">천아름 <span class="text-lg text-gray-500 font-normal">세무사</span></h3>
                         <p class="text-gold-500 font-bold mb-6">상속·증여·양도 / 재산세제 전문</p>
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
@@ -181,7 +184,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                             <span class="bg-green-600/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold">#세무사</span>
                         </div>
                     </div>
-                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white relative">
+                        <button class="expert-close-btn absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors" aria-label="닫기">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
                         <h3 class="text-3xl font-bold text-gray-900 mb-2">권창호 <span class="text-lg text-gray-500 font-normal">세무사</span></h3>
                         <p class="text-green-600 font-bold mb-6">개인사업자 / 요식업 / 부동산 자문</p>
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
@@ -208,7 +214,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                             <span class="bg-amber-800/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold">#이사</span>
                         </div>
                     </div>
-                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white relative">
+                        <button class="expert-close-btn absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors" aria-label="닫기">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
                         <h3 class="text-3xl font-bold text-gray-900 mb-2">최지훈 <span class="text-lg text-gray-500 font-normal">감정평가사</span></h3>
                         <p class="text-amber-600 font-bold mb-6">부동산 감정평가 / 기준가격 자문</p>
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
@@ -234,7 +243,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                             <span class="bg-indigo-800/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-bold">#Partner</span>
                         </div>
                     </div>
-                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white">
+                    <div class="w-full md:w-9/12 p-8 md:p-10 flex flex-col justify-center bg-white relative">
+                        <button class="expert-close-btn absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors" aria-label="닫기">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
                         <h3 class="text-3xl font-bold text-gray-900 mb-2">김진범 <span class="text-lg text-gray-500 font-normal">공인회계사</span></h3>
                         <p class="text-indigo-600 font-bold mb-6">회계감사 / 가치평가 / M&amp;A 자문</p>
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
@@ -912,40 +924,82 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         // ===== 전문가 선택 (이벤트 리스너 방식) =====
         var borderColors = ['border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400'];
+        var currentExpertIndex = -1; // 현재 열려있는 패널 (없으면 -1)
+
+        function closeExpertDetail() {
+            // 모든 카드 초기화
+            document.querySelectorAll('.expert-card').forEach(function(c, i) {
+                c.classList.remove('shadow-lg', 'bg-gray-50', borderColors[i]);
+                c.classList.add('border-gray-200', 'shadow-sm');
+            });
+            // 모든 상세 패널 숨김
+            for (var i = 0; i < 4; i++) {
+                var d = document.getElementById('expert-detail-' + i);
+                if (d) d.style.display = 'none';
+            }
+            // wrapper 스타일 초기화
+            var wrapper = document.getElementById('expert-detail-wrapper');
+            if (wrapper) {
+                wrapper.style.marginTop = '';
+                wrapper.style.border = '';
+                wrapper.style.boxShadow = '';
+                wrapper.style.background = '';
+            }
+            currentExpertIndex = -1;
+        }
+
+        function openExpertDetail(index) {
+            // 모든 카드 초기화
+            document.querySelectorAll('.expert-card').forEach(function(c, i) {
+                c.classList.remove('shadow-lg', 'bg-gray-50', borderColors[i]);
+                c.classList.add('border-gray-200', 'shadow-sm');
+            });
+            // 모든 상세 패널 숨김
+            for (var i = 0; i < 4; i++) {
+                var d = document.getElementById('expert-detail-' + i);
+                if (d) d.style.display = 'none';
+            }
+
+            // 선택 카드 강조
+            var activeCard = document.getElementById('expert-card-' + index);
+            if (activeCard) {
+                activeCard.classList.remove('border-gray-200', 'shadow-sm');
+                activeCard.classList.add(borderColors[index], 'shadow-lg', 'bg-gray-50');
+            }
+
+            // wrapper 표시
+            var wrapper = document.getElementById('expert-detail-wrapper');
+            if (wrapper) {
+                wrapper.style.marginTop = '2rem';
+                wrapper.style.border = '1px solid #f3f4f6';
+                wrapper.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,.1)';
+                wrapper.style.background = '#fff';
+            }
+
+            // 선택 패널 표시
+            var detail = document.getElementById('expert-detail-' + index);
+            if (detail) detail.style.display = 'flex';
+
+            currentExpertIndex = index;
+        }
 
         document.querySelectorAll('.expert-card').forEach(function(card) {
             card.addEventListener('click', function() {
                 var index = parseInt(this.getAttribute('data-expert'));
-
-                // 모든 카드 초기화
-                document.querySelectorAll('.expert-card').forEach(function(c, i) {
-                    c.style.borderColor = '';
-                    c.classList.remove('shadow-lg', 'bg-gray-50', borderColors[i]);
-                    c.classList.add('border-gray-200', 'shadow-sm');
-                });
-
-                // 모든 상세 패널 숨김
-                for (var i = 0; i < 4; i++) {
-                    var d = document.getElementById('expert-detail-' + i);
-                    if (d) d.style.display = 'none';
+                if (currentExpertIndex === index) {
+                    // 같은 카드 재클릭 → 닫기
+                    closeExpertDetail();
+                } else {
+                    openExpertDetail(index);
                 }
+            });
+        });
 
-                // 선택 카드 강조
-                this.classList.remove('border-gray-200', 'shadow-sm');
-                this.classList.add(borderColors[index], 'shadow-lg', 'bg-gray-50');
-
-                // wrapper 표시
-                var wrapper = document.getElementById('expert-detail-wrapper');
-                if (wrapper) {
-                    wrapper.style.marginTop = '2rem';
-                    wrapper.style.border = '1px solid #f3f4f6';
-                    wrapper.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,.1)';
-                    wrapper.style.background = '#fff';
-                }
-
-                // 선택 패널 표시
-                var detail = document.getElementById('expert-detail-' + index);
-                if (detail) detail.style.display = 'flex';
+        // 상세 패널 닫기(X) 버튼
+        document.querySelectorAll('.expert-close-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeExpertDetail();
             });
         });
 
