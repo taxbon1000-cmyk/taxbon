@@ -722,31 +722,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
     </style>
 
-    <script>
-        function switchFeeTab(tab) {
-            // 모든 탭 버튼 비활성화
-            document.querySelectorAll('.fee-tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // 모든 탭 컨텐츠 숨기기
-            document.querySelectorAll('.fee-tab-content').forEach(content => {
-                content.classList.add('hidden');
-            });
-            
-            // 선택된 탭 활성화
-            document.getElementById('tab-' + tab).classList.add('active');
-            document.getElementById('content-' + tab).classList.remove('hidden');
-        }
-    </script>
 
 
 
 
-    <!-- 7. 오시는 길은 아래에 하나만 유지 -->
-
-
-    <!-- 6. 사무실 갤러리 -->
+    <!-- 사무실 갤러리 -->
     <section class="py-24 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -794,7 +774,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
     </section>
 
-    <!-- 7. 오시는 길 -->
+    <!-- 오시는 길 -->
     <section id="contact" class="py-24 bg-navy-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -873,20 +853,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             }
             })();
 
-        
-        document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' || e.key === 'a' || e.key === 'A')) || e.key === 'F12') {
-                e.preventDefault();
-                return false;
-            }
-        });
-        document.addEventListener('dragstart', function(e) {
-            e.preventDefault();
-        });
-
-        
-
-        
+        // ===== 요금 안내 탭 전환 =====
+        function switchFeeTab(tab) {
+            document.querySelectorAll('.fee-tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.fee-tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('content-' + tab).classList.remove('hidden');
+        }
 
         // ===== 메인 히어로 슬라이더 =====
         let heroIndex = 0;
