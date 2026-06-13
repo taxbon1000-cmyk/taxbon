@@ -92,70 +92,60 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
                 <!-- 카드 1: 천아름 -->
                 <button onclick="selectExpert(0)" id="expert-card-0"
-                    class="expert-card active-card text-left p-5 rounded-2xl border-2 border-gold-500 bg-white shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-1 focus:outline-none">
-                    <div class="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center mb-3">
-                        <span class="text-gold-600 font-extrabold text-lg">천</span>
-                    </div>
-                    <p class="font-extrabold text-gray-900 text-base leading-tight">천아름</p>
-                    <p class="text-xs text-gold-600 font-bold mt-0.5">세무사 · 대표</p>
-                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">상속·증여·양도<br>재산세제 전문</p>
-                    <div class="flex flex-wrap gap-1 mt-3">
-                        <span class="bg-navy-800 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#마을세무사</span>
-                        <span class="bg-gold-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#대표</span>
+                    class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-gold-400 focus:outline-none">
+                    <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">천아름</p>
+                    <p class="text-sm text-gold-600 font-bold mb-3">세무사 · 대표</p>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">재산세제 및 부동산 세금 전문<br>상속·증여·양도소득세</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="bg-navy-800 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#마을세무사</span>
+                        <span class="bg-gold-500 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#대표</span>
+                        <span class="bg-gold-100 text-gold-700 text-[11px] font-bold px-2 py-0.5 rounded-full">#14년경력</span>
                     </div>
                 </button>
 
                 <!-- 카드 2: 권창호 -->
                 <button onclick="selectExpert(1)" id="expert-card-1"
-                    class="expert-card text-left p-5 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-green-400 focus:outline-none">
-                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mb-3">
-                        <span class="text-green-700 font-extrabold text-lg">권</span>
-                    </div>
-                    <p class="font-extrabold text-gray-900 text-base leading-tight">권창호</p>
-                    <p class="text-xs text-green-600 font-bold mt-0.5">세무사</p>
-                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">개인사업자·요식업<br>부동산 자문</p>
-                    <div class="flex flex-wrap gap-1 mt-3">
-                        <span class="bg-gray-700 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#공인중개사</span>
-                        <span class="bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#세무사</span>
+                    class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-green-400 focus:outline-none">
+                    <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">권창호</p>
+                    <p class="text-sm text-green-600 font-bold mb-3">세무사</p>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">개인사업자·요식업 기장 전문<br>법인 세무조정·부가세 신고</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="bg-gray-700 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#공인중개사</span>
+                        <span class="bg-green-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#기장전문</span>
+                        <span class="bg-green-100 text-green-700 text-[11px] font-bold px-2 py-0.5 rounded-full">#15년경력</span>
                     </div>
                 </button>
 
                 <!-- 카드 3: 최지훈 -->
                 <button onclick="selectExpert(2)" id="expert-card-2"
-                    class="expert-card text-left p-5 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 focus:outline-none">
-                    <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mb-3">
-                        <span class="text-amber-700 font-extrabold text-lg">최</span>
-                    </div>
-                    <p class="font-extrabold text-gray-900 text-base leading-tight">최지훈</p>
-                    <p class="text-xs text-amber-600 font-bold mt-0.5">감정평가사 · 이사</p>
-                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">부동산 감정평가<br>기준가격 자문</p>
-                    <div class="flex flex-wrap gap-1 mt-3">
-                        <span class="bg-amber-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#감정평가사</span>
-                        <span class="bg-amber-800 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#이사</span>
+                    class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 focus:outline-none">
+                    <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">최지훈</p>
+                    <p class="text-sm text-amber-600 font-bold mb-3">감정평가사 · 이사</p>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">부동산 감정평가 전문<br>기준시가·기타물건 자문</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="bg-amber-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#감정평가사</span>
+                        <span class="bg-amber-800 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#명문법인이사</span>
                     </div>
                 </button>
 
                 <!-- 카드 4: 김진범 -->
                 <button onclick="selectExpert(3)" id="expert-card-3"
-                    class="expert-card text-left p-5 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-400 focus:outline-none">
-                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mb-3">
-                        <span class="text-indigo-700 font-extrabold text-lg">김</span>
-                    </div>
-                    <p class="font-extrabold text-gray-900 text-base leading-tight">김진범</p>
-                    <p class="text-xs text-indigo-600 font-bold mt-0.5">공인회계사 · Partner</p>
-                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">회계감사·가치평가<br>M&amp;A 자문</p>
-                    <div class="flex flex-wrap gap-1 mt-3">
-                        <span class="bg-indigo-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#공인회계사</span>
-                        <span class="bg-indigo-800 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">#Partner</span>
+                    class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-400 focus:outline-none">
+                    <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">김진범</p>
+                    <p class="text-sm text-indigo-600 font-bold mb-3">공인회계사 · Partner</p>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">회계감사·기업가치평가<br>M&amp;A 및 투자자문</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="bg-indigo-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#공인회계사</span>
+                        <span class="bg-indigo-800 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">#한서법인Partner</span>
                     </div>
                 </button>
             </div>
 
             <!-- 상세 프로필 패널 -->
-            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+            <div id="expert-detail-wrapper" class="rounded-3xl overflow-hidden transition-all duration-300">
 
                 <!-- 상세 0: 천아름 -->
-                <div id="expert-detail-0" class="expert-detail flex flex-col md:flex-row min-h-[400px]">
+                <div id="expert-detail-0" class="expert-detail hidden flex-col md:flex-row min-h-[400px]">
                     <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[220px] md:min-h-0 flex items-center justify-center p-4">
                         <img src="/images/car.jpg" alt="천아름 대표세무사" class="w-full max-w-[180px] h-auto object-cover object-top rounded-xl shadow-lg">
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
@@ -848,21 +838,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
     </section>
 
-    <!-- 상속세 계산기 플로팅 버튼 -->
-    <a href="/calculator" style="
-        position:fixed;bottom:2rem;left:2rem;z-index:9999;
-        width:68px;height:68px;border-radius:16px;
-        background:#0d1b2a;border:2px solid #c9a84c;color:#fff;
-        box-shadow:0 8px 30px rgba(0,0,0,.4);cursor:pointer;
-        display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-        text-decoration:none;transition:background .2s;
-    " aria-label="상속세 계산기"
-       onmouseover="this.style.background='#c9a84c'"
-       onmouseout="this.style.background='#0d1b2a'">
-        <span style="font-size:1.4rem;line-height:1;">📊</span>
-        <span style="font-size:.58rem;font-weight:800;letter-spacing:-.01em;text-align:center;line-height:1.2;">상속세<br>계산기</span>
-    </a>
-
     <!-- 플로팅 위로가기 버튼 -->
     <button id="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
         class="fixed bottom-8 right-8 z-50 px-5 py-4 bg-navy-800 hover:bg-gold-500 text-white rounded-xl shadow-2xl transition-all duration-300 opacity-0 invisible flex items-center justify-center gap-2 border-2 border-gold-500 hover:border-gold-600 font-bold text-lg"
@@ -941,19 +916,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             for (var i = 0; i < 4; i++) {
                 var card = document.getElementById('expert-card-' + i);
                 if (card) {
-                    card.classList.remove('active-card', 'border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400', 'shadow-lg');
+                    card.classList.remove('border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400', 'shadow-lg', 'bg-gray-50');
                     card.classList.add('border-gray-200', 'shadow-sm');
                 }
                 // 모든 상세 패널 숨김
                 var detail = document.getElementById('expert-detail-' + i);
-                if (detail) detail.classList.add('hidden');
+                if (detail) {
+                    detail.classList.add('hidden');
+                    detail.classList.remove('flex');
+                }
+            }
+            // wrapper 스타일 활성화
+            var wrapper = document.getElementById('expert-detail-wrapper');
+            if (wrapper) {
+                wrapper.classList.add('bg-white', 'shadow-xl', 'border', 'border-gray-100');
             }
             // 선택된 카드 활성화
             var activeCard = document.getElementById('expert-card-' + index);
             var borderColors = ['border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400'];
             if (activeCard) {
                 activeCard.classList.remove('border-gray-200', 'shadow-sm');
-                activeCard.classList.add(borderColors[index], 'shadow-lg');
+                activeCard.classList.add(borderColors[index], 'shadow-lg', 'bg-gray-50');
             }
             // 선택된 상세 패널 표시
             var activeDetail = document.getElementById('expert-detail-' + index);
@@ -962,8 +945,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 activeDetail.classList.add('flex');
             }
         }
-        // 초기 실행: 천아름(0번) 선택
-        selectExpert(0);
 
         // ===== 사진 갤러리 슬라이더 =====
         let photoIndex = 0;
