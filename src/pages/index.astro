@@ -91,7 +91,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
 
                 <!-- 카드 1: 천아름 -->
-                <button onclick="selectExpert(0)" id="expert-card-0"
+                <button data-expert="0" id="expert-card-0"
                     class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-gold-400 focus:outline-none">
                     <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">천아름</p>
                     <p class="text-sm text-gold-600 font-bold mb-3">세무사 · 대표</p>
@@ -104,7 +104,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </button>
 
                 <!-- 카드 2: 권창호 -->
-                <button onclick="selectExpert(1)" id="expert-card-1"
+                <button data-expert="1" id="expert-card-1"
                     class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-green-400 focus:outline-none">
                     <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">권창호</p>
                     <p class="text-sm text-green-600 font-bold mb-3">세무사</p>
@@ -117,7 +117,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </button>
 
                 <!-- 카드 3: 최지훈 -->
-                <button onclick="selectExpert(2)" id="expert-card-2"
+                <button data-expert="2" id="expert-card-2"
                     class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 focus:outline-none">
                     <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">최지훈</p>
                     <p class="text-sm text-amber-600 font-bold mb-3">감정평가사 · 이사</p>
@@ -129,7 +129,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </button>
 
                 <!-- 카드 4: 김진범 -->
-                <button onclick="selectExpert(3)" id="expert-card-3"
+                <button data-expert="3" id="expert-card-3"
                     class="expert-card text-left p-6 rounded-2xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-400 focus:outline-none">
                     <p class="font-extrabold text-gray-900 text-xl leading-tight mb-1">김진범</p>
                     <p class="text-sm text-indigo-600 font-bold mb-3">공인회계사 · Partner</p>
@@ -910,38 +910,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
         startHeroAutoPlay();
 
-        // ===== 전문가 선택 =====
-        function selectExpert(index) {
-            var borderColors = ['border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400'];
+        // ===== 전문가 선택 (이벤트 리스너 방식) =====
+        var borderColors = ['border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400'];
 
-            // 모든 미니카드 초기화 + 모든 상세 패널 숨김
-            for (var i = 0; i < 4; i++) {
-                var card = document.getElementById('expert-card-' + i);
-                if (card) {
-                    card.classList.remove(borderColors[i], 'shadow-lg', 'bg-gray-50');
-                    card.classList.add('border-gray-200', 'shadow-sm');
+        document.querySelectorAll('.expert-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                var index = parseInt(this.getAttribute('data-expert'));
+
+                // 모든 카드 초기화
+                document.querySelectorAll('.expert-card').forEach(function(c, i) {
+                    c.style.borderColor = '';
+                    c.classList.remove('shadow-lg', 'bg-gray-50', borderColors[i]);
+                    c.classList.add('border-gray-200', 'shadow-sm');
+                });
+
+                // 모든 상세 패널 숨김
+                for (var i = 0; i < 4; i++) {
+                    var d = document.getElementById('expert-detail-' + i);
+                    if (d) d.style.display = 'none';
                 }
-                var detail = document.getElementById('expert-detail-' + i);
-                if (detail) detail.style.display = 'none';
-            }
 
-            // wrapper 스타일 활성화
-            var wrapper = document.getElementById('expert-detail-wrapper');
-            if (wrapper) {
-                wrapper.classList.add('bg-white', 'shadow-xl', 'border', 'border-gray-100', 'mt-8');
-            }
+                // 선택 카드 강조
+                this.classList.remove('border-gray-200', 'shadow-sm');
+                this.classList.add(borderColors[index], 'shadow-lg', 'bg-gray-50');
 
-            // 선택된 카드 강조
-            var activeCard = document.getElementById('expert-card-' + index);
-            if (activeCard) {
-                activeCard.classList.remove('border-gray-200', 'shadow-sm');
-                activeCard.classList.add(borderColors[index], 'shadow-lg', 'bg-gray-50');
-            }
+                // wrapper 표시
+                var wrapper = document.getElementById('expert-detail-wrapper');
+                if (wrapper) {
+                    wrapper.style.marginTop = '2rem';
+                    wrapper.style.border = '1px solid #f3f4f6';
+                    wrapper.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,.1)';
+                    wrapper.style.background = '#fff';
+                }
 
-            // 선택된 상세 패널 표시
-            var activeDetail = document.getElementById('expert-detail-' + index);
-            if (activeDetail) activeDetail.style.display = 'flex';
-        }
+                // 선택 패널 표시
+                var detail = document.getElementById('expert-detail-' + index);
+                if (detail) detail.style.display = 'flex';
+            });
+        });
 
         // ===== 사진 갤러리 슬라이더 =====
         let photoIndex = 0;
