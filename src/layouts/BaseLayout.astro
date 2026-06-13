@@ -82,7 +82,7 @@ const {
   </script>
 
   <!-- Lucide 아이콘 -->
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+  <script is:inline src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
   <!-- 페이지별 구조화 데이터 -->
   {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
@@ -103,8 +103,17 @@ const {
   {showFooter && <Footer />}
 
   <!-- Lucide 아이콘 초기화 (전역) -->
-  <script>
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+  <script is:inline>
+    function initLucideIcons() {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLucideIcons);
+    } else {
+      initLucideIcons();
+    }
   </script>
 
   <!-- 무단 복제 방지 -->
