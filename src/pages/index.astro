@@ -145,7 +145,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div id="expert-detail-wrapper" class="rounded-3xl overflow-hidden transition-all duration-300">
 
                 <!-- 상세 0: 천아름 -->
-                <div id="expert-detail-0" class="expert-detail hidden flex-col md:flex-row min-h-[400px]">
+                <div id="expert-detail-0" class="expert-detail flex-col md:flex-row min-h-[400px]" style="display:none">
                     <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[220px] md:min-h-0 flex items-center justify-center p-4">
                         <img src="/images/car.jpg" alt="천아름 대표세무사" class="w-full max-w-[180px] h-auto object-cover object-top rounded-xl shadow-lg">
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
@@ -173,7 +173,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </div>
 
                 <!-- 상세 1: 권창호 -->
-                <div id="expert-detail-1" class="expert-detail hidden flex-col md:flex-row min-h-[400px]">
+                <div id="expert-detail-1" class="expert-detail flex-col md:flex-row min-h-[400px]" style="display:none">
                     <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[220px] md:min-h-0 flex items-center justify-center p-4">
                         <img src="/images/bf88eca3cee1a.png" alt="권창호 자문 세무사" class="w-full max-w-[180px] h-auto object-cover object-center rounded-xl shadow-lg">
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
@@ -200,7 +200,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </div>
 
                 <!-- 상세 2: 최지훈 -->
-                <div id="expert-detail-2" class="expert-detail hidden flex-col md:flex-row min-h-[400px]">
+                <div id="expert-detail-2" class="expert-detail flex-col md:flex-row min-h-[400px]" style="display:none">
                     <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[220px] md:min-h-0 flex items-center justify-center p-4">
                         <img src="/images/KakaoTalk_20260205_143448097.jpg" alt="최지훈 감정평가사" class="w-full max-w-[180px] h-auto object-cover object-center rounded-xl shadow-lg">
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
@@ -226,7 +226,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </div>
 
                 <!-- 상세 3: 김진범 -->
-                <div id="expert-detail-3" class="expert-detail hidden flex-col md:flex-row min-h-[400px]">
+                <div id="expert-detail-3" class="expert-detail flex-col md:flex-row min-h-[400px]" style="display:none">
                     <div class="w-full md:w-3/12 relative bg-gray-100 min-h-[220px] md:min-h-0 flex items-center justify-center p-4">
                         <img src="/images/kjb.png" alt="김진범 공인회계사" class="w-full max-w-[180px] h-auto object-cover object-center rounded-xl shadow-lg">
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap">
@@ -912,38 +912,35 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         // ===== 전문가 선택 =====
         function selectExpert(index) {
-            // 모든 미니카드 스타일 초기화
+            var borderColors = ['border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400'];
+
+            // 모든 미니카드 초기화 + 모든 상세 패널 숨김
             for (var i = 0; i < 4; i++) {
                 var card = document.getElementById('expert-card-' + i);
                 if (card) {
-                    card.classList.remove('border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400', 'shadow-lg', 'bg-gray-50');
+                    card.classList.remove(borderColors[i], 'shadow-lg', 'bg-gray-50');
                     card.classList.add('border-gray-200', 'shadow-sm');
                 }
-                // 모든 상세 패널 숨김
                 var detail = document.getElementById('expert-detail-' + i);
-                if (detail) {
-                    detail.classList.add('hidden');
-                    detail.classList.remove('flex');
-                }
+                if (detail) detail.style.display = 'none';
             }
+
             // wrapper 스타일 활성화
             var wrapper = document.getElementById('expert-detail-wrapper');
             if (wrapper) {
-                wrapper.classList.add('bg-white', 'shadow-xl', 'border', 'border-gray-100');
+                wrapper.classList.add('bg-white', 'shadow-xl', 'border', 'border-gray-100', 'mt-8');
             }
-            // 선택된 카드 활성화
+
+            // 선택된 카드 강조
             var activeCard = document.getElementById('expert-card-' + index);
-            var borderColors = ['border-gold-500', 'border-green-400', 'border-amber-400', 'border-indigo-400'];
             if (activeCard) {
                 activeCard.classList.remove('border-gray-200', 'shadow-sm');
                 activeCard.classList.add(borderColors[index], 'shadow-lg', 'bg-gray-50');
             }
+
             // 선택된 상세 패널 표시
             var activeDetail = document.getElementById('expert-detail-' + index);
-            if (activeDetail) {
-                activeDetail.classList.remove('hidden');
-                activeDetail.classList.add('flex');
-            }
+            if (activeDetail) activeDetail.style.display = 'flex';
         }
 
         // ===== 사진 갤러리 슬라이더 =====
