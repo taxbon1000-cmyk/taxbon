@@ -72,8 +72,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <!-- 슬라이드 변환 버튼 -->
         <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
-            <button onclick="manualSwitchHero(0)" class="hero-dot w-3 h-3 rounded-full bg-gold-500 transition-all duration-300 ring-2 ring-transparent focus:ring-white"></button>
-            <button onclick="manualSwitchHero(1)" class="hero-dot w-3 h-3 rounded-full bg-gray-600 transition-all duration-300 ring-2 ring-transparent focus:ring-white"></button>
+            <button class="hero-dot w-3 h-3 rounded-full bg-gold-500 transition-all duration-300 ring-2 ring-transparent focus:ring-white"></button>
+            <button class="hero-dot w-3 h-3 rounded-full bg-gray-600 transition-all duration-300 ring-2 ring-transparent focus:ring-white"></button>
         </div>
     </section>
 
@@ -290,7 +290,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                             세무회계본의 핵심 전문 분야입니다. 복잡한 세법을 사전에 정밀 분석하여 절세 효과를 극대화하는 최적의 플랜을 제시합니다.
                         </p>
                         <div class="flex items-center gap-4 flex-wrap">
-                            <a href="#fee-property" onclick="switchFeeTab('property'); return true;" class="inline-flex items-center gap-2 text-blue-600 font-bold text-sm hover:text-blue-700 hover:gap-3 transition-all">
+                            <a href="#fee-property" data-fee-tab="property" class="inline-flex items-center gap-2 text-blue-600 font-bold text-sm hover:text-blue-700 hover:gap-3 transition-all">
                                 비용 안내 보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </a>
                             <a href="/intake" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-navy-800 hover:bg-gold-500 text-white text-xs font-bold rounded-lg border border-gold-500 hover:border-gold-600 transition-all">
@@ -310,7 +310,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                         <p class="text-gray-600 text-sm leading-relaxed mb-6">
                             법인 및 개인 사업자의 부가가치세, 소득세 신고를 대행합니다. 꼼꼼한 장부 작성으로 불필요한 가산세를 막고 경영의 흐름을 파악합니다.
                         </p>
-                        <a href="#fee-property" onclick="switchFeeTab('business'); return true;" class="inline-flex items-center gap-2 text-slate-600 font-bold text-sm hover:text-slate-700 hover:gap-3 transition-all">
+                        <a href="#fee-property" data-fee-tab="business" class="inline-flex items-center gap-2 text-slate-600 font-bold text-sm hover:text-slate-700 hover:gap-3 transition-all">
                             보수표 보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </a>
                     </div>
@@ -343,10 +343,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
             <!-- 탭 버튼 -->
             <div class="flex justify-center mb-8 gap-4">
-                <button onclick="switchFeeTab('property')" id="tab-property" class="fee-tab-button active px-8 py-3 rounded-lg font-bold text-lg transition-all">
+                <button data-fee-tab="property" id="tab-property" class="fee-tab-button active px-8 py-3 rounded-lg font-bold text-lg transition-all">
                     상속·증여·양도
                 </button>
-                <button onclick="switchFeeTab('business')" id="tab-business" class="fee-tab-button px-8 py-3 rounded-lg font-bold text-lg transition-all">
+                <button data-fee-tab="business" id="tab-business" class="fee-tab-button px-8 py-3 rounded-lg font-bold text-lg transition-all">
                     개인·법인
                 </button>
             </div>
@@ -760,15 +760,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                     </div>
                 </div>
                 <div class="gallery-dots">
-                    <button class="active" onclick="goToPhotoSlide(0)"></button>
-                    <button onclick="goToPhotoSlide(1)"></button>
-                    <button onclick="goToPhotoSlide(2)"></button>
-                    <button onclick="goToPhotoSlide(3)"></button>
-                    <button onclick="goToPhotoSlide(4)"></button>
+                    <button class="active"></button>
+                    <button></button>
+                    <button></button>
+                    <button></button>
+                    <button></button>
                 </div>
                 <div class="gallery-nav">
-                    <button onclick="prevPhotoSlide()">❮</button>
-                    <button onclick="nextPhotoSlide()">❯</button>
+                    <button>❮</button>
+                    <button>❯</button>
                 </div>
             </div>
         </div>
@@ -831,7 +831,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <!-- 플로팅 위로가기 버튼 -->
-    <button id="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+    <button id="scroll-to-top" 
         class="fixed bottom-8 right-8 z-50 px-5 py-4 bg-navy-800 hover:bg-gold-500 text-white rounded-xl shadow-2xl transition-all duration-300 opacity-0 invisible flex items-center justify-center gap-2 border-2 border-gold-500 hover:border-gold-600 font-bold text-lg"
         style="box-shadow: 0 8px 30px rgba(0,0,0,0.4);"
         aria-label="맨 위로 이동">
@@ -1050,4 +1050,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 scrollToTopBtn.classList.remove('opacity-100', 'visible');
             }
         });
+
+        // ===== 이벤트 바인딩 (인라인 onclick 대체) =====
+        // 히어로 수동 점
+        heroDots.forEach((dot, i) => dot.addEventListener('click', () => manualSwitchHero(i)));
+        // 요금 탭 전환 (서비스 카드 링크 + 탭 버튼)
+        document.querySelectorAll('[data-fee-tab]').forEach(el =>
+            el.addEventListener('click', () => switchFeeTab(el.dataset.feeTab))
+        );
+        // 갤러리 점
+        galleryDots.forEach((dot, i) => dot.addEventListener('click', () => goToPhotoSlide(i)));
+        // 갤러리 좌우 화살표
+        const galleryNavBtns = document.querySelectorAll('.gallery-nav button');
+        if (galleryNavBtns[0]) galleryNavBtns[0].addEventListener('click', prevPhotoSlide);
+        if (galleryNavBtns[1]) galleryNavBtns[1].addEventListener('click', nextPhotoSlide);
+        // 위로가기
+        if (scrollToTopBtn) scrollToTopBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
     </script>

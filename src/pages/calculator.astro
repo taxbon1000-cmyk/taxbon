@@ -57,7 +57,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <!-- 기본 계산기 (index에서 이식) -->
     <!-- 계산기 팝업 -->
-    <div id="calc-popup" onclick="event.stopPropagation()" style="
+    <div id="calc-popup" style="
         display:none;position:fixed;bottom:6.5rem;left:2rem;z-index:9999;
         width:260px;max-width:calc(100vw - 4rem);
         background:linear-gradient(160deg,#d6d3ce 0%,#bfbcb7 100%);
@@ -85,7 +85,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
 
     <!-- 계산기 플로팅 토글 버튼 -->
-    <button id="calc-fab" onclick="toggleCalc();event.stopPropagation()" style="
+    <button id="calc-fab" style="
         position:fixed;bottom:2rem;left:2rem;z-index:9999;
         width:68px;height:68px;border-radius:16px;
         background:#0d1b2a;border:2px solid #c9a84c;color:#fff;
@@ -251,7 +251,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         p.style.display=show?'block':'none';
         document.getElementById('calc-fab').style.background=show?'#c9a84c':'#0d1b2a';
     }
-    // 외부 클릭 시 닫기 (stopPropagation으로 팝업/버튼 내부 클릭은 차단)
+
+    // FAB·팝업 클릭 바인딩 (인라인 onclick 대체)
+    document.getElementById('calc-fab').addEventListener('click', function(e){
+        e.stopPropagation();
+        toggleCalc();
+    });
+    document.getElementById('calc-popup').addEventListener('click', function(e){
+        e.stopPropagation();
+    });
+
+    // 외부 클릭 시 닫기
     document.addEventListener('click',function(){
         const p=document.getElementById('calc-popup');
         if(p.style.display==='block'){
@@ -263,7 +273,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 
 <!-- 플로팅 위로가기 -->
-<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+<button id="scroll-top"
     class="fixed bottom-8 right-8 z-50 px-5 py-4 bg-navy-800 hover:bg-gold-500 text-white rounded-xl shadow-2xl transition-all duration-300 opacity-0 invisible flex items-center gap-2 border-2 border-gold-500 font-bold"
     aria-label="맨 위로">
     <span>↑</span><span>위로</span>
@@ -277,6 +287,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     });
 
     const st = document.getElementById('scroll-top');
+    st.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) { st.classList.remove('opacity-0','invisible'); st.classList.add('opacity-100','visible'); }
         else { st.classList.add('opacity-0','invisible'); st.classList.remove('opacity-100','visible'); }
