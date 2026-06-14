@@ -11,7 +11,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   showFooter={false}
 >
 
-<style>
+<style is:global>
 
 /* ═══ RESET ═══ */
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -318,13 +318,13 @@ footer a{color:#e8c97a;text-decoration:none;}
 
 <!-- TABS -->
 <div class="tax-tabs">
-  <button class="ttab inh on" onclick="switchTab('inh')">
+  <button class="ttab inh on">
     <span class="ti">🏛️</span><span class="tl">상속세</span><span class="ts">사망 후 재산 이전</span>
   </button>
-  <button class="ttab gif" onclick="switchTab('gif')">
+  <button class="ttab gif">
     <span class="ti">🎁</span><span class="tl">증여세</span><span class="ts">생전 재산 이전</span>
   </button>
-  <button class="ttab cap" onclick="switchTab('cap')">
+  <button class="ttab cap">
     <span class="ti">🏠</span><span class="tl">양도세</span><span class="ts">부동산·주식 매도</span>
   </button>
 </div>
@@ -375,14 +375,14 @@ footer a{color:#e8c97a;text-decoration:none;}
 
 <!-- 카테고리 오버레이 -->
 <div class="ov" id="ov">
-  <div class="bd" onclick="closeOv()"></div>
+  <div class="bd"></div>
   <div class="panel">
     <div class="ph">
       <div class="ph-l">
         <span id="ov-ico" style="font-size:1.45rem"></span>
         <div><h3 id="ov-ttl"></h3><p id="ov-sub"></p></div>
       </div>
-      <button class="xbtn" onclick="closeOv()">✕</button>
+      <button class="xbtn">✕</button>
     </div>
     <div class="prog">
       <div class="bar-bg"><div class="bar-fill" id="ov-bar"></div></div>
@@ -396,13 +396,13 @@ footer a{color:#e8c97a;text-decoration:none;}
 
 <!-- 요약 모달 -->
 <div class="sm" id="sm">
-  <div class="bd" onclick="closeSm()"></div>
+  <div class="bd"></div>
   <div class="panel">
     <div class="sm-hd">
       <div><h3 id="sm-ttl">📋 준비서류 전체보기</h3><p id="sm-sub"></p></div>
       <div class="sm-hd-r">
-        <button class="send-btn" onclick="closeSm();openSnd()">✉️ 전송하기</button>
-        <button class="xbtn" style="background:rgba(255,255,255,.14);color:#fff;margin-left:.5rem" onclick="closeSm()">✕</button>
+        <button class="send-btn">✉️ 전송하기</button>
+        <button class="xbtn" style="background:rgba(255,255,255,.14);color:#fff;margin-left:.5rem">✕</button>
       </div>
     </div>
     <div class="prog" style="background:#f8f5f0;">
@@ -415,11 +415,11 @@ footer a{color:#e8c97a;text-decoration:none;}
 
 <!-- 전송 모달 -->
 <div class="snd" id="snd">
-  <div class="bd" onclick="closeSnd()"></div>
+  <div class="bd"></div>
   <div class="panel">
     <div class="snd-hd">
       <h3>✉️ 문의 전송</h3>
-      <button class="xbtn" style="background:rgba(255,255,255,.14);color:#fff" onclick="closeSnd()">✕</button>
+      <button class="xbtn" style="background:rgba(255,255,255,.14);color:#fff">✕</button>
     </div>
     <div class="snd-body">
       <p>이름과 연락처를 입력하시면 체크하신 서류 현황과 함께 세무회계본으로 전달됩니다.</p>
@@ -428,7 +428,7 @@ footer a{color:#e8c97a;text-decoration:none;}
         <div class="fg"><label>연락처 *</label><input type="tel" id="fp" placeholder="010-0000-0000"></div>
       </div>
       <div id="fmsg" class="fmsg"></div>
-      <button class="ebtn" id="ebtn" onclick="sendEmail()">✉️ 이메일 보내기</button>
+      <button class="ebtn" id="ebtn">✉️ 이메일 보내기</button>
       <p class="ehint">전송 완료 시 세무회계본에 바로 접수됩니다<br>
         또는 <strong style="color:#888">02-597-5830</strong> 직접 문의</p>
     </div>
@@ -747,6 +747,19 @@ function showMsg(txt,type){
 
 /* ═══ ESC ═══ */
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeOv();closeSm();closeSnd(); } });
+
+/* ═══ 이벤트 바인딩 (인라인 onclick 대체) ═══ */
+document.querySelectorAll('.ttab').forEach(btn=>{
+  const k = btn.classList.contains('inh') ? 'inh' : btn.classList.contains('gif') ? 'gif' : 'cap';
+  btn.addEventListener('click', ()=>switchTab(k));
+});
+document.querySelectorAll('#ov .bd, #ov .xbtn').forEach(el=>el.addEventListener('click', closeOv));
+document.querySelectorAll('#sm .bd, #sm .xbtn').forEach(el=>el.addEventListener('click', closeSm));
+document.querySelectorAll('#snd .bd, #snd .xbtn').forEach(el=>el.addEventListener('click', closeSnd));
+const _sendBtn=document.querySelector('.send-btn');
+if(_sendBtn) _sendBtn.addEventListener('click', ()=>{ closeSm(); openSnd(); });
+const _ebtn=document.getElementById('ebtn');
+if(_ebtn) _ebtn.addEventListener('click', sendEmail);
 
 /* ═══ 초기화 ═══ */
 window.addEventListener('load',()=>{ ['inh','gif','cap'].forEach(buildWheel); });
