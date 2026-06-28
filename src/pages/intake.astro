@@ -306,8 +306,61 @@ footer a{color:#e8c97a;text-decoration:none;}
   <a href="/" class="tlogo">
     <div><div class="nm">세무회계본</div><div class="sb">TAXBON TAX &amp; ACCOUNTING</div></div>
   </a>
-  <a href="/" class="thome">홈으로</a>
+
+  <!-- 데스크탑 메뉴 -->
+  <nav style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="/#about"        style="color:#ccc;font-size:.82rem;font-weight:600;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#ccc'">전문가 소개</a>
+    <a href="/cases"         style="color:#ccc;font-size:.82rem;font-weight:600;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#ccc'">실제 사례</a>
+    <a href="/#fee-property" style="color:#ccc;font-size:.82rem;font-weight:600;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#ccc'">요금 안내</a>
+    <a href="/intake"        style="color:#c9a84c;font-size:.82rem;font-weight:800;text-decoration:none;white-space:nowrap;">준비서류</a>
+    <a href="https://booking.naver.com/booking/6/bizes/1181095" target="_blank" rel="noopener noreferrer"
+       style="display:flex;align-items:center;gap:.35rem;background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#0a1520;font-size:.8rem;font-weight:800;padding:.48rem 1rem;border-radius:7px;text-decoration:none;white-space:nowrap;box-shadow:0 2px 10px rgba(201,168,76,.4);transition:filter .18s,transform .18s;"
+       onmouseover="this.style.filter='brightness(1.08)';this.style.transform='translateY(-1px)'"
+       onmouseout="this.style.filter='';this.style.transform=''">
+      📅 상담 예약
+    </a>
+  </nav>
+
+  <!-- 모바일 햄버거 -->
+  <button id="mb-toggle" style="display:none;background:none;border:none;color:#fff;padding:.3rem;" aria-label="메뉴">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
 </header>
+
+<!-- 모바일 드롭다운 메뉴 -->
+<div id="mb-menu" style="display:none;position:fixed;top:58px;left:0;right:0;z-index:199;background:#0d1b2a;border-bottom:1px solid rgba(201,168,76,.2);padding:1rem 1.5rem;flex-direction:column;gap:.75rem;">
+  <a href="/#about"        style="color:#ccc;font-size:.9rem;font-weight:600;text-decoration:none;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06);">전문가 소개</a>
+  <a href="/cases"         style="color:#ccc;font-size:.9rem;font-weight:600;text-decoration:none;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06);">실제 사례</a>
+  <a href="/#fee-property" style="color:#ccc;font-size:.9rem;font-weight:600;text-decoration:none;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06);">요금 안내</a>
+  <a href="/intake"        style="color:#c9a84c;font-size:.9rem;font-weight:800;text-decoration:none;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06);">준비서류</a>
+  <a href="https://booking.naver.com/booking/6/bizes/1181095" target="_blank" rel="noopener noreferrer"
+     style="color:#0a1520;font-size:.9rem;font-weight:800;text-decoration:none;padding:.5rem 1rem;background:linear-gradient(135deg,#c9a84c,#e8c97a);border-radius:8px;text-align:center;margin-top:.25rem;">
+    📅 상담 예약
+  </a>
+</div>
+
+<style is:global>
+@media(max-width:768px){
+  header.topbar nav { display: none !important; }
+  #mb-toggle { display: flex !important; }
+}
+</style>
+
+<script>
+(function(){
+  var btn = document.getElementById('mb-toggle');
+  var menu = document.getElementById('mb-menu');
+  if(!btn || !menu) return;
+  btn.addEventListener('click', function(){
+    var open = menu.style.display === 'flex';
+    menu.style.display = open ? 'none' : 'flex';
+  });
+  // 메뉴 링크 클릭 시 닫기
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ menu.style.display = 'none'; });
+  });
+})();
+</script>
 
 <!-- HERO -->
 <div class="hero">
