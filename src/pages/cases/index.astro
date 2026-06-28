@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allCases = await getCollection('cases');
+
+// 날짜 내림차순 정렬 (최신순)
+const sorted = allCases.sort((a, b) =>
+  b.data.date.localeCompare(a.data.date)
+);
+
+// 유형별 색상 매핑
+const typeColor: Record<string, string> = {
+  '상속세':    'bg-navy-800 text-white',
+  '증여세':    'bg-gold-500 text-white',
+  '양도소득세': 'bg-amber-600 text-white',
+  '기장':      'bg-gray-700 text-white',
+  '컨설팅':    'bg-indigo-600 text-white',
+};
+---
+
+<BaseLayout
+  title="실제 사례 | 세무회계본"
+  description="세무회계본이 직접 처리한 상속세·증여세·양도소득세 실제 신고 사례를 공개합니다."
+  canonical="https://taxbon.com/cases"
+  currentPage="home"
+>
+  <!-- 페이지 헤더 -->
+  <section class="bg-navy-900 pt-32 pb-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="text-gold-500 font-bold tracking-wider uppercase text-sm">Cases</span>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">실제 사례</h1>
+      <p class="text-gray-400 text-sm leading-relaxed max-w-xl mx-auto">
+        세무회계본이 직접 처리한 신고 사례를 실제 접수증과 함께 공개합니다.<br>
+        말이 아닌 결과로 증명합니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- 사례 카드 목록 -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      {sorted.length === 0 ? (
+        <div class="text-center py-24 text-gray-400">
+          <p class="text-lg">사례를 준비 중입니다.</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sorted.map((c) => (
+            <a
+              href={`/cases/${c.slug}`}
+              class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition duration-300 overflow-hidden flex flex-col"
+            >
+              {/* 접수증 이미지 */}
+              {c.data.image ? (
+                <div class="h-44 overflow-hidden bg-gray-100">
+                  <img
+                    src={c.data.image}
+                    alt={`${c.data.title} 신고접수증`}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div class="h-44 bg-navy-900 flex items-center justify-center">
+                  <i data-lucide="file-check" class="w-12 h-12 text-gold-500 opacity-60"></i>
+                </div>
+              )}
+
+              {/* 카드 본문 */}
+              <div class="p-6 flex flex-col flex-1">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class={`text-xs font-bold px-2.5 py-1 rounded-full ${typeColor[c.data.type] ?? 'bg-gray-200 text-gray-700'}`}>
+                    {c.data.type}
+                  </span>
+                  <span class="text-xs text-gray-400">{c.data.date}</span>
+                </div>
+                <h2 class="text-base font-bold text-navy-800 mb-2 leading-snug">{c.data.title}</h2>
+                <p class="text-sm text-gray-500 leading-relaxed flex-1">{c.data.summary}</p>
+
+                {(c.data.amount || c.data.result) && (
+                  <div class="mt-4 pt-4 border-t border-gray-100 space-y-1">
+                    {c.data.amount && (
+                      <p class="text-xs text-gray-500">
+                        <span class="font-bold text-gray-700">규모</span> {c.data.amount}
+                      </p>
+                    )}
+                    {c.data.result && (
+                      <p class="text-xs text-gray-500">
+                        <span class="font-bold text-gold-600">결과</span> {c.data.result}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                <div class="mt-4 inline-flex items-center gap-1 text-gold-600 text-sm font-bold">
+                  자세히 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+
+      <!-- 상담 유도 -->
+      <div class="mt-16 text-center bg-navy-900 rounded-2xl p-10">
+        <p class="text-white font-bold text-lg mb-2">비슷한 상황이신가요?</p>
+        <p class="text-gray-400 text-sm mb-6">상속세 첫 상담은 사망진단서 지참 시 무료입니다.</p>
+        <a
+          href="https://booking.naver.com/booking/6/bizes/1181095"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-white font-bold px-8 py-4 rounded-lg transition shadow-lg"
+        >
+          <i data-lucide="calendar-check" class="w-5 h-5"></i>
+          상담 예약하기
+        </a>
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>
