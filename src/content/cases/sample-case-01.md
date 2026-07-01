@@ -3,7 +3,7 @@ title: "배우자 및 자녀 상속세 신고"
 type: "상속세"
 date: "2025-03"
 summary: "피상속인 사망 후 아파트·예금 등 상속재산에 대해 기한 내 정확한 신고를 완료한 사례입니다."
-image: "public/images/cases/case-01.png"
+image: "/images/cases/case-01.png"
 amount: "상속재산 약 15억"
 result: "배우자 공제·일괄공제 적용으로 납부세액 최소화"
 ---
