@@ -1,5 +1,48 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "AccountingService",
+  "name": "세무회계본",
+  "image": "https://taxbon.com/images/logo.png",
+  "url": "https://taxbon.com/",
+  "telephone": "+82-2-597-5830",
+  "faxNumber": "+82-2-877-5830",
+  "email": "taxbon@taxbon.com",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "밤고개로1길 10, 수서현대벤쳐빌 403호",
+    "addressLocality": "강남구",
+    "addressRegion": "서울특별시",
+    "addressCountry": "KR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 37.4879532,
+    "longitude": 127.1018716
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "opens": "09:00",
+    "closes": "18:00"
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "천아름",
+    "jobTitle": "대표세무사"
+  },
+  "sameAs": [
+    "https://blog.naver.com/taxbon1000",
+    "https://www.instagram.com/taxbon_official/"
+  ],
+  "areaServed": {
+    "@type": "City",
+    "name": "서울특별시"
+  }
+});
 ---
 
 <BaseLayout
@@ -7,6 +50,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="강남 수서역 세무회계본. 14년 경력 천아름 대표세무사의 상속세, 증여세, 양도소득세 전문 컨설팅. 수서역 3번 출구 직결."
   canonical="https://taxbon.com/"
   currentPage="home"
+  jsonLd={jsonLd}
 >
 
 <!-- 2. 메인 히어로 슬라이드 (자동/수동) -->
