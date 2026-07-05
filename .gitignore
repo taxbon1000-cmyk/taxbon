@@ -4,3 +4,7 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# Astro/Vite generated files
+.astro/
+node_modules/.vite/
