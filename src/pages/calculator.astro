@@ -295,10 +295,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if(el) el.innerHTML += ' | Email: <a href="mailto:'+e+'" style="color:#e8c97a">'+e+'</a>';
     })();
 
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-        if((e.ctrlKey && ['c','u','s','a'].includes(e.key.toLowerCase())) || e.key === 'F12') e.preventDefault();
-    });
 </script>
 
 <!-- React 앱 (사전 컴파일 — Babel 불필요) -->
