@@ -1035,6 +1035,17 @@ const jsonLd = JSON.stringify({
             if (detail) detail.style.display = 'flex';
 
             currentExpertIndex = index;
+
+            // 모바일: 상세 패널이 카드 아래(화면 밖)에 열리므로 자동 스크롤
+            if (window.innerWidth < 768) {
+                setTimeout(function() {
+                    var w = document.getElementById('expert-detail-wrapper');
+                    if (w) {
+                        var y = w.getBoundingClientRect().top + window.scrollY - 96; // 고정 헤더 보정
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }
+                }, 60);
+            }
         }
 
         document.querySelectorAll('.expert-card').forEach(function(card) {

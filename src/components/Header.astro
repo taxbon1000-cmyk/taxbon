@@ -104,4 +104,11 @@ const p = currentPage === 'home' ? '' : '/';
   document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
     document.getElementById('mobile-menu')?.classList.toggle('hidden');
   });
+
+  // 메뉴 안 링크 클릭 시 메뉴 자동 닫기 (같은 페이지 앵커 이동 시 메뉴가 남는 문제 해결)
+  document.querySelectorAll('#mobile-menu a').forEach((a) => {
+    a.addEventListener('click', () => {
+      document.getElementById('mobile-menu')?.classList.add('hidden');
+    });
+  });
 </script>

@@ -282,10 +282,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script>
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
-    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-        document.getElementById('mobile-menu').classList.toggle('hidden');
-    });
-
     const st = document.getElementById('scroll-top');
     st.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
     window.addEventListener('scroll', () => {
@@ -1951,7 +1947,45 @@ function App() {
       }
       btn.disabled = true;
       btn.textContent = '전송 중...';
-      const body = ['═'.repeat(38), '  세무회계본 상속세 계산 문의', '═'.repeat(38), '성함    : ' + name, '연락처  : ' + phone, '', '[ 계산 입력 현황 ]', '총 상속재산  : ' + fmt(totalAssets), '채무·장례비  : ' + fmt(totalDebtCalc), '사전증여 가산: ' + fmt(gifts.heir + gifts.nonHeir), '과세가액     : ' + fmt(netTaxable), '최종 공제액  : ' + fmt(dedFinal), '과세표준     : ' + fmt(taxBase1), '적용세율     : ' + (taxBase1 > 0 ? Math.round(rate1 * 100) + '%' : '0%'), '산출세액     : ' + fmt(calcTax1), '예상 납부세액: ' + fmt(finalTax1), '', '※ 세무회계본 홈페이지 상속세 계산기에서 발송'].join('\n');
+      const lblRE = { house: '주택/아파트', building: '상가/건물', land: '토지' };
+      const lblFin = { deposit: '예적금/주식 등', insurance: '사망 보험금', severance: '퇴직금/위로금' };
+      const lblOth = { general: '일반 기타재산', deemed: '추정재산(사용처 불분명)' };
+      const lblDed = { general: '일반 채무', financial: '금융 채무', public: '공과금/세금', funeral: '장례비용', charnel: '봉안시설 등' };
+      const L = [];
+      L.push('═'.repeat(38), '  세무회계본 상속세 계산 문의', '═'.repeat(38));
+      L.push('성함    : ' + name, '연락처  : ' + phone, '');
+      L.push('[ 가족 구성 ]');
+      L.push('배우자        : ' + (fam.hasSpouse ? '있음' : '없음'));
+      L.push('자녀 수       : ' + fam.childrenCount + '명');
+      if (fam.minorCount > 0) L.push('미성년 상속인 : ' + fam.minorCount + '명 (성년까지 ' + fam.minorYears + '년)');
+      if (fam.seniorCount > 0) L.push('연로자(65세+) : ' + fam.seniorCount + '명');
+      if (fam.disabledCount > 0) L.push('장애인        : ' + fam.disabledCount + '명 (기대여명 ' + fam.disabledYears + '년)');
+      if (fam.hasSpouse) L.push('배우자 실제상속액: ' + fmt(fam.spouseInheritance));
+      L.push('', '[ 상속재산 상세 ]');
+      assets.realEstate.forEach(i => L.push('부동산·' + (lblRE[i.type] || i.type) + (i.isCohabiting ? ' (동거주택)' : '') + ' : ' + fmt(i.value)));
+      assets.financialAssets.forEach(i => L.push('금융·' + (lblFin[i.type] || i.type) + ' : ' + fmt(i.value)));
+      assets.otherAssets.forEach(i => L.push('기타·' + (lblOth[i.type] || i.type) + ' : ' + fmt(i.value)));
+      if (!assets.realEstate.length && !assets.financialAssets.length && !assets.otherAssets.length) L.push('(입력된 자산 없음)');
+      L.push('자산 합계     : ' + fmt(totalAssets));
+      L.push('', '[ 채무·장례비 상세 ]');
+      deds.forEach(d => L.push((lblDed[d.type] || d.type) + ' : ' + fmt(d.value)));
+      if (!deds.length) L.push('(입력 없음)');
+      L.push('공제 적용액   : ' + fmt(totalDebtCalc) + ' (장례비 한도 보정 반영)');
+      if (gifts.heir + gifts.nonHeir + gifts.paidTax > 0) {
+        L.push('', '[ 사전증여 ]');
+        if (gifts.heir) L.push('상속인 증여   : ' + fmt(gifts.heir));
+        if (gifts.nonHeir) L.push('비상속인 증여 : ' + fmt(gifts.nonHeir));
+        if (gifts.paidTax) L.push('기납부 증여세 : ' + fmt(gifts.paidTax));
+      }
+      L.push('', '[ 계산 결과 ]');
+      L.push('과세가액      : ' + fmt(netTaxable));
+      L.push('최종 공제액   : ' + fmt(dedFinal));
+      L.push('과세표준      : ' + fmt(taxBase1));
+      L.push('적용세율      : ' + (taxBase1 > 0 ? Math.round(rate1 * 100) + '%' : '0%'));
+      L.push('산출세액      : ' + fmt(calcTax1));
+      L.push('예상 납부세액 : ' + fmt(finalTax1));
+      L.push('', '※ 세무회계본 홈페이지 상속세 계산기에서 발송');
+      const body = L.join('\n');
       fetch('https://formspree.io/f/mjgpoedb', {
         method: 'POST',
         headers: {
