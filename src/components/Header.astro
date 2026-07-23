@@ -5,7 +5,7 @@
  * 현재 페이지에 따라 내부 앵커 링크 prefix 처리
  */
 interface Props {
-  currentPage?: 'home' | 'calculator' | 'intake' | 'cases';
+  currentPage?: 'home' | 'calculator' | 'intake' | 'cases' | 'faq';
 }
 const { currentPage = 'home' } = Astro.props;
 
@@ -34,6 +34,7 @@ const p = currentPage === 'home' ? '' : '/';
         <a href={`${p}#about`}        class="whitespace-nowrap text-xs lg:text-sm hover:text-gold-500 transition">세무사 소개</a>
         <a href={`${p}#services`}     class="whitespace-nowrap text-xs lg:text-sm hover:text-gold-500 transition">주요서비스</a>
         <a href="/cases"              class="whitespace-nowrap text-xs lg:text-sm hover:text-gold-500 transition">실제 사례</a>
+        <a href="/faq"                class="whitespace-nowrap text-xs lg:text-sm hover:text-gold-500 transition">자주 묻는 질문</a>
         <a href={`${p}#fee-property`} class="whitespace-nowrap text-xs lg:text-sm hover:text-gold-500 transition">요금안내</a>
         <a href={`${p}#contact`}      class="whitespace-nowrap text-xs lg:text-sm hover:text-gold-500 transition">오시는 길</a>
         <a
@@ -83,6 +84,7 @@ const p = currentPage === 'home' ? '' : '/';
       <a href={`${p}#about`}   class="block py-2 text-gray-300 hover:text-gold-500">세무사 소개</a>
       <a href={`${p}#services`} class="block py-2 text-gray-300 hover:text-gold-500">주요서비스</a>
       <a href="/cases"   class="block py-2 text-gray-300 hover:text-gold-500">실제 사례</a>
+      <a href="/faq"     class="block py-2 text-gray-300 hover:text-gold-500">자주 묻는 질문</a>
       <div class="pl-4 border-l border-gray-600 my-2">
         <span class="block py-1 text-xs text-gray-500">요금안내</span>
         <a href={`${p}#fee-property`} class="block py-2 text-gray-300 hover:text-gold-500">상속·증여·양도</a>
