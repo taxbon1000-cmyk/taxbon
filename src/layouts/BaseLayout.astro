@@ -120,21 +120,6 @@ const {
     }
   </script>
 
-  <!-- 무단 복제 방지 -->
-  <script>
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
-    document.addEventListener('keydown', (e) => {
-      if (
-        (e.ctrlKey && ['c','C','u','U','s','S','a','A'].includes(e.key)) ||
-        e.key === 'F12'
-      ) {
-        e.preventDefault();
-        return false;
-      }
-    });
-    document.addEventListener('dragstart', (e) => e.preventDefault());
-  </script>
-
   <!-- 페이지별 추가 스크립트 슬롯 -->
   <slot name="scripts" />
 </body>
