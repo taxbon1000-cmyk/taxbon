@@ -1,0 +1,164 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqs = [
+  {
+    q: '상속세 신고는 언제까지 해야 하나요?',
+    a: '사망일이 속하는 달의 말일부터 6개월 이내에 신고·납부해야 합니다. 피상속인 또는 상속인이 외국에 주소를 둔 경우에는 9개월입니다. 기한을 넘기면 무신고 가산세(20%)와 납부지연 가산세가 추가되므로, 서류 준비 기간을 고려해 미리 상담받으시는 것이 좋습니다.',
+  },
+  {
+    q: '상속재산이 얼마 이하면 상속세가 없나요?',
+    a: '배우자와 자녀가 있는 경우 일괄공제 5억 원과 배우자공제 최소 5억 원이 적용되어, 통상 상속재산 10억 원까지는 납부세액이 발생하지 않는 경우가 많습니다. 다만 사전증여, 추정상속재산 등에 따라 달라질 수 있어 정확한 판단은 상담이 필요합니다.',
+  },
+  {
+    q: '상속세 상담 비용은 얼마인가요?',
+    a: '세무회계본은 사망진단서를 첨부한 상속세 상담을 무료로 진행합니다. 신고를 의뢰하시는 경우 수수료는 상속재산가액의 0.2%~0.3% 수준입니다.',
+  },
+  {
+    q: '상속세 신고에 어떤 서류가 필요한가요?',
+    a: '사망진단서, 가족관계증명서, 부동산 등기부등본, 금융거래내역 등이 기본입니다. 홈페이지의 준비서류 체크리스트(/intake 링크)에서 상황별 필요 서류를 확인하실 수 있습니다.',
+  },
+  {
+    q: '상속세 신고를 꼭 세무사에게 맡겨야 하나요?',
+    a: '의무는 아니지만, 상속세는 재산 평가 방법·공제 적용·사전증여 합산 여부에 따라 세액이 크게 달라지고, 신고 후 세무조사 검증 비율도 높은 세목입니다. 전문가 검토를 통해 가산세 위험을 줄이고 공제를 빠짐없이 적용받는 것이 일반적으로 유리합니다.',
+  },
+  {
+    q: '배우자 상속공제는 얼마까지 받을 수 있나요?',
+    a: '최소 5억 원에서 최대 30억 원까지, 배우자가 실제 상속받는 금액과 법정상속분 한도 내에서 공제됩니다. 배우자 상속 비율을 어떻게 정하느냐가 전체 세액에 큰 영향을 주는 대표적인 절세 포인트입니다.',
+  },
+  {
+    q: '사망 전에 증여받은 재산도 상속세에 포함되나요?',
+    a: '상속인이 10년 이내(비상속인은 5년 이내)에 증여받은 재산은 상속세 과세가액에 합산됩니다. 이미 낸 증여세는 공제되지만, 합산으로 세율 구간이 올라갈 수 있어 사전 검토가 중요합니다.',
+  },
+  {
+    q: '상속세를 한 번에 낼 돈이 없으면 어떻게 하나요?',
+    a: '납부세액이 일정 금액을 넘으면 분납이 가능하고, 요건 충족 시 연부연납(수년에 걸쳐 나누어 납부)이나 부동산 등 물납도 신청할 수 있습니다. 납부 계획까지 포함해 상담해 드립니다.',
+  },
+];
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((f) => ({
+    "@type": "Question",
+    "name": f.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.a,
+    },
+  })),
+});
+---
+
+<BaseLayout
+  title="자주 묻는 질문 | 세무회계본 - 상속세·증여세 상담"
+  description="상속세 신고 기한, 공제 한도, 상담 비용 등 자주 묻는 질문. 강남 수서 세무회계본."
+  canonical="https://taxbon.com/faq"
+  currentPage="faq"
+  jsonLd={jsonLd}
+>
+  <!-- 페이지 헤더 -->
+  <section class="bg-navy-900 pt-32 pb-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 브레드크럼 -->
+      <div class="flex items-center gap-2 text-sm text-gray-400 mb-8">
+        <a href="/" class="hover:text-gold-500 transition">홈</a>
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <span class="text-white">자주 묻는 질문</span>
+      </div>
+      <div class="text-center">
+        <span class="text-gold-500 font-bold tracking-wider uppercase text-sm">FAQ</span>
+        <h1 class="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">자주 묻는 질문</h1>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-xl mx-auto">
+          상속세 신고 기한, 공제 한도, 상담 비용 등<br>
+          많이 문의해 주시는 질문을 모았습니다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ 아코디언 -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="space-y-4">
+        {faqs.map((f, i) => (
+          <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+            <button
+              class="faq-header w-full px-6 py-5 flex justify-between items-center text-left hover:bg-blue-50 transition bg-gradient-to-r from-navy-800 to-navy-900"
+              data-target={`faq-${i + 1}`}
+            >
+              <div class="flex items-center gap-3">
+                <span class="text-gold-500 font-bold">Q{i + 1}.</span>
+                <span class="text-base md:text-lg font-bold text-white">{f.q}</span>
+              </div>
+              <div class="flex items-center gap-3 flex-shrink-0">
+                <span class="faq-badge text-xs font-bold bg-white/90 text-navy-800 px-3 py-1 rounded-full">열기</span>
+                <svg class="faq-icon w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </div>
+            </button>
+            <div id={`faq-${i + 1}`} class="hidden border-t border-gray-100 p-6 bg-gray-50">
+              <p class="text-sm md:text-base text-gray-700 leading-relaxed">{f.a}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- 상담 유도 -->
+      <div class="mt-16 text-center bg-navy-900 rounded-2xl p-10">
+        <p class="text-white font-bold text-lg mb-2">더 궁금한 점이 있으신가요?</p>
+        <p class="text-gray-400 text-sm mb-6">상속세 첫 상담은 사망진단서 지참 시 무료입니다.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href="tel:02-597-5830"
+            class="inline-flex items-center justify-center gap-2 border border-white/30 text-white hover:bg-white/10 font-bold px-8 py-4 rounded-lg transition"
+          >
+            <i data-lucide="phone" class="w-5 h-5"></i>
+            02-597-5830
+          </a>
+          <a
+            href="https://booking.naver.com/booking/6/bizes/1181095"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white font-bold px-8 py-4 rounded-lg transition shadow-lg"
+          >
+            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+            상담 예약하기
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('.faq-header').forEach((button) => {
+    button.addEventListener('click', function () {
+      const contentId = this.getAttribute('data-target');
+      const content = document.getElementById(contentId);
+      const icon = this.querySelector('.faq-icon');
+      const badge = this.querySelector('.faq-badge');
+
+      if (!content) return;
+
+      const isOpen = !content.classList.contains('hidden');
+
+      if (isOpen) {
+        content.classList.add('hidden');
+        if (icon) icon.style.transform = 'rotate(0deg)';
+        if (badge) {
+          badge.textContent = '열기';
+          badge.className = 'faq-badge text-xs font-bold text-gray-500 bg-gray-200 px-3 py-1 rounded-full';
+        }
+      } else {
+        content.classList.remove('hidden');
+        if (icon) icon.style.transform = 'rotate(180deg)';
+        if (badge) {
+          badge.textContent = '닫기';
+          badge.className = 'faq-badge text-xs font-bold text-navy-800 bg-gold-500/20 px-3 py-1 rounded-full';
+        }
+      }
+    });
+  });
+</script>
