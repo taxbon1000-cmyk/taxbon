@@ -5,6 +5,12 @@
 .env*
 !.env.example
 
+# dependencies
+node_modules/
+
+# build output
+dist/
+
 # Astro/Vite generated files
 .astro/
 node_modules/.vite/
